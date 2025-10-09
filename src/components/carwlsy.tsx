@@ -47,7 +47,7 @@ export function Carwlsy() {
 
                         <Link
                             target="_blank"
-                            href="https://github.com/2214372851/crawlsy"
+                            href="https://github.com/yunhai-dev/crawlsy"
                             className="text-white font-medium hover:underline inline-flex items-center">
                             Learn more about Crawlsy
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"

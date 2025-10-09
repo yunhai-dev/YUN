@@ -76,7 +76,7 @@ export default function Contact() {
                             <p className="text-muted-foreground text-lg mb-4">
                                 Check out my open source projects and contributions on GitHub.
                             </p>
-                            <Link href="https://github.com/2214372851" className="text-blue-500 hover:underline"
+                            <Link href="https://github.com/yunhai-dev" className="text-blue-500 hover:underline"
                                   target="_blank">
                                 Click here to view my Github
                             </Link>
@@ -199,7 +199,7 @@ export default function Contact() {
                     <div className="grid grid-cols-2 gap-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                            src="https://github-readme-stats.vercel.app/api?username=2214372851&theme=transparent&show_icons=true&hide_border=true&show=reviews&hide_title=true&hide=contribs&number_format=long"
+                            src="https://github-readme-stats.vercel.app/api?username=yunhai-dev&theme=transparent&show_icons=true&hide_border=true&show=reviews&hide_title=true&hide=contribs&number_format=long"
                             alt="github stats"
                             width={400}
                             height={200}
@@ -207,7 +207,7 @@ export default function Contact() {
                         />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                            src='https://github-readme-activity-graph.vercel.app/graph?username=2214372851&theme=github-compact&hide_border=true&area=true&custom_title=Contribution%20Graph'
+                            src='https://github-readme-activity-graph.vercel.app/graph?username=yunhai-dev&theme=github-compact&hide_border=true&area=true&custom_title=Contribution%20Graph'
                             alt={'github state'}
                             width={800}
                             height={200}
