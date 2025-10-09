@@ -39,7 +39,7 @@ export function D0Tools() {
 
                         <Link
                             target="_blank"
-                            href="https://github.com/2214372851/D0-Tools"
+                            href="https://github.com/yunhai-dev/D0-Tools"
                             className="text-white font-medium hover:underline inline-flex items-center">
                             Learn more about D0 Tools
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"

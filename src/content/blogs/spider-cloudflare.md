@@ -149,11 +149,11 @@ browser.quit()
 
 ### Docker 部署方案
 
-> 实践时编写了支持的 [Dockerfile](https://github.com/2214372851/python-headless-browser)
+> 实践时编写了支持的 [Dockerfile](https://github.com/yunhai-dev/python-headless-browser)
 
 #### 使用方法如下
 
-1. 拉取仓库 `git clone https://github.com/2214372851/python-headless-browser.git`
+1. 拉取仓库 `git clone https://github.com/yunhai-dev/python-headless-browser.git`
 2. 构建基础镜像 `docker build -t headless-browser .`
 3. 修改自己的项目的 Dockerfile 例如：
 
