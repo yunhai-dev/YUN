@@ -1765,11 +1765,11 @@ browser.quit()
 
 ### Docker 部署方案
 
-> 实践时编写了支持的 [Dockerfile](https://github.com/2214372851/python-headless-browser)
+> 实践时编写了支持的 [Dockerfile](https://github.com/yunhai-dev/python-headless-browser)
 
 #### 使用方法如下
 
-1. 拉取仓库 `git clone https://github.com/2214372851/python-headless-browser.git`
+1. 拉取仓库 `git clone https://github.com/yunhai-dev/python-headless-browser.git`
 2. 构建基础镜像 `docker build -t headless-browser .`
 3. 修改自己的项目的 Dockerfile 例如：
 
@@ -2602,10 +2602,10 @@ docs/
 
 ```yaml
 site_name: Yun download
-site_url: https://2214372851.github.io/yundownload/
-repo_url: https://github.com/2214372851/yundownload
+site_url: https://yunhai-dev.github.io/yundownload/
+repo_url: https://github.com/yunhai-dev/yundownload
 copyright: Copyright 2021-2024
-repo_name: 2214372851/yundownload
+repo_name: yunhai-dev/yundownload
 
 nav:
   - 介绍: "index.md"

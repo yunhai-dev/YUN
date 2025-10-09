@@ -17,12 +17,12 @@ const footerLinks = [
     {
         title: "Project",
         links: [
-            {href: "https://github.com/2214372851/D0-Tools", label: "D0 Tools"},
-            {href: "https://github.com/2214372851/naive-for-qt", label: "Naive for Qt"},
-            {href: "https://github.com/2214372851/job_hive", label: "Job Hive"},
-            {href: "https://github.com/2214372851/crawlsy", label: "Crawlsy"},
-            {href: "https://github.com/2214372851/yundownload", label: "Yundownload"},
-            {href: "https://github.com/2214372851/YunChat", label: "Yun Chat"},
+            {href: "https://github.com/yunhai-dev/D0-Tools", label: "D0 Tools"},
+            {href: "https://github.com/yunhai-dev/naive-for-qt", label: "Naive for Qt"},
+            {href: "https://github.com/yunhai-dev/job_hive", label: "Job Hive"},
+            {href: "https://github.com/yunhai-dev/crawlsy", label: "Crawlsy"},
+            {href: "https://github.com/yunhai-dev/yundownload", label: "Yundownload"},
+            {href: "https://github.com/yunhai-dev/YunChat", label: "Yun Chat"},
         ],
     },
     {
@@ -34,7 +34,7 @@ const footerLinks = [
     {
         title: "Contact",
         links: [
-            {href: "https://github.com/2214372851", label: "GitHub"},
+            {href: "https://github.com/yunhai-dev", label: "GitHub"},
             {href: "https://gitee.com/yun2hai", label: "Gitee"},
             {href: "mailto:yunhai@yhnotes.com", label: "Email"},
         ],
