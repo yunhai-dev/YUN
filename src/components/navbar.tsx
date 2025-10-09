@@ -162,7 +162,7 @@ export function Navbar() {
                     </div>
                     <div className="hidden md:flex items-center">
                         <a
-                            href="https://github.com/2214372851"
+                            href="https://github.com/yunhai-dev"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/5"
