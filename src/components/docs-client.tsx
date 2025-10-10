@@ -301,13 +301,11 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
             if (btn) {
                 const code = decodeURIComponent(btn.getAttribute('data-code') || '');
                 navigator.clipboard.writeText(code);
-                btn.classList.add('copied');
                 toast({
                     title: '代码已复制',
                     description: '代码已复制到剪贴板',
                     duration: 2000,
                 });
-                setTimeout(() => btn.classList.remove('copied'), 1000);
             }
         }
         window.addEventListener('click', handleCopyClick as EventListener);
