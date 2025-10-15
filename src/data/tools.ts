@@ -664,7 +664,7 @@ const aiTools: Tool[] = [
         id: 'same',
         name: 'Same',
         description: '自然语言提示即可无代码快速创建、迭代并部署 AI 驱动的 Web 应用',
-        href: 'https://same.so/',
+        href: 'https://same.new/',
         category: 'AI 衍生工具',
     },
 ]

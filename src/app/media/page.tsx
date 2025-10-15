@@ -1,5 +1,3 @@
-"use client";
-
 import React from 'react';
 import {getAllMediaItems} from '@/data/media';
 import type {MediaItem} from '@/types/media';
