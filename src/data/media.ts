@@ -148,6 +148,14 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/docs/我的一个道姑朋友 以冬.mp3`,
     },
     {
+        id: 'wjqsl-yd',
+        title: '未见青山老',
+        imageUrl: `${STORAGE_HOST}/docs/未见青山老 以冬.jpg`,
+        author: '以冬',
+        lyricsUrl: `${STORAGE_HOST}/docs/未见青山老 以冬.lrc`,
+        musicUrl: `${STORAGE_HOST}/docs/未见青山老 以冬.mp3`,
+    },
+    {
         id: 'jwz-hsf',
         title: '九万字',
         imageUrl: `${STORAGE_HOST}/docs/九万字 黄诗扶.jpg`,
@@ -346,6 +354,14 @@ export const mediaItems: MediaItem[] = [
         author: '阿YueYue&戾格&小田音乐社',
         musicUrl: `${STORAGE_HOST}/docs/沈园外 阿YueYue&戾格&小田音乐社.mp3`,
         lyricsUrl: `${STORAGE_HOST}/docs/沈园外 阿YueYue&戾格&小田音乐社.lrc`,
+    },
+    {
+        id: 'gsj-dyj',
+        title: '关山酒',
+        imageUrl: `${STORAGE_HOST}/docs/关山酒 邓寓君(等什么君).jpg`,
+        author: '邓寓君(等什么君)',
+        musicUrl: `${STORAGE_HOST}/docs/关山酒 邓寓君(等什么君).mp3`,
+        lyricsUrl: `${STORAGE_HOST}/docs/关山酒 邓寓君(等什么君).lrc`,
     },
     {
         id: 'zm-cl',
