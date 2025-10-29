@@ -348,6 +348,22 @@ export const mediaItems: MediaItem[] = [
         lyricsUrl: `${STORAGE_HOST}/docs/下一个天亮 郭静.lrc`,
     },
     {
+        id: 'qg-ljr',
+        title: '情歌',
+        imageUrl: `${STORAGE_HOST}/docs/情歌 梁静茹.jpg`,
+        author: '梁静茹',
+        musicUrl: `${STORAGE_HOST}/docs/情歌 梁静茹.mp3`,
+        lyricsUrl: `${STORAGE_HOST}/docs/情歌 梁静茹.lrc`,
+    },
+    {
+        id: 'lq-yx',
+        title: '泪桥',
+        imageUrl: `${STORAGE_HOST}/docs/泪桥 云汐.jpg`,
+        author: '云汐',
+        musicUrl: `${STORAGE_HOST}/docs/泪桥 云汐.mp3`,
+        lyricsUrl: `${STORAGE_HOST}/docs/泪桥 云汐.lrc`,
+    },
+    {
         id: 'syw-ayy-lg',
         title: '沈园外',
         imageUrl: `${STORAGE_HOST}/docs/沈园外 阿YueYue&戾格&小田音乐社.jpg`,

@@ -9,6 +9,13 @@ const localTools: Tool[] = [
         category: '媒体工具',
     },
     {
+        id: 'flv-online',
+        name: 'FLV 直播流播放器',
+        description: '在线播放 FLV 格式的直播流，支持实时播放、截图和全屏功能。',
+        href: '/tools/flv-online',
+        category: '媒体工具',
+    },
+    {
         id: 'json-formatter',
         name: 'JSON 格式化工具',
         description: '在线格式化、校验和美化 JSON 数据。',
@@ -926,7 +933,7 @@ const otherTools: Tool[] = [
         id: 'howtocook',
         name: '程序员做饭指南',
         description: '教程序员做饭的菜谱集合。🤣',
-        href: 'https://cook.aiursoft.cn/',
+        href: 'https://github.com/Anduin2017/HowToCook/',
         category: '趣味工具',
     },
     {
