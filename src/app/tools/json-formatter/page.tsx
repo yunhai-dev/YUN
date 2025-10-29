@@ -71,7 +71,7 @@ const JsonFormatterPage = () => {
                             ref={viewContainerRef}
                             className={`relative w-full p-4 border border-input rounded-md bg-muted/30 font-mono text-sm overflow-auto ${isFullscreen ? "" : "h-96"}`}
                         >
-                            <div className="absolute top-2 right-2 z-10">
+                            <div className="sticky top-0 z-10 flex justify-end">
                                 <button
                                     onClick={toggleFullscreen}
                                     className="p-1.5 bg-background/80 hover:bg-background border border-input rounded-md"
