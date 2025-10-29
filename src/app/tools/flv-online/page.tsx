@@ -14,7 +14,8 @@ import {
     Link2,
     Camera,
     Settings,
-    AlertCircle
+    AlertCircle,
+    Radio
 } from "lucide-react";
 
 // 动态导入 flv.js，避免 SSR 问题
@@ -98,19 +99,20 @@ const FlvOnlinePage = () => {
                     hasVideo: true,
                     cors: true,
                 }, {
-                    enableWorker: false, // 禁用 worker 以避免某些问题
-                    enableStashBuffer: !isLiveStream, // 点播才启用缓存
+                    enableWorker: false,
+                    enableStashBuffer: false, // 禁用缓存以减少延迟
                     stashInitialSize: 128,
-                    autoCleanupSourceBuffer: isLiveStream,
+                    autoCleanupSourceBuffer: true, // 始终启用自动清理
                     autoCleanupMaxBackwardDuration: 3,
                     autoCleanupMinBackwardDuration: 2,
-                    lazyLoad: !isLiveStream,
-                    lazyLoadMaxDuration: 3 * 60,
-                    lazyLoadRecoverDuration: 30,
+                    lazyLoad: false,
+                    fixAudioTimestampGap: false,
+                    accurateSeek: false,
+                    seekType: 'range',
                     statisticsInfoReportInterval: 1000,
                 });
 
-                console.log('Player created successfully');
+                console.log('Player created successfully', isLiveStream ? '(Live stream)' : '(VOD)');
                 playerRef.current = flvPlayer;
                 flvPlayer.attachMediaElement(videoRef.current);
                 console.log('Player attached to video element');
@@ -160,6 +162,20 @@ const FlvOnlinePage = () => {
                     const onLoadedMetadata = () => {
                         console.log('Video metadata loaded');
                         setIsLoading(false);
+                        
+                        // 对于直播流，自动跳到最新位置
+                        if (url.includes('live') || url.includes('rtmp')) {
+                            // 获取缓冲区的最大时间并跳转到接近实时的位置
+                            setTimeout(() => {
+                                if (videoElement.buffered.length > 0) {
+                                    const bufferedEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
+                                    // 跳到缓冲区末尾前0.5秒的位置
+                                    videoElement.currentTime = Math.max(0, bufferedEnd - 0.5);
+                                    console.log('Jumped to live position:', videoElement.currentTime);
+                                }
+                            }, 500);
+                        }
+                        
                         toast({
                             title: "连接成功",
                             description: "点击播放按钮开始观看",
@@ -171,8 +187,24 @@ const FlvOnlinePage = () => {
                         setIsLoading(false);
                     };
                     
+                    // 监听时间更新，保持在直播流的最新位置
+                    const onTimeUpdate = () => {
+                        if (videoElement.buffered.length > 0 && isPlaying && (url.includes('live') || url.includes('rtmp'))) {
+                            const bufferedEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
+                            const currentTime = videoElement.currentTime;
+                            const delay = bufferedEnd - currentTime;
+                            
+                            // 如果延迟超过3秒，跳到最新位置
+                            if (delay > 3) {
+                                console.log('Delay detected:', delay, 'seconds. Jumping to live position...');
+                                videoElement.currentTime = bufferedEnd - 0.5;
+                            }
+                        }
+                    };
+                    
                     videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
                     videoElement.addEventListener('canplay', onCanPlay);
+                    videoElement.addEventListener('timeupdate', onTimeUpdate);
                 }
 
                 flvPlayer.load();
@@ -282,10 +314,37 @@ const FlvOnlinePage = () => {
         }
     };
 
+    // 跳到直播最新位置
+    const jumpToLive = () => {
+        if (!videoRef.current) return;
+        
+        const videoElement = videoRef.current;
+        if (videoElement.buffered.length > 0) {
+            const bufferedEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
+            videoElement.currentTime = Math.max(0, bufferedEnd - 0.5);
+            console.log('Manually jumped to live position:', videoElement.currentTime);
+            toast({
+                title: "已跳到直播",
+                description: "正在播放最新画面",
+            });
+        } else {
+            toast({
+                title: "无法跳转",
+                description: "缓冲区为空，请等待加载",
+                variant: "destructive",
+            });
+        }
+    };
+
     // 连接流
     const handleConnect = () => {
         if (!inputUrl.trim()) {
             setError('请输入有效的 FLV 流地址');
+            return;
+        }
+
+        if (inputUrl.startsWith('http://')) {
+            setError('出于安全考虑，浏览器不允许加载非 HTTPS 的流地址，请使用 HTTPS 地址');
             return;
         }
 
@@ -363,6 +422,17 @@ const FlvOnlinePage = () => {
         const handlePlay = () => {
             console.log('Video play event');
             setIsPlaying(true);
+            
+            // 播放时跳到最新位置（针对直播流）
+            if (flvUrl && (flvUrl.includes('live') || flvUrl.includes('rtmp'))) {
+                setTimeout(() => {
+                    if (videoElement.buffered.length > 0) {
+                        const bufferedEnd = videoElement.buffered.end(videoElement.buffered.length - 1);
+                        videoElement.currentTime = Math.max(0, bufferedEnd - 0.5);
+                        console.log('Synced to live position on play');
+                    }
+                }, 100);
+            }
         };
         
         const handlePause = () => {
@@ -390,7 +460,7 @@ const FlvOnlinePage = () => {
             videoElement.removeEventListener('waiting', handleWaiting);
             videoElement.removeEventListener('playing', handlePlaying);
         };
-    }, []);
+    }, [flvUrl]);
 
     return (
         <main className="min-h-screen flex flex-col">
@@ -476,6 +546,19 @@ const FlvOnlinePage = () => {
                                         >
                                             <Camera className="w-5 h-5" />
                                         </Button>
+
+                                        {/* 跳到直播 - 仅直播流显示 */}
+                                        {flvUrl && (flvUrl.includes('flv') || flvUrl.includes('rtmp')) && (
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                onClick={jumpToLive}
+                                                className="text-white hover:bg-white/20"
+                                                title="跳到直播"
+                                            >
+                                                <Radio className="w-5 h-5" />
+                                            </Button>
+                                        )}
 
                                         {/* 刷新 */}
                                         <Button
