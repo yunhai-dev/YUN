@@ -27,7 +27,6 @@ const JsonFormatterPage = () => {
         }
         try {
             const parsedJson = JSON.parse(inputJson);
-            // 固定 2 空格缩进
             const formattedJson = JSON.stringify(parsedJson, null, 4);
             setOutputJson(formattedJson);
         } catch (e) {
