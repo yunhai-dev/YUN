@@ -180,6 +180,14 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/docs/知我 国风堂&哦漏.mp3`,
     },
     {
+        id: 'qs-sgjn',
+        title: '青丝',
+        imageUrl: `${STORAGE_HOST}/docs/青丝 时光胶囊.jpg`,
+        author: '时光胶囊',
+        musicUrl: `${STORAGE_HOST}/docs/青丝 时光胶囊.mp3`,
+        lyricsUrl: `${STORAGE_HOST}/docs/青丝 时光胶囊.lrc`,
+    },
+    {
         id: 'bc-ss',
         title: '参商',
         imageUrl: `${STORAGE_HOST}/docs/参商 不才.jpg`,
