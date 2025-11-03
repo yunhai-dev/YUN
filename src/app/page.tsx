@@ -5,6 +5,7 @@ import {Carwlsy} from "@/components/carwlsy";
 import {D0Tools} from "@/components/d0-tools";
 import {TechStack} from "@/components/tech-stack";
 import {Announcement} from "@/components/announcement";
+import {YunDownload} from "@/components/yundownload";
 
 export default function Home() {
     return (
@@ -15,6 +16,7 @@ export default function Home() {
             <TechStack/>
             <D0Tools/>
             <Carwlsy/>
+            <YunDownload/>
             <CallToAction/>
         </main>
     );
