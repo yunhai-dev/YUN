@@ -6,6 +6,8 @@ import JsonTree from "@/app/tools/json-formatter/JsonTree";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {Collapse} from "@/components/icon/collapse";
 import {Expand} from "@/components/icon/expand";
+import {useToast} from "@/hooks/use-toast";
+import {Copy as CopyIcon} from 'lucide-react'
 
 
 const JsonFormatterPage = () => {
@@ -14,6 +16,7 @@ const JsonFormatterPage = () => {
     const [error, setError] = useState<string | null>(null);
     const viewContainerRef = React.useRef<HTMLDivElement>(null);
     const {isFullscreen, toggleFullscreen} = useFullscreen(viewContainerRef);
+    const {toast} = useToast();
 
     const handleFormat = () => {
         setError(null);
@@ -24,8 +27,7 @@ const JsonFormatterPage = () => {
         }
         try {
             const parsedJson = JSON.parse(inputJson);
-            // 固定 2 空格缩进
-            const formattedJson = JSON.stringify(parsedJson, null, 2);
+            const formattedJson = JSON.stringify(parsedJson, null, 4);
             setOutputJson(formattedJson);
         } catch (e) {
             setError(`无效的 JSON: ${e}`);
@@ -37,6 +39,22 @@ const JsonFormatterPage = () => {
         setOutputJson('');
         setError(null);
     };
+
+    const handleCopy = () => {
+        if (outputJson) {
+            navigator.clipboard.writeText(outputJson);
+            toast({
+                title: "已复制到剪贴板",
+                description: "格式化后的 JSON 数据已成功复制。",
+            });
+        } else {
+            toast({
+                title: "没有内容可复制",
+                description: "请先格式化 JSON 数据，然后再尝试复制。",
+                variant: "destructive",
+            })
+        }
+    }
 
     return (
         <main className="min-h-screen flex flex-col">
@@ -72,6 +90,13 @@ const JsonFormatterPage = () => {
                             className={`relative w-full p-4 border border-input rounded-md bg-muted/30 font-mono text-sm overflow-auto ${isFullscreen ? "" : "h-96"}`}
                         >
                             <div className="sticky top-0 z-10 flex justify-end">
+                                <button
+                                    onClick={handleCopy}
+                                    className="p-1.5 bg-background/80 hover:bg-background border border-input rounded-md"
+                                    title="复制"
+                                >
+                                    <CopyIcon size={16} />
+                                </button>
                                 <button
                                     onClick={toggleFullscreen}
                                     className="p-1.5 bg-background/80 hover:bg-background border border-input rounded-md"
