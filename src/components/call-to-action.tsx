@@ -20,7 +20,7 @@ export function CallToAction() {
                         <Link href="/blog" className="text-gray-300">View the blog</Link>
                     </Button>
                     <Button size="lg" asChild className="px-8 py-6 text-base">
-                        <Link href="/docs">View the docs</Link>
+                        <Link href="/about">View the about</Link>
                     </Button>
                 </div>
             </motion.div>
