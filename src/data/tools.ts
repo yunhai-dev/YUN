@@ -440,6 +440,13 @@ const llmProviderTools: Tool[] = [
         href: 'https://deepseek.com/',
     },
     {
+        id: 'minimax',
+        name: 'MiniMax',
+        description: 'MiniMax 成立于 2022 年初，致力于通过“人人共享智能”的使命，推动人工智能向通用人工智能（AGI）迈进。',
+        href: 'https://minimax.io/',
+        category: 'AI 模型',
+    },
+    {
         id: 'gemini',
         name: 'Gemini',
         description: '谷歌双子座。在长文本小说写作方向突出。',
