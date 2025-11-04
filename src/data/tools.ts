@@ -82,6 +82,13 @@ const devTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'community-shadcn-ui',
+        name: 'Community shadcn/ui',
+        description: 'Community shadcn/ui 是一个由社区维护的 shadcn/ui 组件库，提供更多实用组件和示例。',
+        href: 'https://www.shadcn.io',
+        category: '开发工具',
+    },
+    {
         id: 'react-bits',
         name: 'React Bits',
         description: '一个收集了许多 React 技巧和最佳实践的资源库，帮助开发者提升 React 开发技能。',
