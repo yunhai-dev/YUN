@@ -1,4 +1,4 @@
-import { Tool } from "@/types/tools";
+import {Tool} from "@/types/tools";
 
 const localTools: Tool[] = [
     {
@@ -79,6 +79,13 @@ const devTools: Tool[] = [
         name: 'shadcn/ui',
         description: 'shadcn/ui 提供设计精美、易于访问的组件以及一个与各种框架兼容的代码分发平台。',
         href: 'https://ui.shadcn.com/',
+        category: '开发工具',
+    },
+    {
+        id: 'community-shadcn-ui',
+        name: 'Community shadcn/ui',
+        description: 'Community shadcn/ui 是一个由社区维护的 shadcn/ui 组件库，提供更多实用组件和示例。',
+        href: 'https://www.shadcn.io',
         category: '开发工具',
     },
     {
@@ -433,6 +440,13 @@ const llmProviderTools: Tool[] = [
         href: 'https://deepseek.com/',
     },
     {
+        id: 'minimax',
+        name: 'MiniMax',
+        description: 'MiniMax 成立于 2022 年初，致力于通过“人人共享智能”的使命，推动人工智能向通用人工智能（AGI）迈进。',
+        href: 'https://minimax.io/',
+        category: 'AI 模型',
+    },
+    {
         id: 'gemini',
         name: 'Gemini',
         description: '谷歌双子座。在长文本小说写作方向突出。',
@@ -541,6 +555,20 @@ const llmProviderTools: Tool[] = [
 ]
 
 const aiTools: Tool[] = [
+    {
+        id: 'everywhere',
+        name: 'Everywhere',
+        description: '具备情境感知能力的交互式 AI 助手，即时感知并理解屏幕上的任何内容。',
+        href: 'https://github.com/DearVa/Everywhere',
+        category: 'AI 衍生工具'
+    },
+    {
+        id: 'wan-2.2-animate-14b',
+        name: 'Wan 2.2 Animate 14B',
+        description: '角色动画和替换的统一模型，能够实现整体动作和表情的复制。',
+        href: 'https://huggingface.co/Wan-AI/Wan2.2-Animate-14B',
+        category: 'AI 衍生工具'
+    },
     {
         id: 'vizard-audio2text',
         name: 'Vizard Audio2Text',
@@ -676,7 +704,14 @@ const aiTools: Tool[] = [
     },
 ]
 
-const iconTools: Tool[] = [
+const designTools: Tool[] = [
+    {
+        id: 'free-font',
+        name: 'Free Font',
+        description: '免费商用字体下载。',
+        href: 'https://github.com/jaywcjlove/free-font',
+        category: '图标库',
+    },
     {
         id: 'heroicons',
         name: 'Heroicons',
@@ -775,6 +810,20 @@ const serverTools: Tool[] = [
 
 // 从 tools.md 提取的新工具数据
 const otherTools: Tool[] = [
+    {
+        id: 'spleeter',
+        name: 'Spleeter',
+        description: '由 Deezer 开发的开源音频分离工具，能够将音乐轨道分离为独立的声道，如人声和伴奏。',
+        href: 'https://github.com/deezer/spleeter',
+        category: '音频处理',
+    },
+    {
+        id: 'betta-fish',
+        name: 'BettaFish',
+        description: '舆情分析的多智能体数据分析与监控系统项目',
+        href: 'https://github.com/666ghj/BettaFish',
+        category: '数据分析',
+    },
     {
         id: 'frigate-nvr',
         name: 'Frigate NVR',
@@ -1063,7 +1112,7 @@ const allToolDataMap = new Map<string, Tool>();
     ...aiCommunityTools,
     ...llmProviderTools,
     ...aiTools,
-    ...iconTools,
+    ...designTools,
     ...serverTools,
     ...otherTools,
     ...netTools
