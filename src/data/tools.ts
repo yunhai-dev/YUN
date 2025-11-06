@@ -447,6 +447,13 @@ const llmProviderTools: Tool[] = [
         category: 'AI 模型',
     },
     {
+        id: 'glm',
+        name: 'GLM',
+        description: '清华大学 KEG 实验室和智谱 AI 联合发布的通用大模型。',
+        href: 'https://bigmodel.cn/',
+        category: 'AI 模型',
+    },
+    {
         id: 'gemini',
         name: 'Gemini',
         description: '谷歌双子座。在长文本小说写作方向突出。',
