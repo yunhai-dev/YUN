@@ -7,7 +7,7 @@ import MiniSearch from 'minisearch'
 import {CommandDialog, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command"
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
-export function Command() {
+export function Command({hotkey}: { hotkey?: boolean }) {
     const [open, setOpen] = React.useState(false)
     const [miniSearch, setMiniSearch] = React.useState<MiniSearch | null>(null)
     const [searchResults, setSearchResults] = React.useState<Array<{
@@ -78,10 +78,11 @@ export function Command() {
                 setOpen((open) => !open)
             }
         }
-
-        document.addEventListener("keydown", down)
+        if (hotkey) {
+            document.addEventListener("keydown", down)
+        }
         return () => document.removeEventListener("keydown", down)
-    }, [])
+    }, [hotkey])
 
     // Generate link based on type and id
     const generateHref = (type: string, id: string) => {
