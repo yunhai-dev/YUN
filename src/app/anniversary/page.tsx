@@ -1,12 +1,7 @@
 import AnniversaryCard, {Anniversary} from "@/components/anniversary-card";
 
 export default async function AnniversaryPage() {
-    // id: string;
-    //     title: string;
-    //     date: string; // YYYY-MM-DD
-    //     repeat: boolean;
-    //     category?: string;
-    //     createdAt?: string;
+
     const items: Anniversary[] = [
         {
             id: '1',
