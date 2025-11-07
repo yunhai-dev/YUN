@@ -7,7 +7,6 @@ import Image from 'next/image';
 import {useRef, useState} from 'react';
 import {Menu, X} from 'lucide-react';
 import {Link} from "next-view-transitions"
-// import Link from "@/components/Link";
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {Command} from "@/components/command";
 
@@ -37,6 +36,11 @@ const navLinks = [
                 title: "Music",
                 href: "/media/",
                 description: "Discover great music and enjoy it"
+            },
+            {
+                title: "Anniversary",
+                href: "/anniversary/",
+                description: "Special moment"
             },
             {
                 title: "Test",
@@ -158,7 +162,7 @@ export function Navbar() {
                 {/* GitHub And Command Icon */}
                 <div className="flex gap-3">
                     <div className="hidden md:flex items-center">
-                        <Command />
+                        <Command hotkey={true}/>
                     </div>
                     <div className="hidden md:flex items-center">
                         <a
@@ -176,7 +180,7 @@ export function Navbar() {
                 {/* Mobile Menu Button: Positioned absolutely on mobile */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 md:hidden flex">
                     <div className="md:flex items-center">
-                        <Command />
+                        <Command/>
                     </div>
                     <Button
                         variant="ghost"
