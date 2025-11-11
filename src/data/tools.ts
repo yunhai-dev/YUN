@@ -23,9 +23,23 @@ const localTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'url-encoder',
+        name: 'URL 编码解码工具',
+        description: '在线编码和解码 URL 字符串,支持 encodeURIComponent 和 encodeURI 两种模式。',
+        href: '/tools/url-encoder',
+        category: '开发工具',
+    },
+    {
+        id: 'text-diff',
+        name: '文本对比工具',
+        description: '在线对比两段文本的差异,逐行显示增删改情况。',
+        href: '/tools/text-diff',
+        category: '开发工具',
+    },
+    {
         id: 'color-picker',
         name: '颜色选择器',
-        description: '从调色板或屏幕上选择颜色，并获取其代码 (HEX, RGB, HSL)。',
+        description: '从调色板或屏幕上选择颜色,并获取其代码 (HEX, RGB, HSL)。',
         href: '/tools/color-picker',
         category: '设计工具',
     },
@@ -79,6 +93,13 @@ const devTools: Tool[] = [
         name: 'shadcn/ui',
         description: 'shadcn/ui 提供设计精美、易于访问的组件以及一个与各种框架兼容的代码分发平台。',
         href: 'https://ui.shadcn.com/',
+        category: '开发工具',
+    },
+    {
+        id: 'react-flow',
+        name: 'React Flow',
+        description: '用于构建节点图和流程图的 React 库，支持拖放、缩放和平移等功能。',
+        href: 'https://reactflow.dev/',
         category: '开发工具',
     },
     {
@@ -717,6 +738,13 @@ const designTools: Tool[] = [
         name: 'Free Font',
         description: '免费商用字体下载。',
         href: 'https://github.com/jaywcjlove/free-font',
+        category: '图标库',
+    },
+    {
+        id: 'lucide',
+        name: 'Lucide',
+        description: '一个简单且可定制的开源图标库，包含超过 450 个图标。',
+        href: 'https://lucide.dev/',
         category: '图标库',
     },
     {
