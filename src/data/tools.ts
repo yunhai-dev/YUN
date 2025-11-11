@@ -75,6 +75,13 @@ const localTools: Tool[] = [
 
 const devTools: Tool[] = [
     {
+        id: 'deepwiki',
+        name: 'DeepWiki',
+        description: '基于大模型为Github公开仓库生成文档',
+        href: 'https://deepwiki.com/',
+        category: '开发工具'
+    },
+    {
         id: 'regexr',
         name: 'Regexr',
         description: '在线正则表达式测试和学习工具。',
@@ -1068,6 +1075,13 @@ const otherTools: Tool[] = [
         description: '开源、隐私友好的网页分析工具。',
         href: 'https://umami.is/',
         category: '网站分析',
+    },
+    {
+        id: 'howtocook',
+        name: '程序员做饭指南',
+        description: '清晰精准的描述来整理常见菜的做法，以方便程序员在家做饭。',
+        href: 'https://cook.aiursoft.com/',
+        category: '生活工具',
     }
 ];
 
