@@ -96,6 +96,13 @@ const devTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'react-flow',
+        name: 'React Flow',
+        description: '用于构建节点图和流程图的 React 库，支持拖放、缩放和平移等功能。',
+        href: 'https://reactflow.dev/',
+        category: '开发工具',
+    },
+    {
         id: 'community-shadcn-ui',
         name: 'Community shadcn/ui',
         description: 'Community shadcn/ui 是一个由社区维护的 shadcn/ui 组件库，提供更多实用组件和示例。',
