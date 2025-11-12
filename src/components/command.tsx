@@ -7,6 +7,7 @@ import MiniSearch from 'minisearch'
 import {CommandDialog, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command"
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import { getAllTools } from "@/data/tools"
+import { mediaItems } from "@/data/media";
 
 export function Command({hotkey}: { hotkey?: boolean }) {
     const [open, setOpen] = React.useState(false)
@@ -28,6 +29,7 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                 if (response.ok) {
                     const data = await response.json()
 
+                    // Add tools data to the search index
                     const tools = getAllTools().map(tool => ({
                         id: tool.id,
                         title: tool.name,
@@ -35,11 +37,19 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                         type: 'tool'
                     }))
 
+                    // Add media data to the search index
+                    const medias = mediaItems.map(media => ({
+                        id: media.id,
+                        title: media.title,
+                        content: media.author,
+                        type: 'media'
+                    }))
+
                     const ms = new MiniSearch({
                         fields: ["title", "content"],
                         storeFields: ['id', 'title', 'content', 'type'], // Store all required fields
                     });
-                    ms.addAll([...data, ...tools])
+                    ms.addAll([...data, ...tools, ...medias])
                     setMiniSearch(ms)
                 }
             } catch (error) {
