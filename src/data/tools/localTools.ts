@@ -1,0 +1,74 @@
+import {Tool} from "@/types/tools";
+
+export const localTools: Tool[] = [
+    {
+        id: 'lrc-edit',
+        name: 'LRC 歌词编辑器',
+        description: '制作和编辑LRC格式的歌词文件，支持时间轴同步、音频播放和实时预览。',
+        href: '/tools/lrc-edit',
+        category: '媒体工具',
+    },
+    {
+        id: 'flv-online',
+        name: 'FLV 直播流播放器',
+        description: '在线播放 FLV 格式的直播流，支持实时播放、截图和全屏功能。',
+        href: '/tools/flv-online',
+        category: '媒体工具',
+    },
+    {
+        id: 'json-formatter',
+        name: 'JSON 格式化工具',
+        description: '在线格式化、校验和美化 JSON 数据。',
+        href: '/tools/json-formatter',
+        category: '开发工具',
+    },
+    {
+        id: 'url-encoder',
+        name: 'URL 编码解码工具',
+        description: '在线编码和解码 URL 字符串,支持 encodeURIComponent 和 encodeURI 两种模式。',
+        href: '/tools/url-encoder',
+        category: '开发工具',
+    },
+    {
+        id: 'text-diff',
+        name: '文本对比工具',
+        description: '在线对比两段文本的差异,逐行显示增删改情况。',
+        href: '/tools/text-diff',
+        category: '开发工具',
+    },
+    {
+        id: 'color-picker',
+        name: '颜色选择器',
+        description: '从调色板或屏幕上选择颜色,并获取其代码 (HEX, RGB, HSL)。',
+        href: '/tools/color-picker',
+        category: '设计工具',
+    },
+    {
+        id: 'mermaid',
+        name: 'Mermaid 图表转换器',
+        description: '在线将 Mermaid 代码转换为 SVG 图表，支持流程图、时序图、甘特图等多种图表类型。',
+        href: '/tools/mermaid',
+        category: '开发工具',
+    },
+    {
+        id: 'tree-converter',
+        name: '文件树转换器',
+        description: '将缩进格式的文本转换为树形结构显示。',
+        href: '/tools/tree-converter',
+        category: '开发工具',
+    },
+    {
+        id: 'markdown-editor',
+        name: 'Markdown 编辑器',
+        description: '在线编辑和预览 Markdown 文档，支持实时预览、语法高亮和常用格式工具栏。',
+        href: '/tools/markdown-editor',
+        category: '开发工具',
+    },
+    {
+        id: 'comment-system',
+        name: '评论系统客户端',
+        description: '静态网站评论系统的客户端工具，支持API地址配置、评论管理和多层级回复功能。',
+        href: '/tools/comment-system',
+        category: '开发工具',
+    },
+];
