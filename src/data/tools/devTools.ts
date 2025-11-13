@@ -131,7 +131,7 @@ export const devTools: Tool[] = [
         id: 'clawcloud',
         name: 'Claw Cloud',
         description: '面向开发人员的云基础设施和应用部署平台。',
-        href: 'https://uiverse.io/',
+        href: 'https://claw.cloud/',
         category: '开发工具',
     },
     {
