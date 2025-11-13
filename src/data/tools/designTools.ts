@@ -2,13 +2,6 @@ import {Tool} from "@/types/tools";
 
 export const designTools: Tool[] = [
     {
-        id: 'free-font',
-        name: 'Free Font',
-        description: '免费商用字体下载。',
-        href: 'https://github.com/jaywcjlove/free-font',
-        category: '图标库',
-    },
-    {
         id: 'lucide',
         name: 'Lucide',
         description: '一个简单且可定制的开源图标库，包含超过 450 个图标。',
