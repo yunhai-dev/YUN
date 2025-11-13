@@ -37,13 +37,6 @@ export const designTools: Tool[] = [
         category: '图标库',
     },
     {
-        id: 'vectorcraftr',
-        name: 'vectorCraftr',
-        description: '开源插画网站。',
-        href: 'https://vectorcraftr.com/',
-        category: '图标库',
-    },
-    {
         id: 'undraw',
         name: 'unDraw',
         description: '各个领域的插画，可自定义颜色。',
