@@ -79,6 +79,13 @@ export const otherTools: Tool[] = [
         category: '字体资源',
     },
     {
+        id: 'free-font',
+        name: 'Free Font',
+        description: '免费商用字体下载。',
+        href: 'https://github.com/jaywcjlove/free-font',
+        category: '图标库',
+    },
+    {
         id: 'pixabay',
         name: 'Pixabay',
         description: '免费正版的音频、视频、图片网站',
