@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const devTools: Tool[] = [
     {
+        id: 'pinme',
+        name: 'PinMe',
+        description: '单命令部署工具，只需一条命令即可部署前端',
+        href: 'https://github.com/glitternetwork/pinme',
+        category: '开发工具'
+    },
+    {
         id: 'deepwiki',
         name: 'DeepWiki',
         description: '基于大模型为Github公开仓库生成文档',

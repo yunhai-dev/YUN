@@ -1,4 +1,4 @@
-import {Tool} from "@/types/tools";
+import { Tool } from "@/types/tools";
 
 export const llmProviderTools: Tool[] = [
     {
@@ -131,6 +131,13 @@ export const llmProviderTools: Tool[] = [
         description: 'OpenRouter 是一个 AI 模型聚合平台，提供多种模型的 API 接入，支持多种编程语言和框架。',
         href: 'https://openrouter.ai/',
         category: '模型服务商',
+    },
+    {
+        id: 'megallm',
+        name: 'MegaLLM',
+        description: 'MegaLLM 是一个 API 中转服务，支持主流模型 OpenAI、Anthropic、Google、Meta 等',
+        href: 'https://megallm.io/',
+        category: '模型服务商'
     },
     {
         id: 'azure',
