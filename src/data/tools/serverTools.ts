@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const serverTools: Tool[] = [
     {
+        id: 'warpgate',
+        name: 'Warpgate',
+        desctiption: '完全透明的 SSH、HTTPS、MySQL 和 Postgres 堡垒机/PAM，无需额外的客户端软件',
+        href: 'https://github.com/warp-tech/warpgate',
+        categoty: '服务器工具'
+    },
+    {
         id: 'fastfetch',
         name: 'Fastfetch',
         description: '终端系统信息获取工具，注重性能和可定制性。',

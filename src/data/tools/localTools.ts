@@ -71,4 +71,11 @@ export const localTools: Tool[] = [
         href: '/tools/comment-system',
         category: '开发工具',
     },
+    {
+        id: 'p2p-transfer',
+        name: 'P2P 文件传输',
+        description: '点对点文件传输工具，支持流式写入磁盘，无需服务器中转，局域网内可用。',
+        href: '/tools/p2p-transfer',
+        category: '网络工具',
+    },
 ];
