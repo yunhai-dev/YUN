@@ -31,7 +31,7 @@ export const llmProviderTools: Tool[] = [
         id: 'minimax',
         name: 'MiniMax',
         description: 'MiniMax 成立于 2022 年初，致力于通过"人人共享智能"的使命，推动人工智能向通用人工智能（AGI）迈进。',
-        href: 'https://minimax.io/',
+        href: 'https://www.minimaxi.com/',
         category: 'AI 模型',
     },
     {
