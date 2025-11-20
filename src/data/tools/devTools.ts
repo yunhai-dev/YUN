@@ -177,6 +177,13 @@ export const devTools: Tool[] = [
         category: '开发工具'
     },
     {
+        id: 'supabase',
+        name: 'Supabase',
+        description: '开源 Firebase 替代品，提供托管的 Postgres 数据库，免费 500MB 大小',
+        href: 'https://supabase.com/',
+        category: '开发工具'
+    },
+    {
         id: 'neon',
         name: 'Neon',
         description: '便捷的云上 Postgres 数据库，免费 500MB 大小',
@@ -187,7 +194,7 @@ export const devTools: Tool[] = [
         id: 'mongodb-atlas',
         name: 'MongoDB Atlas',
         description: '云 MongoDB 数据库托管服务，免费 500 MB 大小',
-        href: 'https://neon.tech/',
+        href: 'https://www.mongodb.com/products/platform/atlas-database',
         category: '开发工具'
     },
     {
