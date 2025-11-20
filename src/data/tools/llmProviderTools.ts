@@ -1,4 +1,4 @@
-import {Tool} from "@/types/tools";
+import { Tool } from "@/types/tools";
 
 export const llmProviderTools: Tool[] = [
     {
@@ -31,7 +31,7 @@ export const llmProviderTools: Tool[] = [
         id: 'minimax',
         name: 'MiniMax',
         description: 'MiniMax 成立于 2022 年初，致力于通过"人人共享智能"的使命，推动人工智能向通用人工智能（AGI）迈进。',
-        href: 'https://minimax.io/',
+        href: 'https://www.minimaxi.com/',
         category: 'AI 模型',
     },
     {
@@ -131,6 +131,13 @@ export const llmProviderTools: Tool[] = [
         description: 'OpenRouter 是一个 AI 模型聚合平台，提供多种模型的 API 接入，支持多种编程语言和框架。',
         href: 'https://openrouter.ai/',
         category: '模型服务商',
+    },
+    {
+        id: 'megallm',
+        name: 'MegaLLM',
+        description: 'MegaLLM 是一个 API 中转服务，支持主流模型 OpenAI、Anthropic、Google、Meta 等',
+        href: 'https://megallm.io/',
+        category: '模型服务商'
     },
     {
         id: 'azure',

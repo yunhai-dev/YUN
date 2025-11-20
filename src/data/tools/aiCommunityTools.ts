@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const aiCommunityTools: Tool[] = [
     {
+        id: 'artificial-analysis',
+        name: 'Artificial Analysis',
+        description: '专注于人工智能领域的分析与见解，提供最新的行业动态、技术趋势和深度报道。',
+        href: 'https://artificialanalysis.ai/',
+        category: 'AI 社区',
+    },
+    {
         id: 'hugging-face',
         name: 'Hugging Face',
         description: '机器学习社区在模型、数据集和应用程序上进行协作的平台。',

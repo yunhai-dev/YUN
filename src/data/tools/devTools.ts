@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const devTools: Tool[] = [
     {
+        id: 'pinme',
+        name: 'PinMe',
+        description: '单命令部署工具，只需一条命令即可部署前端',
+        href: 'https://github.com/glitternetwork/pinme',
+        category: '开发工具'
+    },
+    {
         id: 'deepwiki',
         name: 'DeepWiki',
         description: '基于大模型为Github公开仓库生成文档',
@@ -131,7 +138,7 @@ export const devTools: Tool[] = [
         id: 'clawcloud',
         name: 'Claw Cloud',
         description: '面向开发人员的云基础设施和应用部署平台。',
-        href: 'https://uiverse.io/',
+        href: 'https://claw.cloud/',
         category: '开发工具',
     },
     {
@@ -170,6 +177,13 @@ export const devTools: Tool[] = [
         category: '开发工具'
     },
     {
+        id: 'supabase',
+        name: 'Supabase',
+        description: '开源 Firebase 替代品，提供托管的 Postgres 数据库，免费 500MB 大小',
+        href: 'https://supabase.com/',
+        category: '开发工具'
+    },
+    {
         id: 'neon',
         name: 'Neon',
         description: '便捷的云上 Postgres 数据库，免费 500MB 大小',
@@ -180,7 +194,7 @@ export const devTools: Tool[] = [
         id: 'mongodb-atlas',
         name: 'MongoDB Atlas',
         description: '云 MongoDB 数据库托管服务，免费 500 MB 大小',
-        href: 'https://neon.tech/',
+        href: 'https://www.mongodb.com/products/platform/atlas-database',
         category: '开发工具'
     },
     {
