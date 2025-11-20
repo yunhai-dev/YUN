@@ -1,5 +1,5 @@
 // src/data/media.ts
-import {MediaItem} from '@/types/media';
+import { MediaItem } from '@/types/media';
 import { STORAGE_HOST } from './baseUrl';
 
 export const mediaItems: MediaItem[] = [
@@ -242,6 +242,14 @@ export const mediaItems: MediaItem[] = [
         author: '灼夭',
         musicUrl: `${STORAGE_HOST}/docs/风催雨 灼夭.mp3`,
         lyricsUrl: `${STORAGE_HOST}/docs/风催雨 灼夭.lrc`,
+    },
+    {
+        id: 'ygxdxx-jhx',
+        title: '阳光下的星星',
+        imageUrl: `${STORAGE_HOST}/docs/阳光下的星星 金海心.jpg`,
+        author: '金海星',
+        musicUrl: `${STORAGE_HOST}/docs/阳光下的星星 金海心.mp3`,
+        lyricsUrl: `${STORAGE_HOST}/docs/阳光下的星星 金海心.lrc`
     },
     {
         id: 'fhm-fmjj',

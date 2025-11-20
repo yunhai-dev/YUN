@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const otherTools: Tool[] = [
     {
+        id: 'docmost',
+        name: 'Docmost',
+        description: '开源的协作式维基和文档软件，是 Confluence 和 Notion 的开源替代方案。',
+        href: 'https://github.com/docmost/docmost',
+        category: '文档工具'
+    },
+    {
         id: 'spleeter',
         name: 'Spleeter',
         description: '由 Deezer 开发的开源音频分离工具，能够将音乐轨道分离为独立的声道，如人声和伴奏。',
@@ -77,6 +84,13 @@ export const otherTools: Tool[] = [
         description: '聚合字体网站，包含免费及付费的文字',
         href: 'https://www.100font.com/',
         category: '字体资源',
+    },
+    {
+        id: 'free-font',
+        name: 'Free Font',
+        description: '免费商用字体下载。',
+        href: 'https://github.com/jaywcjlove/free-font',
+        category: '图标库',
     },
     {
         id: 'pixabay',
