@@ -6,7 +6,7 @@ export const designTools: Tool[] = [
         name: 'TapNow',
         description: 'TapNow是面向企业和创作者的新一代AI视觉创作引擎。从电商广告到电影短片，从实验艺术到品牌营销。',
         href: 'https://www.tapnow.ai/zh',
-        category: '图标库',
+        category: '设计工具',
     },
     {
         id: 'lucide',
