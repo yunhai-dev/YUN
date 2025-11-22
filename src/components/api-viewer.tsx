@@ -194,11 +194,11 @@ export function APIViewer({ document }: APIViewerProps) {
         )}
         
         {schema.type === "object" && schema.properties && (
-          <div className="rounded bg-white/5 p-3">
+          <div className="rounded bg-muted p-3">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-border">
                     <th className="text-left py-2 px-2 font-medium">属性</th>
                     <th className="text-left py-2 px-2 font-medium">类型</th>
                     <th className="text-left py-2 px-2 font-medium">必填</th>
@@ -214,7 +214,7 @@ export function APIViewer({ document }: APIViewerProps) {
                     const required = schema.required && schema.required.includes(propName);
                     
                     return (
-                      <tr key={propName} className="border-b border-white/5 last:border-0">
+                      <tr key={propName} className="border-b border-border last:border-0">
                         <td className="py-2 px-2">
                           <span className="font-mono text-blue-400">{propName}</span>
                         </td>
@@ -339,7 +339,7 @@ export function APIViewer({ document }: APIViewerProps) {
             <div key={tag.name}>
               <div 
                 className={cn(
-                  "flex items-center py-1 px-1 rounded text-sm hover:bg-white/5 cursor-pointer",
+                  "flex items-center py-1 px-1 rounded text-sm hover:bg-muted cursor-pointer",
                   "text-muted-foreground"
                 )}
                 onClick={() => toggleTagExpanded(tag.name)}
@@ -371,7 +371,7 @@ export function APIViewer({ document }: APIViewerProps) {
                       <div 
                         key={`${op.path}-${op.method}`}
                         className={cn(
-                          "flex items-center py-1 px-1 rounded text-sm hover:bg-white/5 cursor-pointer",
+                          "flex items-center py-1 px-1 rounded text-sm hover:bg-muted cursor-pointer",
                           isActive ? "bg-primary/10 text-primary" : "text-muted-foreground"
                         )}
                         onClick={() => {
@@ -402,12 +402,12 @@ export function APIViewer({ document }: APIViewerProps) {
     <div 
       ref={containerRef} 
       className={cn(
-        "flex flex-col md:flex-row rounded-lg border border-white/10 overflow-hidden h-[calc(100vh-16rem)]",
+        "flex flex-col md:flex-row rounded-lg border border-border overflow-hidden h-[calc(100vh-16rem)]",
         isFullscreen && "fixed inset-0 z-50 h-screen rounded-none"
       )}
     >
       {/* 移动端菜单切换按钮 */}
-      <div className="md:hidden flex items-center justify-between p-4 border-b border-white/5 bg-card/50">
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card/50">
         <h2 className="font-medium text-sm">
           {showMenu ? "API 分组" : activeEndpoint ? 
             (currentOperation?.summary || currentOperation?.operationId || "API端点") : 
@@ -425,10 +425,10 @@ export function APIViewer({ document }: APIViewerProps) {
       
       {/* 左侧菜单栏 - 独立滚动区域，在移动端根据状态显示/隐藏 */}
       <div className={cn(
-        "w-full md:w-1/4 lg:w-1/5 bg-card/50 border-r border-white/5 flex flex-col h-full max-h-full",
+        "w-full md:w-1/4 lg:w-1/5 bg-card/50 border-r border-border flex flex-col h-full max-h-full",
         !showMenu && "hidden md:flex"
       )}>
-        <div className="p-4 border-b border-white/5 hidden md:flex justify-between items-center">
+        <div className="p-4 border-b border-border hidden md:flex justify-between items-center">
           <h2 className="font-medium text-sm">API 分组</h2>
           <Button 
             variant="ghost" 
@@ -456,7 +456,7 @@ export function APIViewer({ document }: APIViewerProps) {
         {activeEndpoint ? (
           <div className="h-full flex flex-col overflow-hidden">
             {/* 端点路径标题 - 固定不滚动 */}
-            <div className="border-b border-white/5 p-4 flex-shrink-0 hidden md:block">
+            <div className="border-b border-border p-4 flex-shrink-0 hidden md:block">
               <h2 className="text-xl font-semibold mb-2">
                 {currentOperation?.summary || currentOperation?.operationId || "API端点"}
               </h2>
@@ -481,8 +481,8 @@ export function APIViewer({ document }: APIViewerProps) {
               )}
             </div>
             
-            {/* 移动端端点信息 - 简化版 */}
-            <div className="border-b border-white/5 p-4 flex-shrink-0 md:hidden">
+            {/* 移动端点信息 - 简化版 */}
+            <div className="border-b border-border p-4 flex-shrink-0 md:hidden">
               <div className="font-mono text-sm mb-2 flex flex-wrap items-center">
                 <span className={cn(
                   "uppercase px-2 py-1 rounded font-semibold text-xs mr-2 mb-1",
@@ -504,8 +504,8 @@ export function APIViewer({ document }: APIViewerProps) {
                 <div className="space-y-4 sm:space-y-6">
                   {/* 参数 */}
                   {currentOperation.parameters && currentOperation.parameters.length > 0 && (
-                    <div className="rounded-md border border-white/5 overflow-hidden">
-                      <div className="bg-white/5 px-4 py-2">
+                    <div className="rounded-md border border-border overflow-hidden">
+                      <div className="bg-muted px-4 py-2">
                         <h4 className="font-medium">参数</h4>
                       </div>
                       <div className="p-4 space-y-3">
@@ -570,8 +570,8 @@ export function APIViewer({ document }: APIViewerProps) {
                   
                   {/* 请求体 */}
                   {currentOperation.requestBody && (
-                    <div className="rounded-md border border-white/5 overflow-hidden">
-                      <div className="bg-white/5 px-4 py-2">
+                    <div className="rounded-md border border-border overflow-hidden">
+                      <div className="bg-muted px-4 py-2">
                         <h4 className="font-medium">请求体</h4>
                       </div>
                       <div className="p-4">
@@ -633,11 +633,11 @@ export function APIViewer({ document }: APIViewerProps) {
                   
                   {/* 响应 */}
                   {currentOperation?.responses && (
-                    <div className="rounded-md border border-white/5 overflow-hidden">
-                      <div className="bg-white/5 px-4 py-2">
+                    <div className="rounded-md border border-border overflow-hidden">
+                      <div className="bg-muted px-4 py-2">
                         <h4 className="font-medium">响应</h4>
                       </div>
-                      <div className="divide-y divide-white/5">
+                      <div className="divide-y divide-border">
                         {Object.keys(currentOperation.responses || {}).map((code) => {
                           const responseObj = currentOperation.responses?.[code];
                           // 处理引用对象或直接响应对象
