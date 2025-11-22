@@ -21,7 +21,7 @@ export default async function APIPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {apiDocuments.length > 0 ? (
             apiDocuments.map((api) => (
-              <div key={api.id} className="block rounded-lg border border-white/5 bg-card overflow-hidden p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card">
+              <div key={api.id} className="block rounded-lg border border-border hover:border-violet-500/50 bg-card overflow-hidden p-6 glow-card group/card transition-colors">
                 <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                 <Link href={`/api/${api.id}`} className="group relative z-10 block">
                   <h2 className="text-xl font-semibold mb-2">{api.title}</h2>

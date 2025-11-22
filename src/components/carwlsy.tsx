@@ -16,7 +16,7 @@ export function Carwlsy() {
                     viewport={{once: true}}
                     className="mb-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
                 >
-                    <div className="order-2 md:order-1 bg-gray-800 rounded-lg overflow-hidden h-80 relative">
+                    <div className="order-2 md:order-1 bg-muted rounded-lg overflow-hidden h-80 relative">
                         <Image
                             src={`${STORAGE_HOST}/docs/carwlsy.png`}
                             alt="D0 Tools"
@@ -28,7 +28,7 @@ export function Carwlsy() {
 
                     <div className="order-1 md:order-2">
                         <div
-                            className="inline-flex items-center px-3 py-1 rounded-full bg-[hsl(var(--linear-gray))/0.2] text-sm text-gray-400 mb-4">
+                            className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-sm text-muted-foreground mb-4">
                             <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
                             Distributed data collection platform
                         </div>
@@ -48,7 +48,7 @@ export function Carwlsy() {
                         <Link
                             target="_blank"
                             href="https://github.com/yunhai-dev/crawlsy"
-                            className="text-white font-medium hover:underline inline-flex items-center">
+                            className="text-foreground font-medium hover:underline inline-flex items-center">
                             Learn more about Crawlsy
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                  xmlns="http://www.w3.org/2000/svg" className="ml-1">

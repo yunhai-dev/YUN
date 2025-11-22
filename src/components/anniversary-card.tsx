@@ -258,9 +258,9 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
         <div
             ref={cardRef}
             className={[
-                'relative bg-black text-white border border-white rounded-[14px] p-5 flex flex-col gap-4 transition-all duration-200',
-                'select-none hover:shadow-[0_4px_18px_-6px_rgba(255,255,255,0.35)]',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-white',
+                'relative bg-card text-foreground border border-border rounded-[14px] p-5 flex flex-col gap-4 transition-all duration-200',
+                'select-none hover:shadow-[0_4px_18px_-6px_rgba(var(--glow-color),0.35)]',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                 expanded ? 'border-2' : '',
                 draggable ? 'cursor-grab' : '',
                 className
@@ -291,7 +291,7 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
                     type="button"
                     data-action="edit"
                     onClick={() => onEdit?.(item.id)}
-                    className="text-xs px-2 py-1 border border-white rounded-md hover:bg-white hover:text-black transition bg-transparent"
+                    className="text-xs px-2 py-1 border border-border rounded-md hover:bg-primary hover:text-primary-foreground transition bg-transparent"
                 >
                     编辑
                 </button>
@@ -299,7 +299,7 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
                     type="button"
                     data-action="delete"
                     onClick={() => onDelete?.(item.id)}
-                    className="text-xs px-2 py-1 border border-white rounded-md hover:bg-white hover:text-black transition bg-transparent"
+                    className="text-xs px-2 py-1 border border-border rounded-md hover:bg-primary hover:text-primary-foreground transition bg-transparent"
                 >
                     删除
                 </button>
@@ -307,7 +307,7 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
                     type="button"
                     data-action="expand"
                     onClick={toggleExpand}
-                    className="text-xs px-2 py-1 border border-white rounded-md hover:bg-white hover:text-black transition bg-transparent"
+                    className="text-xs px-2 py-1 border border-border rounded-md hover:bg-primary hover:text-primary-foreground transition bg-transparent"
                 >
                     {expanded ? '收起' : '展开'}
                 </button>
@@ -319,24 +319,24 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
                     <div className="flex flex-wrap items-center gap-3">
                         <h3 className="text-lg font-semibold m-0">{item.title}</h3>
                         {item.repeat && (
-                            <span className="text-[10px] tracking-wider px-2 py-1 border border-white rounded-md uppercase">
+                            <span className="text-[10px] tracking-wider px-2 py-1 border border-border rounded-md uppercase">
                 每年
               </span>
                         )}
                         {item.category && (
-                            <span className="text-[10px] tracking-wider px-2 py-1 border border-white rounded-md uppercase">
+                            <span className="text-[10px] tracking-wider px-2 py-1 border border-border rounded-md uppercase">
                 {item.category}
               </span>
                         )}
                     </div>
-                    <div className="flex flex-wrap gap-4 text-xs text-gray-300">
+                    <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
                         <span>原始日期：{item.date}</span>
                         {item.dateTime && <span>起始时间：{item.dateTime.replace('T', ' ')}</span>}
                         {item.createdAt && <span>创建：{item.createdAt.split('T')[0]}</span>}
                     </div>
                 </div>
                 <div className="flex flex-col items-end text-right text-xs min-w-[140px]">
-          <span className="uppercase tracking-wider text-[10px] text-gray-400">
+          <span className="uppercase tracking-wider text-[10px] text-muted-foreground">
             过去了多久
           </span>
                     <span className="font-medium leading-snug">
@@ -346,35 +346,35 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
             </div>
 
             {/* 指标行 */}
-            <div className="flex flex-wrap gap-4 text-xs text-gray-300">
+            <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
         <span>
-          第 <strong className="font-semibold text-white">{metrics.years}</strong> 周年
+          第 <strong className="font-semibold text-foreground">{metrics.years}</strong> 周年
         </span>
                 <span>
           {metrics.daysToNext === 0
               ? '今天就是纪念日！'
               : metrics.isPastNonRepeat
                   ? '已结束（不重复）'
-                  : <>距离下次 <strong className="font-semibold text-white">{metrics.daysToNext}</strong> 天</>}
+                  : <>距离下次 <strong className="font-semibold text-foreground">{metrics.daysToNext}</strong> 天</>}
         </span>
                 <span>下次：{formatDate(metrics.nextDate)}</span>
             </div>
 
             {/* 进度与倒计时 */}
             <div className="flex flex-col gap-2">
-                <div className="flex justify-between text-[11px] tracking-wide text-gray-300">
+                <div className="flex justify-between text-[11px] tracking-wide text-muted-foreground">
                     <span>{metrics.isPastNonRepeat ? '一次性事件进度' : '周期进度'}</span>
                     <span>
             {metrics.progressDays}/{metrics.totalCycleDays} 天
           </span>
                 </div>
-                <div className="h-2 border border-white rounded-md overflow-hidden bg-black">
+                <div className="h-2 border border-border rounded-md overflow-hidden bg-background">
                     <div
-                        className="h-full bg-white transition-all"
+                        className="h-full bg-primary transition-all"
                         style={{ width: `${metrics.progressRatio * 100}%` }}
                     />
                 </div>
-                <div className="text-xs font-medium text-gray-200">
+                <div className="text-xs font-medium text-muted-foreground">
                     {metrics.isPastNonRepeat
                         ? '不再倒计时（一次性）'
                         : metrics.daysToNext > countdownThresholdDays
@@ -387,15 +387,15 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
             <button
                 type="button"
                 onClick={toggleExpand}
-                className="text-xs underline underline-offset-4 self-start px-2 py-1 rounded hover:bg-white hover:text-black transition"
+                className="text-xs underline underline-offset-4 self-start px-2 py-1 rounded hover:bg-primary hover:text-primary-foreground transition"
             >
                 {expanded ? '收起详情' : '展开详情'}
             </button>
 
             {/* 详情区 */}
             {expanded && (
-                <div className="border-t border-dashed border-white pt-4 animate-fadeIn flex flex-col gap-4">
-                    <div className="text-xs text-gray-200">
+                <div className="border-t border-dashed border-border pt-4 animate-fadeIn flex flex-col gap-4">
+                    <div className="text-xs text-muted-foreground">
                         周期：
                         {item.repeat
                             ? `从 ${formatDate(metrics.lastDate)} 到 ${formatDate(metrics.nextDate)} （共 ${metrics.totalCycleDays} 天）`
@@ -403,19 +403,19 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
                     </div>
 
                     {showTotalHours && (
-                        <div className="text-xs text-gray-300">
-                            累计小时：<strong className="text-white">{metrics.pastHours}</strong> 小时
+                        <div className="text-xs text-muted-foreground">
+                            累计小时：<strong className="text-foreground">{metrics.pastHours}</strong> 小时
                         </div>
                     )}
 
                     {showTimeline && (
                         <div className="flex flex-col gap-2">
-                            <div className="text-xs font-semibold text-white">年度时间轴</div>
+                            <div className="text-xs font-semibold text-foreground">年度时间轴</div>
                             <div className="grid gap-2">
                                 {timelineYears.map(y => (
                                     <div
                                         key={y.date.getFullYear()}
-                                        className="flex justify-between text-[11px] px-3 py-2 border border-white rounded-md bg-transparent hover:bg-white hover:text-black transition"
+                                        className="flex justify-between text-[11px] px-3 py-2 border border-border rounded-md bg-transparent hover:bg-primary hover:text-primary-foreground transition"
                                     >
                                         <span>{formatDate(y.date)}</span>
                                         <span>{y.passed ? '已发生' : '待到来'}</span>
@@ -427,8 +427,8 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
 
                     {showJson && (
                         <div className="flex flex-col gap-2">
-                            <div className="text-xs font-semibold text-white">原始 JSON</div>
-                            <pre className="text-[11px] bg-black text-white p-3 rounded-md max-h-48 overflow-auto leading-relaxed">
+                            <div className="text-xs font-semibold text-foreground">原始 JSON</div>
+                            <pre className="text-[11px] bg-muted text-foreground p-3 rounded-md max-h-48 overflow-auto leading-relaxed">
                 {escapeHTML(JSON.stringify(item, null, 2))}
               </pre>
                         </div>

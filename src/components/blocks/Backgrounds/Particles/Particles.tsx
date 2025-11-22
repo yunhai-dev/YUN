@@ -22,8 +22,22 @@ interface ParticlesProps {
 
 const defaultColors: string[] = ["#ffffff", "#ffffff", "#ffffff"];
 
-const hexToRgb = (hex: string): [number, number, number] => {
-  hex = hex.replace(/^#/, "");
+const parseColor = (color: string): [number, number, number] => {
+  // Handle HSL format like "hsl(var(--foreground))"
+  if (color.startsWith('hsl(')) {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      return [r / 255, g / 255, b / 255];
+    }
+  }
+  
+  // Handle hex format
+  let hex = color.replace(/^#/, "");
   if (hex.length === 3) {
     hex = hex.split("").map((c) => c + c).join("");
   }
@@ -159,7 +173,7 @@ const Particles: React.FC<ParticlesProps> = ({
       const r = Math.cbrt(Math.random());
       positions.set([x * r, y * r, z * r], i * 3);
       randoms.set([Math.random(), Math.random(), Math.random(), Math.random()], i * 4);
-      const col = hexToRgb(palette[Math.floor(Math.random() * palette.length)]);
+      const col = parseColor(palette[Math.floor(Math.random() * palette.length)]);
       colors.set(col, i * 3);
     }
 
@@ -230,6 +244,7 @@ const Particles: React.FC<ParticlesProps> = ({
     particleCount,
     particleSpread,
     speed,
+    particleColors,
     moveParticlesOnHover,
     particleHoverFactor,
     alphaParticles,

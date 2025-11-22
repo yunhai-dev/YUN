@@ -18,7 +18,7 @@ export function D0Tools() {
                 >
                     <div>
                         <div
-                            className="inline-flex items-center px-3 py-1 rounded-full bg-[hsl(var(--linear-gray))/0.2] text-sm text-gray-400 mb-4">
+                            className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-sm text-muted-foreground mb-4">
                             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                             Data annotation tools
                         </div>
@@ -40,7 +40,7 @@ export function D0Tools() {
                         <Link
                             target="_blank"
                             href="https://github.com/yunhai-dev/D0-Tools"
-                            className="text-white font-medium hover:underline inline-flex items-center">
+                            className="text-foreground font-medium hover:underline inline-flex items-center">
                             Learn more about D0 Tools
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                  xmlns="http://www.w3.org/2000/svg" className="ml-1">

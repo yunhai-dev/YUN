@@ -31,10 +31,10 @@ function RegularPost({slug, category, title, date}: RegularPostProps) {
     return (
         <Link
             href={`/blog/${slug}`}
-            className="flex justify-between items-center hover:bg-[hsl(var(--linear-gray))/0.05] transition-colors group w-full"
+            className="flex justify-between items-center hover:bg-muted transition-colors group w-full"
         >
-            <div className="grid grid-cols-8 items-center gap-4 w-full p-4 rounded-lg hover:bg-white/5">
-                <h3 className="col-span-4 text-md font-medium group-hover:text-white transition-colors">{title}</h3>
+            <div className="grid grid-cols-8 items-center gap-4 w-full p-4 rounded-lg hover:bg-muted">
+                <h3 className="col-span-4 text-md font-medium group-hover:text-foreground transition-colors">{title}</h3>
                 <span className="col-span-2 text-sm text-muted-foreground text-center">{category}</span>
                 {date && <span className="col-span-2 text-sm text-muted-foreground text-center">{date}</span>}
             </div>
@@ -94,8 +94,8 @@ export function MorePostsList({recentPosts}: MorePostsListProps) {
 
     return (
         <div className="mb-8">
-            <h2 className="text-sm text-white/50 font-medium mb-2">More Posts</h2>
-            <div className="w-full h-[2px] bg-white/5 mb-4"></div>
+            <h2 className="text-sm text-muted-foreground font-medium mb-2">More Posts</h2>
+            <div className="w-full h-[2px] bg-border mb-4"></div>
             <div className="mb-6">
                 {currentPosts.map((post, index) => (
                     <RegularPost

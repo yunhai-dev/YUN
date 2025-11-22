@@ -52,7 +52,7 @@ export default function About() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Work Experience</h2>
                     <div className="space-y-6">
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-red-500 mr-3 rounded-full"/>
@@ -70,8 +70,8 @@ export default function About() {
                             </p>
                         </div>
 
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-yellow-500 mr-3 rounded-full"/>
                                 Backend Development
@@ -90,8 +90,8 @@ export default function About() {
                             </p>
                         </div>
 
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-green-500 mr-3 rounded-full"/>
                                 Frontend Development
@@ -116,22 +116,22 @@ export default function About() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Skills & Expertise</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">Application Development</h3>
                             <p className="text-muted-foreground relative z-10">
                                 Desktop pyqt and pyside, mobile flutter
                             </p>
                         </div>
-                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">AI Development</h3>
                             <p className="text-muted-foreground relative z-10">
                                 SAM, YOLO and GPT 3 for visual data labeling, AI Agent development
                             </p>
                         </div>
-                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">Data Processing</h3>
                             <p className="text-muted-foreground relative z-10">
                                 AI visual data analysis, audio text processing, Google mute detection
@@ -166,7 +166,7 @@ export default function About() {
                                 alt="xuanwei"
                                 width={400}
                                 height={400}
-                                className="w-full h-auto object-cover border p-2 rounded-lg"
+                                className="w-full h-auto object-cover border border-border p-2 rounded-lg bg-black/70"
                             />
                         </div>
                     </div>
@@ -194,7 +194,7 @@ export default function About() {
                                 complicated. Our goal is to make it easy for everyone to use technology.
                             </p>
                         </div>
-                        <div className="bg-white/10 rounded-lg p-8">
+                        <div className="bg-card border border-border rounded-lg p-8">
                             <h3 className="text-xl font-semibold mb-6">Values</h3>
                             <ul className="space-y-4">
                                 <li className="flex items-start">
