@@ -4,7 +4,7 @@ import {Button} from "./ui/button";
 import {usePathname} from "next/navigation";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
-import {useRef, useState} from 'react';
+import {useRef, useState, useEffect} from 'react';
 import {Menu, X} from 'lucide-react';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
@@ -59,7 +59,18 @@ export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
     const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
+    const [isAtTop, setIsAtTop] = useState(true); // 新增
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsAtTop(window.scrollY === 0);
+        };
+        window.addEventListener('scroll', handleScroll);
+        // 初始化
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleMouseEnter = (linkText: string) => {
         if (hoverTimeoutRef.current) {
@@ -80,10 +91,16 @@ export function Navbar() {
 
     return (
         <header
-            className="fixed top-0 left-0 right-0 z-50 h-16 py-3 bg-background/50 backdrop-blur-md border-b border-white/5"> {/* Added h-16 for consistent height */}
+            className={cn(
+                isAtTop
+                    ? "top-0 border-b left-0 right-0"
+                    : "top-4 border max-w-7xl mx-auto left-0 right-0 rounded-full",
+                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md border-white/30 transition-all duration-300 ease-in-out"
+            )}
+        >
             {/* Container: Relative for positioning button, center on mobile, space-between on desktop */}
             <div
-                className="container max-w-7xl mx-auto px-4 relative flex items-center justify-center md:justify-between h-full">
+                className="container mx-auto px-4 relative flex items-center justify-center md:justify-between h-full">
                 {/* Logo Link - Centered on mobile via container justify-center */}
                 <Link href="/" className="flex items-center gap-2">
                     <Image
