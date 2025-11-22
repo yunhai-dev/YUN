@@ -19,7 +19,7 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
     return (
         <Link
             href={`/blog/${slug}`}
-            className="brightness-[0.8] hover:brightness-[1] block rounded-lg border border-white/5 bg-card overflow-hidden p-1 h-full transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card"
+            className="block rounded-lg border border-border hover:border-violet-500/50 bg-card overflow-hidden p-1 h-full glow-card group/card transition-colors"
         >
             {/* 荧光背景层 */}
             <div

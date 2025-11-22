@@ -14,30 +14,30 @@ export default function LoginPage() {
                         height={50}
                     />
                 </div>
-                <div className="bg-white/5 rounded-lg py-10 px-6">
+                <div className="bg-card rounded-lg py-10 px-6">
                     <form className="flex flex-col space-y-4 p-4">
                         <input
                             type="text"
                             placeholder="Username"
-                            className="w-full p-2 bg-black rounded border border-white/20 focus:outline-none focus:ring-1 focus:ring-white/90"
+                            className="w-full p-2 bg-background rounded border border-border focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                         <input
                             type="password"
                             placeholder="Password"
-                            className="w-full p-2 bg-black rounded border border-white/20 focus:outline-none focus:ring-1 focus:ring-white/90"
+                            className="w-full p-2 bg-background rounded border border-border focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                         <button
                             type="submit"
-                            className="w-full p-2 bg-white rounded text-black hover:bg-white/90 transition"
+                            className="w-full p-2 bg-primary rounded text-primary-foreground border border-primary hover:bg-primary/90 transition"
                         >
                             Sign In
                         </button>
                     </form>
 
                     <div className="flex items-center my-4 mx-4">
-                        <div className="flex-grow border-t border-white/20"></div>
-                        <span className="text-white/80">OR</span>
-                        <div className="flex-grow border-t border-white/20"></div>
+                        <div className="flex-grow border-t border-border"></div>
+                        <span className="text-muted-foreground">OR</span>
+                        <div className="flex-grow border-t border-border"></div>
                     </div>
 
                 {/*    Google Login*/}
@@ -52,8 +52,8 @@ export default function LoginPage() {
                             alert('Google Login Clicked');
                         }}/>
 
-                        <div className="text-[14px] text-white/50 text-center mt-4">
-                            Don’t have an account? <a href="#" className="text-blue-400/90 hover:underline">Sign up</a>
+                        <div className="text-[14px] text-muted-foreground text-center mt-4">
+                            Don't have an account? <a href="#" className="text-blue-500/90 hover:underline">Sign up</a>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@ function LoginButton({provider, onClick}: { provider: string, onClick: () => voi
         <div className="px-4 flex justify-center items-center">
             <button
                 onClick={onClick}
-                className="w-full p-2 bg-black rounded text-white border border-white/20 hover:border-white/90 transition flex items-center justify-center space-x-2"
+                className="w-full p-2 bg-background rounded text-foreground border border-border hover:border-primary transition flex items-center justify-center space-x-2"
             >
                 <Airplay size={18} />
                 <span>Sign in with {provider}</span>

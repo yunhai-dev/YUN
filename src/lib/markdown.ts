@@ -72,7 +72,7 @@ export async function markdownToHtml(markdown: string): Promise<{ content: strin
     });
 
     $("img").each((_, element) => {
-        $(element).attr('class', 'mk-img bg-stone-50/95 p-1')
+        $(element).attr('class', 'mk-img bg-card border border-border p-1')
     });
     $("p").each((_, element) => {
         $(element).attr('class', 'whitespace-pre-wrap')
@@ -86,7 +86,7 @@ export async function markdownToHtml(markdown: string): Promise<{ content: strin
     });
 
     $("a").each((_, element) => {
-        $(element).attr('class', 'text-blue-400 hover:underline dark:text-blue-400');
+        $(element).attr('class', 'text-blue-500 hover:underline dark:text-blue-400');
 
     });
     const htmlContent = $.html()

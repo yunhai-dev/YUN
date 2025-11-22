@@ -53,7 +53,7 @@ export default function Contact() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Contact Methods</h2>
                     <div className="gap-3 grid grid-cols-2">
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-blue-500 mr-3 rounded-full"/>
@@ -68,8 +68,8 @@ export default function Contact() {
                             </Link>
                         </div>
 
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-purple-500 mr-3 rounded-full"/>
                                 GitHub
@@ -83,8 +83,8 @@ export default function Contact() {
                             </Link>
                         </div>
 
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-orange-500 mr-3 rounded-full"/>
                                 Gitee
@@ -97,8 +97,8 @@ export default function Contact() {
                                 Click here to view my Gitee
                             </Link>
                         </div>
-                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-green-500 mr-3 rounded-full"/>
                                 WeChat
@@ -113,7 +113,7 @@ export default function Contact() {
                                     width={120}
                                     height={120}
                                     alt="wx"
-                                    className="size-36"
+                                    className="size-36 rounded bg-green-500/60 p-2 ml-4"
                                     src={`${STORAGE_HOST}/docs/contact-wechat.png`}/>
                             </div>
 
@@ -133,15 +133,15 @@ export default function Contact() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Support</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">Technical Support</h3>
                             <p className="text-muted-foreground relative z-10">
                                 Need help with technical issues? Contact our support team.
                             </p>
                         </div>
-                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">Business Inquiries</h3>
                             <p className="text-muted-foreground relative z-10">
                                 Interested in collaboration? Let's discuss your project.
@@ -170,7 +170,7 @@ export default function Contact() {
                                 For urgent matters, please indicate "URGENT" in your email subject line.
                             </p>
                         </div>
-                        <div className="bg-white/10 rounded-lg p-8">
+                        <div className="bg-card border border-border rounded-lg p-8">
                             <h3 className="text-xl font-semibold mb-6">Best Practices</h3>
                             <ul className="space-y-4">
                                 <li className="flex items-start">
@@ -208,7 +208,7 @@ export default function Contact() {
                             alt="github stats"
                             width={400}
                             height={200}
-                            className="w-full max-h-[300px] object-cover border p-2 rounded-lg"
+                            className="w-full max-h-[300px] object-cover border border-border p-2 rounded-lg"
                         />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -216,7 +216,7 @@ export default function Contact() {
                             alt={'github state'}
                             width={800}
                             height={200}
-                            className="w-full h-auto object-cover border p-2 rounded-lg"
+                            className="w-full h-auto object-cover border border-border p-2 rounded-lg"
                         />
                     </div>
                 </motion.div>

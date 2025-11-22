@@ -27,10 +27,10 @@ function ToolCard({tool}: ToolCardProps) {
 
     const cardContent = (
         <div
-            className="block rounded-lg border border-white/5 bg-card overflow-hidden p-1 h-full transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card">
+            className="block rounded-lg border border-border hover:border-violet-500/50 bg-card overflow-hidden p-1 h-full glow-card group/card transition-colors">
             {/* 荧光背景层 */}
             <div
-                className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"/>
+                className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none"/>
 
             {/* 内容区域 */}
             <div className="p-4 relative z-10">
@@ -130,7 +130,7 @@ const ToolsPage = () => {
                 <div className="flex gap-6">
                     {/* 左侧分类栏 - 悬浮样式 */}
                     <aside className="w-48 flex-shrink-0 hidden lg:block">
-                        <div className="sticky top-32 rounded-lg border border-white/5 bg-card/50 backdrop-blur-sm p-3">
+                        <div className="sticky top-32 rounded-lg border border-border bg-card/50 backdrop-blur-sm p-3">
                             <h2 className="text-sm font-semibold mb-3 px-2 text-muted-foreground">功能分类</h2>
                             <nav className="space-y-0.5">
                                 {categories.map((category) => {

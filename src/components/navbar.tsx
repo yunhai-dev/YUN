@@ -5,10 +5,11 @@ import {usePathname} from "next/navigation";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
 import {useRef, useState, useEffect} from 'react';
-import {Menu, X} from 'lucide-react';
+import {Menu, X, Github} from 'lucide-react';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {Command} from "@/components/command";
+import {ThemeToggle} from "@/components/theme-toggle";
 
 const navLinks = [
     {href: "/blog/", text: "Blog"},
@@ -94,8 +95,8 @@ export function Navbar() {
             className={cn(
                 isAtTop
                     ? "top-0 left-0 right-0"
-                    : "top-1.5 border max-w-7xl mx-auto left-0 right-0 rounded-full",
-                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md border-white/30 transition-all duration-200 ease-in-out"
+                    : "top-3 border border-border max-w-7xl mx-auto left-0 right-0 rounded-full",
+                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md transition-all duration-200 ease-in-out"
             )}
         >
             {/* Container: Relative for positioning button, center on mobile, space-between on desktop */}
@@ -117,14 +118,14 @@ export function Navbar() {
                         link.children ? (
                             <div
                                 key={link.text}
-                                className="relative text-sm transition-colors hover:text-white"
+                                className="relative text-sm transition-colors"
                                 onMouseEnter={() => handleMouseEnter(link.text)}
                                 onMouseLeave={handleMouseLeave}
                             >
                                 <span
                                     className={cn(
-                                        "text-sm transition-colors hover:text-white cursor-pointer flex items-center gap-1 hover:bg-[rgba(255,255,255,0.05)] py-1 px-2 rounded-md min-h-[32px]",
-                                        link.children.some(child => pathname === child.href) ? "text-white" : "text-gray-400"
+                                        "text-sm transition-colors hover:text-foreground cursor-pointer flex items-center gap-1 hover:bg-muted py-1 px-2 rounded-md min-h-[32px]",
+                                        link.children.some(child => pathname === child.href) ? "text-foreground" : "text-muted-foreground"
                                     )}
                                 >
                                     {link.text}
@@ -132,28 +133,28 @@ export function Navbar() {
                                 {/* 下拉菜单 */}
                                 <div
                                     className={cn(
-                                        "absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[60vw] bg-background/95 backdrop-blur-md border border-white/10 rounded-lg shadow-xl z-50 transition-all duration-150 p-2",
+                                        "absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[60vw] bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl z-50 transition-all duration-150 p-2",
                                         hoveredDropdown === link.text ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                                     )}
                                     onMouseEnter={() => handleMouseEnter(link.text)}
                                     onMouseLeave={handleMouseLeave}
                                 >
-                                    <div className="grid grid-cols-3 gap-6 bg-[#151617] rounded-md p-4">
+                                    <div className="grid grid-cols-3 gap-2 p-2">
                                         {link.children.map(child => (
                                             <Link
                                                 key={child.href}
                                                 href={child.href}
                                                 className={cn(
-                                                    "block p-4 rounded-md hover:bg-white/5 transition-colors group",
-                                                    pathname === child.href ? "bg-white/10" : ""
+                                                    "block p-4 rounded-md border border-border hover:bg-muted transition-colors group",
+                                                    pathname === child.href ? "bg-muted" : ""
                                                 )}
                                             >
                                                 <div
-                                                    className="font-medium text-white mb-2 group-hover:text-white transition-colors">
+                                                    className="font-medium text-foreground mb-2 group-hover:text-foreground transition-colors">
                                                     {child.title}
                                                 </div>
                                                 <div
-                                                    className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors leading-relaxed">
+                                                    className="text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors leading-relaxed">
                                                     {child.description}
                                                 </div>
                                             </Link>
@@ -166,8 +167,8 @@ export function Navbar() {
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    "text-sm transition-colors hover:text-white hover:bg-[rgba(255,255,255,0.05)] py-1 px-4 rounded-md",
-                                    pathname === link.href ? "text-white" : "text-gray-400"
+                                    "text-sm transition-colors hover:text-foreground hover:bg-muted py-1 px-4 rounded-md",
+                                    pathname === link.href ? "text-foreground" : "text-muted-foreground"
                                 )}
                             >
                                 {link.text}
@@ -176,8 +177,11 @@ export function Navbar() {
                     ))}
                 </nav>
 
-                {/* GitHub And Command Icon */}
+                {/* Theme Toggle, Search And GitHub Icon */}
                 <div className="flex gap-3">
+                    <div className="hidden md:flex items-center">
+                        <ThemeToggle />
+                    </div>
                     <div className="hidden md:flex items-center">
                         <Command hotkey={true}/>
                     </div>
@@ -186,16 +190,16 @@ export function Navbar() {
                             href="https://github.com/yunhai-dev"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/5"
+                            className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted"
                         >
-                            <Image src="/github-mark-white.svg" alt="github" width={5} height={5}
-                                   className="size-5"></Image>
+                            <Github className="h-[1.2rem] w-[1.2rem]" />
                         </a>
                     </div>
                 </div>
 
                 {/* Mobile Menu Button: Positioned absolutely on mobile */}
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 md:hidden flex">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 md:hidden flex gap-1">
+                    <ThemeToggle />
                     <div className="md:flex items-center">
                         <Command/>
                     </div>
@@ -203,29 +207,29 @@ export function Navbar() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsOpen(!isOpen)}
-                        className="text-gray-400 hover:text-white hover:bg-[#393e46]"
+                        className="text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
-                        {isOpen ? <X className="h-5 w-5"/> : <Menu className="h-5 w-5"/>}
+                        {isOpen ? <X className="h-[1.2rem] w-[1.2rem]"/> : <Menu className="h-[1.2rem] w-[1.2rem]"/>}
                     </Button>
                 </div>
 
                 {isOpen && (
                     <div
-                        className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-white/5 md:hidden">
+                        className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border md:hidden">
                         <div className="flex flex-col px-4 py-2">
                             {navLinks.map((link) => (
                                 link.children ? (
                                     <div key={link.text}>
                                         <button
                                             className={cn(
-                                                "py-2 text-sm w-full text-left flex items-center gap-1 transition-colors hover:text-white focus:outline-none",
-                                                link.children.some(child => pathname === child.href) ? "text-white" : "text-gray-400"
+                                                "py-2 text-sm w-full text-left flex items-center gap-1 transition-colors hover:text-foreground focus:outline-none",
+                                                link.children.some(child => pathname === child.href) ? "text-foreground" : "text-muted-foreground"
                                             )}
                                             onClick={() => setOpenMobileDropdown(openMobileDropdown === link.text ? null : link.text)}
                                         >
                                             {link.text}
                                             <svg
-                                                className={cn("w-3 h-3 ml-1 transition-transform", openMobileDropdown === link.text ? "rotate-180" : "")}
+                                                className={cn("w-[1.2rem] h-[1.2rem] ml-1 transition-transform", openMobileDropdown === link.text ? "rotate-180" : "")}
                                                 fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
                                             </svg>
@@ -237,14 +241,14 @@ export function Navbar() {
                                                         key={child.href}
                                                         href={child.href}
                                                         className={cn(
-                                                            "block py-2 text-sm transition-colors hover:text-white",
-                                                            pathname === child.href ? "text-white" : "text-gray-400"
+                                                            "block py-2 text-sm transition-colors hover:text-foreground",
+                                                            pathname === child.href ? "text-foreground" : "text-muted-foreground"
                                                         )}
                                                         onClick={mobileHandleClick}
                                                     >
                                                         <div className="font-medium">{child.title}</div>
                                                         <div
-                                                            className="text-xs text-gray-500 mt-1">{child.description}</div>
+                                                            className="text-xs text-muted-foreground mt-1">{child.description}</div>
                                                     </Link>
                                                 ))}
                                             </div>
@@ -255,8 +259,8 @@ export function Navbar() {
                                         key={link.href}
                                         href={link.href}
                                         className={cn(
-                                            "py-2 text-sm transition-colors hover:text-white",
-                                            pathname === link.href ? "text-white" : "text-gray-400"
+                                            "py-2 text-sm transition-colors hover:text-foreground",
+                                            pathname === link.href ? "text-foreground" : "text-muted-foreground"
                                         )}
                                         onClick={mobileHandleClick}
                                     >
