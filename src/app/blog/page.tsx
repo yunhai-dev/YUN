@@ -22,8 +22,9 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
             className="brightness-[0.8] hover:brightness-[1] block rounded-lg border border-white/5 bg-card overflow-hidden p-1 h-full transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card"
         >
             {/* 荧光背景层 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-            
+            <div
+                className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"/>
+
             <div
                 className="h-64 rounded-md overflow-hidden flex items-center justify-center mb-4 relative z-10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -48,21 +49,6 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
                 {excerpt && (
                     <p className="text-sm text-muted-foreground line-clamp-1">{excerpt}</p>
                 )}
-            </div>
-        </Link>
-    );
-}
-
-function RegularPost({slug, category, title, date}: BlogPostProps) {
-    return (
-        <Link
-            href={`/blog/${slug}`}
-            className="flex justify-between items-center hover:bg-[hsl(var(--linear-gray))/0.05] transition-colors group w-full"
-        >
-            <div className="grid grid-cols-8 items-center gap-4 w-full p-4 rounded-lg hover:bg-white/5">
-                <h3 className="col-span-4 text-md font-medium group-hover:text-white transition-colors">{title}</h3>
-                <span className="col-span-2 text-sm text-muted-foreground text-center">{category}</span>
-                {date && <span className="col-span-2 text-sm text-muted-foreground text-center">{date}</span>}
             </div>
         </Link>
     );
@@ -138,7 +124,7 @@ export default async function BlogPage() {
                     </div>
                 </div>
 
-                <MorePostsList recentPosts={recentPosts} />
+                <MorePostsList recentPosts={recentPosts}/>
             </div>
         </main>
     );
