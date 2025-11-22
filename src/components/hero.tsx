@@ -7,6 +7,7 @@ import {TypeAnimation} from 'react-type-animation';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
 import Particles from "@/components/blocks/Backgrounds/Particles/Particles";
+import {useEffect, useState} from "react";
 
 function ProductDiagram() {
     const imageMap = [
@@ -69,6 +70,27 @@ function ProductDiagram() {
 }
 
 export function Hero() {
+    const [particleColor, setParticleColor] = useState('#ffffff');
+
+    useEffect(() => {
+        // 检测当前主题
+        const updateParticleColor = () => {
+            const isDark = document.documentElement.classList.contains('light');
+            setParticleColor(isDark ? '#000000' : '#ffffff');
+        };
+
+        updateParticleColor();
+
+        // 监听主题变化
+        const observer = new MutationObserver(updateParticleColor);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <section className="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-10 pb-24">
             <motion.div
@@ -80,7 +102,7 @@ export function Hero() {
             >
                 <div className="absolute size-full z-0">
                     <Particles
-                        particleColors={['#ffffff', '#ffffff']}
+                        particleColors={[particleColor, particleColor]}
                         particleCount={150}
                         particleSpread={10}
                         speed={0.1}
@@ -148,7 +170,7 @@ export function Hero() {
                 </p>
                 <div className="flex flex-wrap justify-center gap-8 px-4 grayscale opacity-70">
                     {['Document', 'Record', 'Learn', 'Explore', 'Life', 'Love'].map((value, index) => (
-                        <div key={index} className="w-24 h-8 bg-gray-800 rounded flex items-center justify-center">
+                        <div key={index} className="w-24 h-8 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
                             {value}
                         </div>
                     ))}

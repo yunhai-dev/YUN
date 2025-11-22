@@ -291,7 +291,9 @@ hello
             // 设置背景和样式
             clonedContent.classList.add('prose', 'prose-invert');
             clonedContent.style.padding = '20px';
-            clonedContent.style.background = '#121212'; // 深色背景
+            const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
+            const backgroundColor = bgColor ? `hsl(${bgColor})` : '#121212';
+            clonedContent.style.background = backgroundColor;
 
             // 添加到临时容器
             tempContainer.appendChild(clonedContent);
@@ -302,7 +304,7 @@ hello
                 scale: 2, // 高分辨率
                 useCORS: true, // 允许跨域图片
                 allowTaint: true,
-                backgroundColor: '#121212',
+                backgroundColor: backgroundColor,
                 windowWidth: document.documentElement.offsetWidth,
                 windowHeight: document.documentElement.offsetHeight,
                 logging: false,

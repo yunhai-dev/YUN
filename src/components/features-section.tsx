@@ -18,7 +18,7 @@ export function FeaturesSection() {
           <p className="text-muted-foreground max-w-2xl mx-auto">
             We believe that open source can lead to more innovation, better experiences, and better communities.
           </p>
-          <p className="text-gray-300 max-w-2xl mx-auto mt-4">
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
             So I'am
           </p>
         </motion.div>

@@ -62,7 +62,7 @@ export default function SlideHorizontallyPage() {
                     {
                         new Array(20).fill(0).map((_, i) => (
                             <div key={i}
-                                 className="p-1 rounded-lg overflow-hidden flex justify-center items-center w-1/3 h-1/2 m-[40px] text-white bg-white flex-shrink-0">
+                                 className="p-1 rounded-lg overflow-hidden flex justify-center items-center w-1/3 h-1/2 m-[40px] text-foreground bg-card flex-shrink-0">
                                 <Image
                                     src="https://minio-endpoint.yhnotes.com/docs/卡提希娅.png"
                                     alt="卡提希娅"

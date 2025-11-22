@@ -17,7 +17,7 @@ export function CallToAction() {
                 <h2 className="text-3xl md:text-4xl font-bold mb-12">Learn more about me</h2>
                 <div className="flex flex-wrap justify-center gap-4">
                     <Button variant="outline" size="lg" asChild className="px-8 py-6 text-base">
-                        <Link href="/blog" className="text-gray-300">View the blog</Link>
+                        <Link href="/blog" className="text-foreground">View the blog</Link>
                     </Button>
                     <Button size="lg" asChild className="px-8 py-6 text-base">
                         <Link href="/about">View the about</Link>

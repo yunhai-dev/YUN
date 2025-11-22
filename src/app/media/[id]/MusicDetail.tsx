@@ -8,7 +8,7 @@ import gsap from "gsap";
 import Image from 'next/image'
 import {getAllMediaItems} from "@/data/media";
 import {Link} from "next-view-transitions"
-import {motion} from 'framer-motion'
+
 import extractThemeColors from "@/lib/getImgColor";
 import {useToast} from "@/hooks/use-toast";
 import {darkenIfNearWhite} from "@/lib/utils";
@@ -16,7 +16,6 @@ import {useFullscreen} from "@/hooks/use-fullscreen";
 import {FastForwardIcon, Maximize, Minimize, PauseIcon, PlayIcon, RepeatIcon, RewindIcon} from "lucide-react";
 import './index.css'
 import {AudioProgressBar} from "@/components/ui/audio-progress-bar";
-import {useInactivityAdvanced} from "@/hooks/use-inactivity";
 
 
 interface LyricLine {
@@ -76,7 +75,7 @@ const parseLRC = (lrc: string): LyricLine[] => {
 
         // 为该行的每个时间标签都生成一个条目
         for (const t of times) {
-            result.push({time: t, text});
+            result.push({ time: t, text });
         }
     }
 
@@ -108,7 +107,6 @@ const MusicDetail = ({musicItem}: Props) => {
 
     // 使用自定义的 useFullscreen hook，获取全屏状态和控制方法
     const {isFullscreen, toggleFullscreen, exitFullscreen} = useFullscreen(mediaBgRef);
-    const {active} = useInactivityAdvanced({timeoutMs: 8000, initialActive: true});
 
     const forward = () => {
         if (selfIndex < musicItems.length - 1) {
@@ -256,6 +254,7 @@ const MusicDetail = ({musicItem}: Props) => {
                         opacity: 1
                     }
                 )
+
                 tl.play();
 
             }
@@ -319,7 +318,7 @@ const MusicDetail = ({musicItem}: Props) => {
         <main className="min-h-screen flex flex-col items-center overflow-hidden ">
             <div className="w-full h-screen relative" ref={mediaBgRef}>
                 {/* 全屏控制按钮 */}
-                {isFullscreen && active && (
+                {isFullscreen && (
                     <button
                         onClick={exitFullscreen}
                         className="absolute top-4 right-4 z-50 p-2 bg-black/30 hover:bg-black/50 rounded-full text-white flex items-center justify-center"
@@ -376,53 +375,40 @@ const MusicDetail = ({musicItem}: Props) => {
 
                         </div>
                     </div>
-                    <motion.div
-                        // 不卸载，只在两个状态之间插值
-                        animate={active ? {opacity: 1, y: 0} : {opacity: 0, y: -8}}
-                        transition={{duration: 0.35, ease: 'easeOut'}}
-                        style={{
-                            pointerEvents: active ? 'auto' : 'none',
-                            visibility: active ? 'visible' : 'hidden'
-                        }}
-                        aria-hidden={!active}
-                    >
-                        <div className="flex items-center mb-10">
-                            {/*歌名、作者和歌词 */}
-                            <div className="md:w-1/2 flex flex-col items-center justify-center">
-                                <div className="relative">
-                                    <div
-                                        onClick={toggleFullscreen}
-                                        className="absolute text-sky-50 cursor-pointer size-full top-0 hover:opacity-100 opacity-0 transition flex items-center justify-center"
-                                        title={isFullscreen ? "退出全屏" : "全屏显示"}
-                                    >
-                                        {isFullscreen ?
-                                            <Minimize className="w-8 h-8" strokeWidth={2.5}/> :
-                                            <Maximize className="w-8 h-8" strokeWidth={2.5}/>
-                                        }
-                                    </div>
-                                    <Image
-                                        crossOrigin={"anonymous"}
-                                        ref={imgRef}
-                                        src={imageUrl}
-                                        alt={title}
-                                        width={30}
-                                        height={30}
-                                        className="rounded-md shadow-lg w-36 h-36 object-cover hover:blur-sm"
-                                    />
+                    <div className="flex items-center mb-10">
+                        {/*歌名、作者和歌词 */}
+                        <div className="md:w-1/2 flex flex-col items-center justify-center">
+                            <div className="relative">
+                                <div
+                                    onClick={toggleFullscreen}
+                                    className="absolute text-sky-50 cursor-pointer size-full top-0 hover:opacity-100 opacity-0 transition flex items-center justify-center"
+                                    title={isFullscreen ? "退出全屏" : "全屏显示"}
+                                >
+                                    {isFullscreen ?
+                                        <Minimize className="w-8 h-8" strokeWidth={2.5}/> :
+                                        <Maximize className="w-8 h-8" strokeWidth={2.5}/>
+                                    }
                                 </div>
+                                <Image
+                                    crossOrigin={"anonymous"}
+                                    ref={imgRef}
+                                    src={imageUrl}
+                                    alt={title}
+                                    width={30}
+                                    height={30}
+                                    className="rounded-md shadow-lg w-36 h-36 object-cover hover:blur-sm"
+                                />
                             </div>
-
-                            <AudioPlayer
-                                forward={forward()}
-                                backward={backward()}
-                                src={musicUrl}
-                                author={author}
-                                title={title}
-                                imageUrl={imageUrl}
-                                ref={audioRef}/>
                         </div>
-                    </motion.div>
-
+                        <AudioPlayer
+                            forward={forward()}
+                            backward={backward()}
+                            src={musicUrl}
+                            author={author}
+                            title={title}
+                            imageUrl={imageUrl}
+                            ref={audioRef}/>
+                    </div>
                 </div>
             </div>
         </main>
@@ -535,8 +521,7 @@ const AudioPlayer = React.forwardRef<HTMLAudioElement, {
                         }
                     }
                 }
-            };
-            const nexttrackCallback = () => {
+            };            const nexttrackCallback = () => {
                 clearState()
                 router.push(`/media/${forward}/`)
 
@@ -585,6 +570,10 @@ const AudioPlayer = React.forwardRef<HTMLAudioElement, {
             setAutoPlay(false);
         }
     }, [togglePlay]);
+
+    useEffect(() => {
+
+    }, []);
 
     const clearState = () => {
         const audio = audioRef.current;
@@ -659,3 +648,4 @@ const AudioPlayer = React.forwardRef<HTMLAudioElement, {
 AudioPlayer.displayName = 'AudioPlayer';
 
 export default MusicDetail;
+

@@ -128,7 +128,7 @@ export function Command({hotkey}: { hotkey?: boolean }) {
         return parts.map((part, index) => {
             if (regex.test(part)) {
                 return (
-                    <mark key={index} className="bg-yellow-700 text-white px-1 rounded">
+                    <mark key={index} className="bg-yellow-600 dark:bg-yellow-700 text-white px-1 rounded">
                         {part}
                     </mark>
                 )
@@ -167,7 +167,7 @@ export function Command({hotkey}: { hotkey?: boolean }) {
     return (
         <>
             <p
-                className="text-muted-foreground text-sm flex text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/5 cursor-pointer"
+                className="text-sm flex text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted cursor-pointer"
                 onClick={() => setOpen((open) => !open)}
             >
                 <TooltipProvider>
@@ -175,7 +175,7 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                         <TooltipTrigger asChild>
                             <Search className="size-5"/>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-background text-white rounded-md border">
+                        <TooltipContent className="bg-background text-foreground rounded-md border border-border">
                             <p>
                                 <kbd className="kbd">⌘K</kbd> or <kbd className="kbd">Ctrl+K</kbd> to open command
                                 dialog

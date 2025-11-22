@@ -44,6 +44,13 @@ export const devTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'assistant-ui',
+        name: 'Assistant UI',
+        description: '一个开源的聊天界面，支持多种大语言模型（LLM），如 OpenAI、Anthropic、Azure、Cohere 等。',
+        href: 'https://www.assistant-ui.com/',
+        category: '开发工具',
+    },
+    {
         id: 'community-shadcn-ui',
         name: 'Community shadcn/ui',
         description: 'Community shadcn/ui 是一个由社区维护的 shadcn/ui 组件库，提供更多实用组件和示例。',
