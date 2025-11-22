@@ -52,48 +52,51 @@ export default function About() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Work Experience</h2>
                     <div className="space-y-6">
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-red-500 mr-3 rounded-full"/>
                                 Crawler Engineer
                             </h3>
-                            <p className="text-muted-foreground text-lg mb-4">
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 Sometimes I am a crawler engineer, and I will get public data through JavaScript
                                 analysis websites. Have encountered many types,
                                 For example: Websocket encryption internal communication protocol,
                                 Cloudeflare, etc.
                             </p>
-                            <p className="text-muted-foreground text-lg">
+                            <p className="text-muted-foreground text-lg relative z-10">
                                 For human-machine verification, such as slider verification, you can calculate
                                 distance based on the page scaling.
                             </p>
                         </div>
 
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-yellow-500 mr-3 rounded-full"/>
                                 Backend Development
                             </h3>
-                            <p className="text-muted-foreground text-lg mb-4">
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 Sometimes, I am a backend developer. My expertise lies in Python, particularly with
                                 Django and FastAPI.
                                 I've built multiple projects using the Django Rest Framework, including the <a
                                 href="https://maadaa.ai"
                                 className="text-blue-500 hover:underline">Maadaa</a> project.
                             </p>
-                            <p className="text-muted-foreground text-lg">
+                            <p className="text-muted-foreground text-lg relative z-10">
                                 The project involved Google and Github Login integration, user management, and a
                                 Celery-based
                                 asynchronous queue system for message delivery.
                             </p>
                         </div>
 
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-green-500 mr-3 rounded-full"/>
                                 Frontend Development
                             </h3>
-                            <p className="text-muted-foreground text-lg">
+                            <p className="text-muted-foreground text-lg relative z-10">
                                 I'm experienced in both Vue and React. This website is my first React project,
                                 showcasing my ability to adapt and learn new technologies.
                             </p>
@@ -113,21 +116,24 @@ export default function About() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Skills & Expertise</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="border rounded-lg p-6 text-center hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-bold mb-4">Application Development</h3>
-                            <p className="text-muted-foreground">
+                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Application Development</h3>
+                            <p className="text-muted-foreground relative z-10">
                                 Desktop pyqt and pyside, mobile flutter
                             </p>
                         </div>
-                        <div className="border rounded-lg p-6 text-center hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-bold mb-4">AI Development</h3>
-                            <p className="text-muted-foreground">
+                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="text-xl font-bold mb-4 relative z-10">AI Development</h3>
+                            <p className="text-muted-foreground relative z-10">
                                 SAM, YOLO and GPT 3 for visual data labeling, AI Agent development
                             </p>
                         </div>
-                        <div className="border rounded-lg p-6 text-center hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-bold mb-4">Data Processing</h3>
-                            <p className="text-muted-foreground">
+                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Data Processing</h3>
+                            <p className="text-muted-foreground relative z-10">
                                 AI visual data analysis, audio text processing, Google mute detection
                             </p>
                         </div>
