@@ -3,6 +3,7 @@ import {Link} from "next-view-transitions"
 import {image, siteName} from '@/config/site';
 import type {Metadata} from 'next';
 import {STORAGE_HOST} from "@/data/baseUrl";
+import {MorePostsList} from './MorePostsList';
 
 interface BlogPostProps {
     index?: number;
@@ -18,10 +19,13 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
     return (
         <Link
             href={`/blog/${slug}`}
-            className="brightness-[0.8] hover:brightness-[1] block rounded-lg border border-white/5 hover:border-white/20  bg-card  transition-colors overflow-hidden p-1 h-full"
+            className="brightness-[0.8] hover:brightness-[1] block rounded-lg border border-white/5 bg-card overflow-hidden p-1 h-full transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card"
         >
+            {/* 荧光背景层 */}
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+            
             <div
-                className="h-64 rounded-md overflow-hidden flex items-center justify-center mb-4">
+                className="h-64 rounded-md overflow-hidden flex items-center justify-center mb-4 relative z-10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={imageUrl || `${STORAGE_HOST}/docs/YUN Blog bg ${index}.svg`}
@@ -29,7 +33,7 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
                     className="w-full h-full object-cover"
                 />
             </div>
-            <div className="p-4">
+            <div className="p-4 relative z-10">
                 <div className="text-sm text-muted-foreground mb-2">
                     {
                         category.split(',').map(item => (
@@ -134,21 +138,7 @@ export default async function BlogPage() {
                     </div>
                 </div>
 
-                <div className="mb-8">
-                    <h2 className="text-sm text-white/50 font-medium mb-2">More Posts</h2>
-                    <div className="w-full h-[2px] bg-white/5 mb-4"></div>
-                    <div>
-                        {recentPosts.map((post, index) => (
-                            <RegularPost
-                                key={`recent-${post.slug}-${index}`}
-                                slug={post.slug}
-                                category={post.category}
-                                title={post.title}
-                                date={post.lastEdited} // Use the date field from BlogPost
-                            />
-                        ))}
-                    </div>
-                </div>
+                <MorePostsList recentPosts={recentPosts} />
             </div>
         </main>
     );

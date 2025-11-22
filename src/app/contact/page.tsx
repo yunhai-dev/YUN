@@ -53,53 +53,57 @@ export default function Contact() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Contact Methods</h2>
                     <div className="gap-3 grid grid-cols-2">
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-blue-500 mr-3 rounded-full"/>
                                 Email
                             </h3>
-                            <p className="text-muted-foreground text-lg mb-4">
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 Feel free to reach out to me via email for any inquiries or collaboration opportunities.
                             </p>
-                            <Link href="mailto:yunhai@yhnotes.com" className="text-blue-500 hover:underline"
+                            <Link href="mailto:yunhai@yhnotes.com" className="text-blue-500 hover:underline relative z-10"
                                   target="_blank">
                                 Click Contact me by email
                             </Link>
                         </div>
 
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-purple-500 mr-3 rounded-full"/>
                                 GitHub
                             </h3>
-                            <p className="text-muted-foreground text-lg mb-4">
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 Check out my open source projects and contributions on GitHub.
                             </p>
-                            <Link href="https://github.com/yunhai-dev" className="text-blue-500 hover:underline"
+                            <Link href="https://github.com/yunhai-dev" className="text-blue-500 hover:underline relative z-10"
                                   target="_blank">
                                 Click here to view my Github
                             </Link>
                         </div>
 
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-orange-500 mr-3 rounded-full"/>
                                 Gitee
                             </h3>
-                            <p className="text-muted-foreground text-lg mb-4">
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 Follow my projects and activities on Gitee.
                             </p>
-                            <Link href="https://gitee.com/yun2hai" className="text-blue-500 hover:underline"
+                            <Link href="https://gitee.com/yun2hai" className="text-blue-500 hover:underline relative z-10"
                                   target="_blank">
                                 Click here to view my Gitee
                             </Link>
                         </div>
-                        <div className="border rounded-lg p-6 hover:bg-white/5 transition-colors">
-                            <h3 className="flex items-center text-xl font-semibold mb-4">
+                        <div className="border rounded-lg p-6 transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-green-500 mr-3 rounded-full"/>
                                 WeChat
                             </h3>
-                            <div className="md:flex">
+                            <div className="md:flex relative z-10">
                                 <p className="text-muted-foreground text-lg mb-4">
                                     I can be contacted in this way, but of course you need to indicate your intention
                                     when
@@ -129,15 +133,17 @@ export default function Contact() {
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Support</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="border rounded-lg p-6 text-center hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-bold mb-4">Technical Support</h3>
-                            <p className="text-muted-foreground">
+                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Technical Support</h3>
+                            <p className="text-muted-foreground relative z-10">
                                 Need help with technical issues? Contact our support team.
                             </p>
                         </div>
-                        <div className="border rounded-lg p-6 text-center hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-bold mb-4">Business Inquiries</h3>
-                            <p className="text-muted-foreground">
+                        <div className="border rounded-lg p-6 text-center transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-1 relative group/card overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Business Inquiries</h3>
+                            <p className="text-muted-foreground relative z-10">
                                 Interested in collaboration? Let's discuss your project.
                             </p>
                         </div>

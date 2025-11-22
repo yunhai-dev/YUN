@@ -93,9 +93,9 @@ export function Navbar() {
         <header
             className={cn(
                 isAtTop
-                    ? "top-0 border-b left-0 right-0"
-                    : "top-4 border max-w-7xl mx-auto left-0 right-0 rounded-full",
-                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md border-white/30 transition-all duration-300 ease-in-out"
+                    ? "top-0 left-0 right-0"
+                    : "top-1.5 border max-w-7xl mx-auto left-0 right-0 rounded-full",
+                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md border-white/30 transition-all duration-200 ease-in-out"
             )}
         >
             {/* Container: Relative for positioning button, center on mobile, space-between on desktop */}
