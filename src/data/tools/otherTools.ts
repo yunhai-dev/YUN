@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const otherTools: Tool[] = [
     {
+        id: 'cloudconvert',
+        name: 'CloudConvert',
+        description: '支持超过200种格式的在线文件转换工具，提供高质量的转换服务。',
+        href: 'https://cloudconvert.com/',
+        category: '文件转换',
+    },
+    {
         id: 'docmost',
         name: 'Docmost',
         description: '开源的协作式维基和文档软件，是 Confluence 和 Notion 的开源替代方案。',
