@@ -1,8 +1,8 @@
 import {marked} from 'marked';
 import hljs from 'highlight.js';
 import * as cheerio from "cheerio";
-import 'highlight.js/styles/github-dark-dimmed.css';
 import {alertBlock} from "@/lib/marked-extensions";
+import {terminalPlayerExtension} from "@/lib/terminal-player-extension";
 
 
 export interface TableOfContents {
@@ -38,7 +38,7 @@ renderer.codespan = (code) => {
 
 marked.use({renderer});
 
-marked.use({extensions: [alertBlock]})
+marked.use({extensions: [alertBlock, terminalPlayerExtension]})
 
 export async function markdownToHtml(markdown: string): Promise<{ content: string; headings: TableOfContents[] }> {
     const content = await marked.parse(markdown);

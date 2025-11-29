@@ -141,10 +141,73 @@ bun run start
   - 自定义容器支持（info | warn | tip | danger）
     - 语法 `::: danger :::`
   - mermaid 图表支持
+  - 终端播放器支持（交互式命令演示）
 - 代码高亮
 - 图表渲染
 - 动画效果
 - SEO优化
+
+## 终端播放器
+
+一个用于演示命令行交互的终端播放器组件，支持打字机动画效果。
+
+### 在 Markdown 中使用
+
+在 Markdown 文件中使用 `terminal` 代码块：
+
+````markdown
+```terminal
+npm install react-dom
+added 45 packages, and audited 1234 packages in 23s
+---
+npm run build
+Creating optimized production build...
+Compiled successfully!
+✨ Done in 12.34s.
+---
+echo "Hello, World!"
+Hello, World!
+```
+````
+
+**语法说明：**
+- 每个命令块使用 `---` 分隔
+- 第一行是要执行的命令
+- 后续行是命令输出
+
+### 作为 React 组件使用
+
+```tsx
+import TerminalPlayer, { TerminalCommand } from '@/components/terminal-player';
+
+const commands: TerminalCommand[] = [
+  {
+    command: 'npm install',
+    output: 'added 125 packages',
+    delay: 800, // 显示输出前的延迟（毫秒）
+  },
+  {
+    command: 'npm run build',
+    output: 'Successfully compiled 234 files',
+    delay: 600,
+  },
+];
+
+<TerminalPlayer 
+  commands={commands} 
+  typingSpeed={40}      // 打字速度（毫秒/字符）
+  autoPlay={false}      // 是否自动播放
+  title="我的终端"       // 终端标题
+/>
+```
+
+### 功能特性
+
+- ⌨️ 命令输入打字机效果
+- 🎬 播放/暂停/重置控制
+- 📊 可点击的进度条节点
+- 🎨 macOS 风格终端窗口
+- 🌙 深色主题优化
 
 ## 开发指南
 

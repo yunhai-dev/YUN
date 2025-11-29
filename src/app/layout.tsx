@@ -7,6 +7,7 @@ import {Toaster} from "@/components/ui/toaster"
 import {baseUrl, image, siteName} from '@/config/site';
 import Script from "next/script";
 import {ViewTransitions} from 'next-view-transitions'
+import {TooltipProvider} from "@/components/ui/tooltip";
 
 
 const inter = Inter({subsets: ["latin"]});
@@ -82,14 +83,17 @@ export default function RootLayout({
                 src="https://cloud.umami.is/script.js"
                 data-website-id="e7012192-3cfd-4138-af60-453aa655c7f9"
             ></Script>
-            <body className={inter.className}>
-            <Navbar/>
-            <Toaster/>
-            <main className="min-h-screen">
-                {children}
-            </main>
-            <Footer/>
-            </body>
+            <TooltipProvider>
+                <body className={inter.className}>
+                <Navbar/>
+                <Toaster/>
+                <main className="min-h-screen">
+                    {children}
+                </main>
+                <Footer/>
+                </body>
+            </TooltipProvider>
+
             </html>
         </ViewTransitions>
     );

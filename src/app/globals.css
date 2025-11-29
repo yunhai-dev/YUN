@@ -344,6 +344,10 @@ input[type="color"]::-moz-color-swatch {
     thead {
         border-color: hsla(var(--border));
         
+        th {
+            @apply text-foreground font-semibold;
+        }
+        
         tr:hover {
             background-color: hsla(var(--muted) / 0.5);
             th {
