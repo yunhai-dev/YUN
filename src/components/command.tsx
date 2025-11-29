@@ -170,19 +170,17 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                 className="text-sm flex text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted cursor-pointer"
                 onClick={() => setOpen((open) => !open)}
             >
-                <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Search className="size-5"/>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-background text-foreground rounded-md border border-border">
+                        <TooltipContent>
                             <p>
                                 <kbd className="kbd">⌘K</kbd> or <kbd className="kbd">Ctrl+K</kbd> to open command
                                 dialog
                             </p>
                         </TooltipContent>
                     </Tooltip>
-                </TooltipProvider>
             </p>
 
             <CommandDialog open={open} onOpenChange={setOpen}>
