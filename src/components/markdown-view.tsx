@@ -1,6 +1,6 @@
 "use client";
 import mermaid from "mermaid";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import '@/components/terminal-player-element';
 
 // 预加载两个主题样式
@@ -9,7 +9,9 @@ import 'highlight.js/styles/github.css';
 
 
 const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
-    const [isDark, setIsDark] = useState(true);
+    const [isDark, setIsDark] = useState<boolean | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const mermaidInitialized = useRef(false);
 
     // 监听主题变化
     useEffect(() => {
@@ -39,27 +41,41 @@ const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
     }, []);
 
     useEffect(() => {
+        if (isDark === null) return; // 等待主题初始化完成
+
         mermaid.initialize({
             startOnLoad: false,
             theme: isDark ? 'dark' : 'default',
             securityLevel: 'loose'
         })
-        setTimeout(() => {
-            mermaid.run()
-        }, 100)
+        
+        if (!mermaidInitialized.current && containerRef.current) {
+            mermaidInitialized.current = true;
+            // 使用 queueMicrotask 替代 setTimeout 以获得更稳定的时序
+            queueMicrotask(() => {
+                mermaid.run()
+            });
+        }
     }, [contentHtml, isDark]);
+
+    // 使用 content-visibility 和 containment 优化渲染
+    const baseClasses = `prose max-w-none prose-headings:scroll-mt-32
+          prose-pre:border prose-pre:rounded-lg
+          prose-code:rounded-md prose-code:px-1 prose-code:py-0.5
+          prose-pre:!p-0 [&_pre]:overflow-x-auto [&_pre]:p-4`;
+    
+    const themeClasses = isDark === null 
+        ? '' // 等待主题初始化时不应用任何样式变化
+        : isDark 
+            ? 'prose-invert prose-pre:bg-[#0d1117] prose-pre:border-[#30363d] prose-code:text-[#e6edf3] prose-code:bg-[#161b22] [&_pre]:bg-[#0d1117] [&_:not(pre)>code]:bg-[#161b22] [&_.hljs]:!bg-[#0d1117]' 
+            : 'prose-pre:bg-[#f6f8fa] prose-pre:border-[#d0d7de] prose-code:text-[#1f2328] prose-code:bg-[#f6f8fa] [&_pre]:bg-[#f6f8fa] [&_:not(pre)>code]:bg-[#f6f8fa] [&_.hljs]:!bg-[#f6f8fa]';
 
     return (
         <div
-            className={`prose max-w-none prose-headings:scroll-mt-32
-          prose-pre:border prose-pre:rounded-lg
-          prose-code:rounded-md prose-code:px-1 prose-code:py-0.5
-          prose-pre:!p-0 [&_pre]:overflow-x-auto [&_pre]:p-4
-          ${isDark 
-            ? 'prose-invert prose-pre:bg-[#0d1117] prose-pre:border-[#30363d] prose-code:text-[#e6edf3] prose-code:bg-[#161b22] [&_pre]:bg-[#0d1117] [&_:not(pre)>code]:bg-[#161b22] [&_.hljs]:!bg-[#0d1117]' 
-            : 'prose-pre:bg-[#f6f8fa] prose-pre:border-[#d0d7de] prose-code:text-[#1f2328] prose-code:bg-[#f6f8fa] [&_pre]:bg-[#f6f8fa] [&_:not(pre)>code]:bg-[#f6f8fa] [&_.hljs]:!bg-[#f6f8fa]'
-          }`}
+            ref={containerRef}
+            className={`${baseClasses} ${themeClasses}`}
             dangerouslySetInnerHTML={{__html: contentHtml}}
+            suppressHydrationWarning
         />
     )
 

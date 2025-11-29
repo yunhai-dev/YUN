@@ -5,7 +5,7 @@ import {ChevronDown, ChevronRight, List, Menu, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import type {TableOfContents as TocItem} from "@/lib/markdown";
 import {Link} from "next-view-transitions"
-import dynamic from "next/dynamic";
+import MarkdownView from '@/components/markdown-view';
 import {DocItem} from "@/data/docs-navigation";
 import {useToast} from "@/hooks/use-toast";
 
@@ -264,26 +264,7 @@ function MobileControls({onToggleSidebar, onToggleTOC, isSidebarOpen, isTocOpen}
     );
 }
 
-const MarkdownView = dynamic(() => import('@/components/markdown-view'),
-    {
-        ssr: false, loading: () => (
-            <div>
-                <div className="animate-pulse space-y-4">
-                    <div className="h-10 bg-gray-300 rounded w-3/4"></div>
-                    <div className="h-6 bg-gray-300 rounded w-full"></div>
-                    <div className="h-6 bg-gray-300 rounded w-full"></div>
-                    <div className="h-6 bg-gray-300 rounded w-5/6"></div>
-                    {
-                        Array.from({length: 10}).map((_, idx) => (
-                            <div key={idx} className="h-6 bg-gray-300 rounded w-full"></div>
-                        ))
-                    }
-                    <div className="h-6 bg-gray-300 rounded w-5/6"></div>
-                </div>
-            </div>
-        )
-    }
-);
+
 
 
 export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}: DocsClientProps) {
