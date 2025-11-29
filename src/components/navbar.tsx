@@ -4,13 +4,12 @@ import {Button} from "./ui/button";
 import {usePathname} from "next/navigation";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
-import {useRef, useState, useEffect} from 'react';
-import {Menu, X, Github} from 'lucide-react';
+import {useEffect, useRef, useState} from 'react';
+import {Github, Menu, X} from 'lucide-react';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {Command} from "@/components/command";
 import {ThemeToggle} from "@/components/theme-toggle";
-import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import EaseToolTip from "@/components/EaseToolTip";
 
 const navLinks = [
