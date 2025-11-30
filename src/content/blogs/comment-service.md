@@ -4,7 +4,7 @@ category: "API服务"
 excerpt: 适用于个人网站的评论服务
 lastEdited: 2025年10月4日
 tags: [后端,FastAPI,Python]
-imageUrl: https://minio-endpoint.yhnotes.com/docs/comment-service.png
+imageUrl: https://rustfs-endpoint.yhnotes.com/content/comment-service.png
 ---
 
 由于我的网站使用的是 NextJS 构建的纯静态页面，所以没法在这个项目内去实现数据库交互，我需要一个评论系统来让网站更具有交互性也利于后续发展，所以就有了本期介绍的评论服务。

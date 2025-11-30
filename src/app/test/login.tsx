@@ -8,7 +8,7 @@ export default function LoginPage() {
             <div className="w-[32rem]">
                 <div className="w-full flex flex-col items-center space-y-4 mb-4">
                     <Image
-                        src={`${STORAGE_HOST}/docs/Avatar.webp`}
+                        src={`${STORAGE_HOST}/Avatar.webp`}
                         alt="Avatar"
                         width={50}
                         height={50}

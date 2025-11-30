@@ -12,15 +12,15 @@ import {useEffect, useState} from "react";
 function ProductDiagram() {
     const imageMap = [
         {
-            src: `${STORAGE_HOST}/docs/ide.png`,
+            src: `${STORAGE_HOST}/ide.png`,
             alt: "Ide",
         },
         {
-            src: `${STORAGE_HOST}/docs/carwlsy.png`,
+            src: `${STORAGE_HOST}/carwlsy.png`,
             alt: "Carwlsy",
         },
         {
-            src: `${STORAGE_HOST}/docs/node.png`,
+            src: `${STORAGE_HOST}/node.png`,
             alt: "Node",
         },
     ]
