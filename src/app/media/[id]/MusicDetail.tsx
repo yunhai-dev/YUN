@@ -140,10 +140,11 @@ const MusicDetail = ({musicItem}: Props) => {
             const fetchLyrics = async (retryCount = 0) => {
                 try {
                     const response = await fetch(lyricsUrl, {
-                        credentials: 'include',
+                        credentials: 'omit',
                         headers: {
                             'Accept': 'text/plain',
-                        }
+                        },
+
                     });
 
                     if (!response.ok) {
