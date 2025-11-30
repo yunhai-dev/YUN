@@ -4,7 +4,7 @@ category: "游记"
 excerpt: "原来诀别是因为深藏眷恋"
 lastEdited: "2025年7月21日"
 tags: ["游记", "上海", "银临", "云之泣", "以冬", "执素兮", "Aki阿杰", "不才", "小爱的妈", "良辰"]
-imageUrl: "https://minio-endpoint.yhnotes.com/imgs/shanghai-lc.jpg"
+imageUrl: "https://rustfs-endpoint.yhnotes.com/content/shanghai-lc.jpg"
 ---
 
 > 欲买桂花同载酒，终不似，少年游。
@@ -19,15 +19,15 @@ imageUrl: "https://minio-endpoint.yhnotes.com/imgs/shanghai-lc.jpg"
 
 “路易号”免费对外开放，需要提前预约，我的评价是没有外滩看军舰👖。
 
-![上海LV路易号](https://minio-endpoint.yhnotes.com/imgs/shanghai-lv-lyh.jpg)
+![上海LV路易号](https://rustfs-endpoint.yhnotes.com/content/shanghai-lv-lyh.jpg)
 
 除了云南就在上海看到有老滇山寨，偶尔吃一次能刷新味蕾，除了他们店很难在别的店里凑齐云南各地的美食，2 号线龙之梦城市生活中心顶楼。
 
-![上海老滇山寨](https://minio-endpoint.yhnotes.com/imgs/shanghai-ldsz.jpg)
+![上海老滇山寨](https://rustfs-endpoint.yhnotes.com/content/shanghai-ldsz.jpg)
 
 > 大理白族扎染
 
-![上海老滇山寨扎染](https://minio-endpoint.yhnotes.com/imgs/shanghai-ldsz-zr.jpg)
+![上海老滇山寨扎染](https://rustfs-endpoint.yhnotes.com/content/shanghai-ldsz-zr.jpg)
 
 ## 🎏前奏响起回忆涌现
 

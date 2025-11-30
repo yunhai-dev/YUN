@@ -114,7 +114,7 @@ export default function Contact() {
                                     height={120}
                                     alt="wx"
                                     className="size-36 rounded bg-green-500/60 p-2 ml-4"
-                                    src={`${STORAGE_HOST}/docs/contact-wechat.png`}/>
+                                    src={`${STORAGE_HOST}/contact-wechat.png`}/>
                             </div>
 
                         </div>
