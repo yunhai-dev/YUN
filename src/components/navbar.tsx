@@ -106,7 +106,7 @@ export function Navbar() {
                 {/* Logo Link - Centered on mobile via container justify-center */}
                 <Link href="/" className="flex items-center gap-2">
                     <Image
-                        src={`${STORAGE_HOST}/docs/Avatar.webp`}
+                        src={`${STORAGE_HOST}/Avatar.webp`}
                         alt="YunHai Logo"
                         width={24}
                         height={24}

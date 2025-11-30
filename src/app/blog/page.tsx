@@ -29,7 +29,7 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
                 className="h-64 rounded-md overflow-hidden flex items-center justify-center mb-4 relative z-10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                    src={imageUrl || `${STORAGE_HOST}/docs/YUN Blog bg ${index}.svg`}
+                    src={imageUrl || `${STORAGE_HOST}/YUN Blog bg ${index}.svg`}
                     alt={title}
                     className="w-full h-full object-cover"
                 />

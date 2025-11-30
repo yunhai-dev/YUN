@@ -1,1 +1,1 @@
-export const STORAGE_HOST = 'https://minio-endpoint.yhnotes.com';
+export const STORAGE_HOST = 'https://rustfs-endpoint.yhnotes.com/content';
