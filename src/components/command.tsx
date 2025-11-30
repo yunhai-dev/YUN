@@ -5,9 +5,9 @@ import {FileText, Search,} from "lucide-react"
 import MiniSearch from 'minisearch'
 
 import {CommandDialog, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command"
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import { getAllTools } from "@/data/tools"
-import { mediaItems } from "@/data/media";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {getAllTools} from "@/data/tools"
+import {mediaItems} from "@/data/media";
 
 export function Command({hotkey}: { hotkey?: boolean }) {
     const [open, setOpen] = React.useState(false)
@@ -170,19 +170,17 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                 className="text-sm flex text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted cursor-pointer"
                 onClick={() => setOpen((open) => !open)}
             >
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Search className="size-5"/>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-background text-foreground rounded-md border border-border">
-                            <p>
-                                <kbd className="kbd">⌘K</kbd> or <kbd className="kbd">Ctrl+K</kbd> to open command
-                                dialog
-                            </p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Search className="size-5"/>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>
+                            <kbd className="kbd">⌘K</kbd> or <kbd className="kbd">Ctrl+K</kbd> to open command
+                            dialog
+                        </p>
+                    </TooltipContent>
+                </Tooltip>
             </p>
 
             <CommandDialog open={open} onOpenChange={setOpen}>
@@ -208,7 +206,8 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                                     <div className="flex flex-col ml-2 w-full">
                                         <div className="flex justify-between w-full">
                                             <span>{result.title}</span>
-                                            <span className="text-muted-foreground">{getTypeDisplayName(result.type)}</span>
+                                            <span
+                                                className="text-muted-foreground">{getTypeDisplayName(result.type)}</span>
                                         </div>
                                         <span className="text-xs text-muted-foreground">
                                              {highlightSearchTerms(getContentExcerpt(result.content, query), query)}

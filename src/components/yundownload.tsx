@@ -52,7 +52,7 @@ export function YunDownload() {
                     <div
                         className="bg-gray-600 rounded-lg overflow-hidden h-80 relative flex justify-center items-center">
                         <Image
-                            src={`${STORAGE_HOST}/docs/data-label.webp`}
+                            src={`${STORAGE_HOST}/data-label.webp`}
                             alt="D0 Tools"
                             width={0}
                             height={0}

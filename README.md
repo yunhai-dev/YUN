@@ -141,10 +141,73 @@ bun run start
   - Custom container support (`info` | `warn` | `tip` | `danger`)
      - Syntax: `::: danger :::`
   - Mermaid diagram support
+  - Terminal Player support (interactive command demonstration)
 - Code Highlighting
 - Chart Rendering
 - Animation Effects
 - SEO Optimized
+
+## Terminal Player
+
+A terminal player component for demonstrating command-line interactions with typing animation effects.
+
+### Usage in Markdown
+
+Use the `terminal` code block in your Markdown files:
+
+````markdown
+```terminal
+npm install react-dom
+added 45 packages, and audited 1234 packages in 23s
+---
+npm run build
+Creating optimized production build...
+Compiled successfully!
+✨ Done in 12.34s.
+---
+echo "Hello, World!"
+Hello, World!
+```
+````
+
+**Syntax:**
+- Each command block is separated by `---`
+- First line is the command to execute
+- Following lines are the command output
+
+### Usage as React Component
+
+```tsx
+import TerminalPlayer, { TerminalCommand } from '@/components/terminal-player';
+
+const commands: TerminalCommand[] = [
+  {
+    command: 'npm install',
+    output: 'added 125 packages',
+    delay: 800, // delay before showing output (ms)
+  },
+  {
+    command: 'npm run build',
+    output: 'Successfully compiled 234 files',
+    delay: 600,
+  },
+];
+
+<TerminalPlayer 
+  commands={commands} 
+  typingSpeed={40}      // typing speed (ms per character)
+  autoPlay={false}      // auto play on mount
+  title="My Terminal"   // terminal title
+/>
+```
+
+### Features
+
+- ⌨️ Typewriter effect for command input
+- 🎬 Play/Pause/Reset controls
+- 📊 Progress bar with clickable nodes
+- 🎨 macOS-style terminal window
+- 🌙 Dark theme optimized
 
 ## Development Guidelines
 

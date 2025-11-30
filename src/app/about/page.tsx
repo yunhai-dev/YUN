@@ -162,7 +162,7 @@ export default function About() {
                         </div>
                         <div className="order-1 md:order-2">
                             <Image
-                                src={`${STORAGE_HOST}/docs/xuanwei.svg`}
+                                src={`${STORAGE_HOST}/xuanwei.svg`}
                                 alt="xuanwei"
                                 width={400}
                                 height={400}

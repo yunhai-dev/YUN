@@ -4,12 +4,13 @@ import {Button} from "./ui/button";
 import {usePathname} from "next/navigation";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
-import {useRef, useState, useEffect} from 'react';
-import {Menu, X, Github} from 'lucide-react';
+import {useEffect, useRef, useState} from 'react';
+import {Github, Menu, X} from 'lucide-react';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {Command} from "@/components/command";
 import {ThemeToggle} from "@/components/theme-toggle";
+import EaseToolTip from "@/components/EaseToolTip";
 
 const navLinks = [
     {href: "/blog/", text: "Blog"},
@@ -105,7 +106,7 @@ export function Navbar() {
                 {/* Logo Link - Centered on mobile via container justify-center */}
                 <Link href="/" className="flex items-center gap-2">
                     <Image
-                        src={`${STORAGE_HOST}/docs/Avatar.webp`}
+                        src={`${STORAGE_HOST}/Avatar.webp`}
                         alt="YunHai Logo"
                         width={24}
                         height={24}
@@ -180,26 +181,28 @@ export function Navbar() {
                 {/* Theme Toggle, Search And GitHub Icon */}
                 <div className="flex gap-3">
                     <div className="hidden md:flex items-center">
-                        <ThemeToggle />
+                        <ThemeToggle/>
                     </div>
                     <div className="hidden md:flex items-center">
                         <Command hotkey={true}/>
                     </div>
                     <div className="hidden md:flex items-center">
-                        <a
-                            href="https://github.com/yunhai-dev"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted"
-                        >
-                            <Github className="h-[1.2rem] w-[1.2rem]" />
-                        </a>
+                        <EaseToolTip tip="GitHub">
+                            <a
+                                href="https://github.com/yunhai-dev"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted"
+                            >
+                                <Github className="h-[1.2rem] w-[1.2rem]"/>
+                            </a>
+                        </EaseToolTip>
                     </div>
                 </div>
 
                 {/* Mobile Menu Button: Positioned absolutely on mobile */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 md:hidden flex gap-1">
-                    <ThemeToggle />
+                    <ThemeToggle/>
                     <div className="md:flex items-center">
                         <Command/>
                     </div>

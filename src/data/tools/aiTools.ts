@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const aiTools: Tool[] = [
     {
+        id: 'producer',
+        name: 'Producer',
+        description: 'AI 作词作曲工具，帮助音乐创作者快速生成高质量的音乐作品。',
+        href: 'https://www.producer.ai/',
+        category: 'AI 衍生工具'
+    },
+    {
         id: 'everywhere',
         name: 'Everywhere',
         description: '具备情境感知能力的交互式 AI 助手，即时感知并理解屏幕上的任何内容。',
