@@ -81,9 +81,97 @@
     }
 }
 
-/* Light theme code block syntax highlighting */
-.light pre code.hljs {
+/* Light theme code block syntax highlighting - GitHub Light theme colors */
+.hljs-light .hljs {
     color: #24292e;
+    background: #f6f8fa;
+}
+
+.hljs-light .hljs-doctag,
+.hljs-light .hljs-keyword,
+.hljs-light .hljs-meta .hljs-keyword,
+.hljs-light .hljs-template-tag,
+.hljs-light .hljs-template-variable,
+.hljs-light .hljs-type,
+.hljs-light .hljs-variable.language_ {
+    color: #d73a49;
+}
+
+.hljs-light .hljs-title,
+.hljs-light .hljs-title.class_,
+.hljs-light .hljs-title.class_.inherited__,
+.hljs-light .hljs-title.function_ {
+    color: #6f42c1;
+}
+
+.hljs-light .hljs-attr,
+.hljs-light .hljs-attribute,
+.hljs-light .hljs-literal,
+.hljs-light .hljs-meta,
+.hljs-light .hljs-number,
+.hljs-light .hljs-operator,
+.hljs-light .hljs-selector-attr,
+.hljs-light .hljs-selector-class,
+.hljs-light .hljs-selector-id,
+.hljs-light .hljs-variable {
+    color: #005cc5;
+}
+
+.hljs-light .hljs-string,
+.hljs-light .hljs-meta .hljs-string,
+.hljs-light .hljs-regexp {
+    color: #032f62;
+}
+
+.hljs-light .hljs-built_in,
+.hljs-light .hljs-symbol {
+    color: #e36209;
+}
+
+.hljs-light .hljs-code,
+.hljs-light .hljs-comment,
+.hljs-light .hljs-formula {
+    color: #6a737d;
+}
+
+.hljs-light .hljs-name,
+.hljs-light .hljs-quote,
+.hljs-light .hljs-selector-pseudo,
+.hljs-light .hljs-selector-tag {
+    color: #22863a;
+}
+
+.hljs-light .hljs-subst {
+    color: #24292e;
+}
+
+.hljs-light .hljs-section {
+    color: #005cc5;
+    font-weight: bold;
+}
+
+.hljs-light .hljs-bullet {
+    color: #735c0f;
+}
+
+.hljs-light .hljs-emphasis {
+    color: #24292e;
+    font-style: italic;
+}
+
+.hljs-light .hljs-strong {
+    color: #24292e;
+    font-weight: bold;
+}
+
+.hljs-light .hljs-addition {
+    color: #22863a;
+    background-color: #f0fff4;
+}
+
+.hljs-light .hljs-deletion {
+    color: #b31d28;
+    background-color: #ffeef0;
 }
 
 @layer base {
