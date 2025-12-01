@@ -3,9 +3,8 @@ import mermaid from "mermaid";
 import {useEffect, useRef, useState} from "react";
 import '@/components/terminal-player-element';
 
-// 预加载两个主题样式
+// 导入两个主题样式，通过 CSS 层叠控制显示
 import 'highlight.js/styles/github-dark-dimmed.css';
-import 'highlight.js/styles/github.css';
 
 
 const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
@@ -68,7 +67,7 @@ const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
         ? '' // 等待主题初始化时不应用任何样式变化
         : isDark 
             ? 'prose-invert prose-pre:bg-[#0d1117] prose-pre:border-[#30363d] prose-code:text-[#e6edf3] prose-code:bg-[#161b22] [&_pre]:bg-[#0d1117] [&_:not(pre)>code]:bg-[#161b22] [&_.hljs]:!bg-[#0d1117]' 
-            : 'prose-pre:bg-[#f6f8fa] prose-pre:border-[#d0d7de] prose-code:text-[#1f2328] prose-code:bg-[#f6f8fa] [&_pre]:bg-[#f6f8fa] [&_:not(pre)>code]:bg-[#f6f8fa] [&_.hljs]:!bg-[#f6f8fa]';
+            : 'hljs-light prose-pre:bg-[#f6f8fa] prose-pre:border-[#d0d7de] prose-code:text-[#1f2328] prose-code:bg-[#f6f8fa] [&_pre]:bg-[#f6f8fa] [&_:not(pre)>code]:bg-[#f6f8fa] [&_.hljs]:!bg-[#f6f8fa]';
 
     return (
         <div

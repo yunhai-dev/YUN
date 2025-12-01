@@ -2,6 +2,56 @@
 title:  Python 技巧与库
 ---
 
+## MarkItDown
+
+- MarkItDown 是一个由 Microsoft 开发的 Python 工具 / 命令行程序，用于将 PDF / Word / Excel / PPT / 图片 / 音频 / HTML / CSV／JSON／XML／ZIP／EPUB／YouTube-URL 等多种格式转换为 Markdown。它保留文档结构（标题、列表、表格、链接等），适合用于文本分析、LLM 等场景。
+- 与像 textract 那样只抽文本不同，MarkItDown 注重“结构 + 内容 + Markdown 格式”，因此能输出结构良好的 Markdown 文档。 
+
+### 🔧 安装步骤
+
+在一个已安装 Python（建议 3.10 及以上版本）的环境（建议使用虚拟环境）中：
+
+```bash
+pip install 'markitdown[all]'
+```
+
+这样可以安装所有可选依赖，保证对各种格式都有支持。
+
+如果你只用某几种格式，也可以只装对应依赖，比如：
+
+~~~bash
+pip install 'markitdown[pdf,docx,pptx]'
+``` :contentReference[oaicite:5]{index=5}
+
+## 🚀 使用方式  
+
+### 通过命令行 (CLI)  
+```bash
+markitdown path/to/file.pdf > output.md
+~~~
+
+或者指定输出文件：
+
+```bash
+markitdown path/to/file.docx -o output.md
+```
+
+也可以通过管道（pipe）方式传入内容。
+
+### 通过 Python API
+
+```python
+from markitdown import MarkItDown
+
+md = MarkItDown()
+result = md.convert("path/to/your_file.xlsx")
+print(result.text_content)
+```
+
+这会返回一个对象，你可以通过 `.text_content` 得到 Markdown 文本。 
+
+如果你希望处理图片并自动生成描述（例如通过 OCR + LLM 解读图片内容），也支持——只需在初始化时传入合适的 LLM 客户端与模型参数。 
+
 ## Tortoise ORM
 
 [文档](https://tortoise.github.io/toc.html)

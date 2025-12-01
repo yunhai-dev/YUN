@@ -2,7 +2,86 @@
 title: 常用命令
 ---
 
+### delfer/alpine-ftp-server 简单使用教程
 
+这是一个基于 Alpine Linux 的轻量级 Docker FTP 服务器，使用 vsftpd 作为核心。适合快速搭建内网或公网文件传输服务，支持 FTPS（加密）。以下是入门级教程，假设你已安装 Docker。
+
+#### 前置条件
+- 安装并运行 Docker。
+- 如果用 FTPS（推荐加密），需域名和 80 端口访问（用于证书生成）。
+- 创建证书目录：`mkdir -p /etc/letsencrypt`（FTPS 用）。
+
+#### 步骤 1: 基本 FTP 启动（非加密）
+运行以下命令，替换用户名/密码和 ADDRESS（内网用 IP 如 192.168.1.100，公网用域名）：
+
+```bash
+docker run -d \
+    -p "21:21" \
+    -p 21000-21010:21000-21010 \
+    -e USERS="one|1234" \
+    -e ADDRESS=192.168.1.100 \
+    delfer/alpine-ftp-server
+```
+
+- **连接测试**：用 FTP 客户端（如 FileZilla）连接 `ftp://你的服务器IP:21`，用户名 `one`，密码 `1234`。
+- **防火墙**：开放 21 端口和 21000-21010 端口。
+
+#### 步骤 2: 配置关键参数
+主要环境变量（通过 `-e` 设置）：
+
+| 变量                    | 描述                                                         | 默认值                 | 示例                                        |
+| ----------------------- | ------------------------------------------------------------ | ---------------------- | ------------------------------------------- |
+| `USERS`                 | 用户列表（空格分隔，格式：用户名\|密码\|[目录]\|[UID]\|[GID]） | `alpineftp\|alpineftp` | `one\|1234 user\|pass\|/home/user`          |
+| `ADDRESS`               | 被动模式外部地址                                             | 无                     | `192.168.1.100`（内网）或 `ftp.example.com` |
+| `MIN_PORT` / `MAX_PORT` | 被动端口范围                                                 | 21000 / 21010          | `20000` / `20100`（需调整端口映射）         |
+
+#### 步骤 3: 启用 FTPS（加密，推荐）
+1. 生成 Let's Encrypt 证书（替换域名和邮箱）：
+   ```bash
+   docker run -it --rm \
+       -p 80:80 \
+       -v "/etc/letsencrypt:/etc/letsencrypt" \
+       certbot/certbot certonly \
+       --standalone \
+       --preferred-challenges http \
+       -n --agree-tos \
+       --email your@email.com \
+       -d ftp.example.com
+   ```
+
+2. 启动 FTPS 服务器：
+   ```bash
+   docker run -d \
+       --name ftp \
+       -p "21:21" \
+       -p 21000-21010:21000-21010 \
+       -v "/etc/letsencrypt:/etc/letsencrypt:ro" \
+       -e USERS="one|1234" \
+       -e ADDRESS=ftp.example.com \
+       -e TLS_CERT="/etc/letsencrypt/live/ftp.example.com/fullchain.pem" \
+       -e TLS_KEY="/etc/letsencrypt/live/ftp.example.com/privkey.pem" \
+       delfer/alpine-ftp-server
+   ```
+
+3. **证书续期**：每 3 个月运行 `certbot renew`。
+
+#### 步骤 4: 使用 Docker Compose（可选，简化管理）
+创建 `docker-compose.yml`：
+```yaml
+version: '3'
+services:
+  ftp:
+    image: delfer/alpine-ftp-server
+    ports:
+      - "21:21"
+      - "21000-21010:21000-21010"
+    environment:
+      - USERS="one|1234"
+      - ADDRESS=192.168.1.100
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # FTPS 用
+```
+运行：`docker-compose up -d`。
 
 ## Prometheus 组件之 redis_exporter 指标
 
