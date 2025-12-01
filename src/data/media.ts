@@ -1,6 +1,6 @@
 // src/data/media.ts
-import { MediaItem } from '@/types/media';
-import { STORAGE_HOST } from './baseUrl';
+import {MediaItem} from '@/types/media';
+import {STORAGE_HOST} from './baseUrl';
 
 export const mediaItems: MediaItem[] = [
     {
@@ -442,6 +442,23 @@ export const mediaItems: MediaItem[] = [
         author: '广东雨神',
         lyricsUrl: `${STORAGE_HOST}/广东爱情故事 广东雨神.lrc`,
         musicUrl: `${STORAGE_HOST}/广东爱情故事 广东雨神.mp3`,
+    },
+    {
+        id: 'lr-lrh',
+        title: '恋人',
+        imageUrl: `${STORAGE_HOST}/恋人 - 李荣浩.jpg`,
+        author: '李荣浩',
+        lyricsUrl: `${STORAGE_HOST}/恋人 - 李荣浩.lrc`,
+        musicUrl: `${STORAGE_HOST}/恋人 - 李荣浩.mp3`,
+    },
+    // 夏夜最后的烟火 - 颜人中
+    {
+        id: 'xyzhdyh-yrz',
+        title: '夏夜最后的烟火',
+        imageUrl: `${STORAGE_HOST}/夏夜最后的烟火 - 颜人中.jpg`,
+        author: '颜人中',
+        lyricsUrl: `${STORAGE_HOST}/夏夜最后的烟火 - 颜人中.lrc`,
+        musicUrl: `${STORAGE_HOST}/夏夜最后的烟火 - 颜人中.mp3`,
     },
     {
         id: 'cjns-znj',
