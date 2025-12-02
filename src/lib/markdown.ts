@@ -81,13 +81,23 @@ export async function markdownToHtml(markdown: string): Promise<{ content: strin
         },
 
         // 处理表格
-        table({header, rows}) {
-            let html = `<div class="overflow-x-auto marked-table"><table>\n<thead>\n${header}</thead>\n<tbody>\n`;
-            rows.forEach(row => {
-                html += row;
-            });
-            html += '</tbody>\n</table></div>\n';
-            return html;
+        table(token) {
+            const headerCells = token.header.map(cell => {
+                const align = cell.align ? ` style="text-align:${cell.align}"` : '';
+                const content = this.parser!.parseInline(cell.tokens);
+                return `<th${align}>${content}</th>`;
+            }).join('\n');
+            
+            const bodyRows = token.rows.map(row => {
+                const cells = row.map(cell => {
+                    const align = cell.align ? ` style="text-align:${cell.align}"` : '';
+                    const content = this.parser!.parseInline(cell.tokens);
+                    return `<td${align}>${content}</td>`;
+                }).join('\n');
+                return `<tr>\n${cells}\n</tr>`;
+            }).join('\n');
+            
+            return `<div class="overflow-x-auto marked-table"><table>\n<thead>\n<tr>\n${headerCells}\n</tr>\n</thead>\n<tbody>\n${bodyRows}\n</tbody>\n</table></div>\n`;
         },
 
         // 处理链接
