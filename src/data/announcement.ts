@@ -6,7 +6,7 @@ type Announcement = {
 
 const announcements: Announcement[] = [
     {
-        content: "🎉 The comment service has been taken offline 🎉",
+        content: "🎉 The comment and sharing service has been taken offline 🎉",
         createdAt: new Date("2025-12-3")
     },
     {
