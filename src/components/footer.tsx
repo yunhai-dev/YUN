@@ -65,14 +65,14 @@ export function Footer() {
                                         {
                                             link.href.startsWith("/") ? (
                                                 <Link href={link.href}
-                                                                className="text-sm text-muted-foreground hover:text-white transition-colors">
+                                                                className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                                                     {link.label}
                                                 </Link>
                                             ) : (
                                                 <Link
                                                     target={link.href.startsWith('http') ? '_blank' : ''}
                                                     href={link.href}
-                                                    className="text-sm text-muted-foreground hover:text-white transition-colors"
+                                                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                                                 >
                                                     {link.label}
                                                 </Link>
