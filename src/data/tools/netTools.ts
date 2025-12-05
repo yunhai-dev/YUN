@@ -64,4 +64,11 @@ export const netTools: Tool[] = [
         href: 'https://gh-proxy.com/',
         category: '网络工具'
     },
+    {
+        id: 'searxng',
+        name: 'SearXNG',
+        description: '免费的互联网元搜索引擎，聚合各种搜索服务的结果，注重隐私保护，不跟踪用户。可用于 AI 私有化网络搜索实现',
+        href: 'https://github.com/searxng/searxng',
+        category: '网络工具'
+    },
 ]
