@@ -6,7 +6,6 @@ import {getAllTools} from '@/data/tools';
 import {Tool} from "@/types/tools";
 import {cn} from "@/lib/utils";
 import {Link} from "next-view-transitions"
-import {useSearchParams, useRouter} from 'next/navigation';
 import {
     Pagination,
     PaginationContent,
@@ -60,8 +59,6 @@ function ToolCard({tool}: ToolCardProps) {
 
 // 更新 ToolsPage 组件以包含筛选逻辑
 const ToolsPage = () => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
     const allTools = useMemo(() => getAllTools(), []); // 获取所有工具数据，使用 useMemo 避免重复计算
     
     // 提取所有唯一的分类，并添加 "全部" 选项
@@ -71,6 +68,7 @@ const ToolsPage = () => {
     }, [allTools]);
     
     // 从 URL hash 读取分类和页码
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const getCategoryFromHash = () => {
         if (typeof window === 'undefined') return '全部';
         const hash = window.location.hash.slice(1); // 移除 #
@@ -101,7 +99,7 @@ const ToolsPage = () => {
         
         window.addEventListener('hashchange', handleHashChange);
         return () => window.removeEventListener('hashchange', handleHashChange);
-    }, [categories]);
+    }, [categories, getCategoryFromHash]);
 
     // 更新分类时同步更新 URL hash
     const handleCategoryChange = (category: string) => {

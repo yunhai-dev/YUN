@@ -153,7 +153,7 @@ hello
 `;
 
     // 核心编辑功能
-    const handleToolbarAction = (action: string, value?: any) => {
+    const handleToolbarAction = (action: string, value?: number) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
 
@@ -500,7 +500,12 @@ ${selection}
     };
 
     // 工具栏按钮组件
-    const ToolbarBtn = ({icon: Icon, title, action, active = false}: any) => (
+    const ToolbarBtn = ({icon: Icon, title, action, active = false}: {
+        icon: React.ComponentType<{className?: string}>
+        title: string,
+        action: () => void,
+        active?: boolean
+    }) => (
         <Tooltip>
             <TooltipTrigger asChild>
                 <Button

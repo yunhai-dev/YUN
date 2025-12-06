@@ -54,12 +54,11 @@ const EditableInput = ({
             }}
             autoFocus={autoFocus}
             role="textbox"
-            placeholder={placeholder}
         />
     );
 };
 
-const JsonTree: React.FC<JsonTreeProps> = ({data, level = 0, onUpdate, path = []}) => {
+const JsonTree: React.FC<JsonTreeProps> = ({data, level = 0, onUpdate, isRoot = false, path = []}) => {
     const [collapsed, setCollapsed] = useState(false);
 
     // 处理基本类型值的更新
