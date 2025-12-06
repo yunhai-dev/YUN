@@ -1,10 +1,14 @@
 type Announcement = {
     content: string
-    link: string
+    link?: string
     createdAt: Date
 }
 
 const announcements: Announcement[] = [
+    {
+        content: "🎉 The comment and sharing service has been taken offline 🎉",
+        createdAt: new Date("2025-12-3")
+    },
     {
         content: "🎉 YunHai review service is launched 🎉",
         link: "/blog/comment-service/",

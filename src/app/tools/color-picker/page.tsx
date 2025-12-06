@@ -4,7 +4,16 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input"; // Input 组件不存在，使用原生 input
-import { Copy } from 'lucide-react'; // 复制图标
+import { Copy, Pipette } from 'lucide-react'; // 复制图标和取色器图标
+
+// EyeDropper API 类型声明
+declare global {
+  interface Window {
+    EyeDropper?: new () => {
+      open: () => Promise<{ sRGBHex: string }>;
+    };
+  }
+}
 
 // 辅助函数：将 HEX 转换为 RGB
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -59,6 +68,12 @@ const ColorPickerPage = () => {
   const [rgbColor, setRgbColor] = useState('rgb(255, 255, 255)');
   const [hslColor, setHslColor] = useState('hsl(0, 0%, 100%)');
   const [copyStatus, setCopyStatus] = useState<Record<string, string>>({}); // 用于显示复制状态
+  const [eyeDropperSupported, setEyeDropperSupported] = useState(false);
+
+  // 检测 EyeDropper API 是否可用
+  useEffect(() => {
+    setEyeDropperSupported(typeof window !== 'undefined' && 'EyeDropper' in window);
+  }, []);
 
   useEffect(() => {
     const rgb = hexToRgb(selectedColor);
@@ -71,6 +86,20 @@ const ColorPickerPage = () => {
 
   const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedColor(event.target.value);
+  };
+
+  // 屏幕取色
+  const handleEyeDropper = async () => {
+    if (!window.EyeDropper) return;
+    
+    try {
+      const eyeDropper = new window.EyeDropper();
+      const result = await eyeDropper.open();
+      setSelectedColor(result.sRGBHex);
+    } catch (err) {
+      // 用户取消或发生错误
+      console.log('EyeDropper cancelled or failed:', err);
+    }
   };
 
   const handleCopy = async (format: string, value: string) => {
@@ -120,14 +149,28 @@ const ColorPickerPage = () => {
           <div className="flex flex-col items-center">
              <label htmlFor="colorPickerInput" className="block text-sm font-medium text-muted-foreground mb-4">选择颜色:</label>
              {/* 使用原生颜色选择器 */}
-             <input
-               id="colorPickerInput"
-               type="color"
-               value={selectedColor}
-               onChange={handleColorChange}
-               className="w-32 h-32 mb-6 cursor-pointer border-none p-0 rounded-full overflow-hidden shadow-lg" // 增大尺寸并美化
-               style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none' }} // 移除默认样式
-             />
+             <div className="flex items-center gap-4 mb-6">
+               <input
+                 id="colorPickerInput"
+                 type="color"
+                 value={selectedColor}
+                 onChange={handleColorChange}
+                 className="w-32 h-32 cursor-pointer border-none p-0 rounded-full overflow-hidden shadow-lg" // 增大尺寸并美化
+                 style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none' }} // 移除默认样式
+               />
+               {eyeDropperSupported && (
+                 <Button
+                   variant="outline"
+                   size="lg"
+                   onClick={handleEyeDropper}
+                   className="h-32 w-32 rounded-full flex flex-col gap-2"
+                   title="从屏幕取色"
+                 >
+                   <Pipette className="h-8 w-8" />
+                   <span className="text-xs">屏幕取色</span>
+                 </Button>
+               )}
+             </div>
              <div className="w-full h-24 rounded-md shadow-inner border border-white/10 mb-4" style={{ backgroundColor: selectedColor }}>
                {/* 颜色预览区域 */}
              </div>

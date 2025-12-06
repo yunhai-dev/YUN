@@ -60,16 +60,54 @@ function ToolCard({tool}: ToolCardProps) {
 // 更新 ToolsPage 组件以包含筛选逻辑
 const ToolsPage = () => {
     const allTools = useMemo(() => getAllTools(), []); // 获取所有工具数据，使用 useMemo 避免重复计算
-    const [selectedCategory, setSelectedCategory] = useState<string>('全部'); // 状态：当前选中的分类
-    const [filteredTools, setFilteredTools] = useState<Tool[]>(allTools); // 状态：筛选后的工具列表
-    const [currentPage, setCurrentPage] = useState<number>(1); // 当前页码
-    const itemsPerPage = 30; // 每页显示的工具数量
-
+    
     // 提取所有唯一的分类，并添加 "全部" 选项
     const categories = useMemo(() => {
         const uniqueCategories = new Set(allTools.map(tool => tool.category).filter(Boolean)); // 过滤掉 undefined 或空字符串
         return ['全部', ...Array.from(uniqueCategories)] as string[];
     }, [allTools]);
+    
+    // 从 URL hash 读取分类和页码
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const getCategoryFromHash = () => {
+        if (typeof window === 'undefined') return '全部';
+        const hash = window.location.hash.slice(1); // 移除 #
+        if (!hash) return '全部';
+        const decodedHash = decodeURIComponent(hash);
+        // 检查是否是有效分类
+        if (categories.includes(decodedHash)) {
+            return decodedHash;
+        }
+        return '全部';
+    };
+    
+    const [selectedCategory, setSelectedCategory] = useState<string>('全部'); // 状态：当前选中的分类
+    const [filteredTools, setFilteredTools] = useState<Tool[]>(allTools); // 状态：筛选后的工具列表
+    const [currentPage, setCurrentPage] = useState<number>(1); // 当前页码
+    const itemsPerPage = 30; // 每页显示的工具数量
+
+    // 初始化时从 URL hash 读取分类
+    useEffect(() => {
+        const category = getCategoryFromHash();
+        setSelectedCategory(category);
+        
+        // 监听 hash 变化（浏览器前进/后退）
+        const handleHashChange = () => {
+            const newCategory = getCategoryFromHash();
+            setSelectedCategory(newCategory);
+        };
+        
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, [categories, getCategoryFromHash]);
+
+    // 更新分类时同步更新 URL hash
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategory(category);
+        // 更新 URL hash，不触发页面刷新
+        const newHash = category === '全部' ? '' : `#${encodeURIComponent(category)}`;
+        window.history.pushState(null, '', `/tools${newHash}`);
+    };
 
     // 当选中的分类改变时，更新筛选后的工具列表并重置页码
     useEffect(() => {
@@ -141,7 +179,7 @@ const ToolsPage = () => {
                                     return (
                                         <button
                                             key={category}
-                                            onClick={() => setSelectedCategory(category)}
+                                            onClick={() => handleCategoryChange(category)}
                                             className={cn(
                                                 "w-full text-left px-3 py-1.5 rounded-md transition-all text-sm group",
                                                 selectedCategory === category
