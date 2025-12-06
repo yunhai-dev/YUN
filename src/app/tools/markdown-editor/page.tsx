@@ -3,49 +3,59 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import 'highlight.js/styles/github-dark.css';
 
-// 导入图标组件
-import {HeadingOne} from "@/components/icon/heading-one";
-import {HeadingTwo} from "@/components/icon/heading-two";
-import {HeadingThree} from "@/components/icon/heading-three";
-import {Bold} from "@/components/icon/bold";
-import {Italic} from "@/components/icon/italic";
-import {Quote} from "@/components/icon/quote";
-import {Code} from "@/components/icon/code";
-import {Link} from "@/components/icon/link";
-import {Image as ImageIcon} from "@/components/icon/image";
-import {List} from "@/components/icon/list";
-import {OrderedList} from "@/components/icon/ordered-list";
-import {Task} from "@/components/icon/task";
-import {Table} from "@/components/icon/table";
-import {CodeBlock} from "@/components/icon/code-block";
-import {Trash} from "@/components/icon/trash";
-import {Document} from "@/components/icon/document";
-import {Download} from "@/components/icon/download";
-import {Expand} from "@/components/icon/expand";
-import {Collapse} from "@/components/icon/collapse";
-import {Export} from "@/components/icon/export";
+// 使用 lucide-react 统一图标风格
+import {
+    Bold,
+    CheckSquare,
+    ChevronDown,
+    Code,
+    Download,
+    Eraser,
+    FileCode,
+    FileImage,
+    FileText,
+    Heading1,
+    Heading2,
+    Heading3,
+    Image as ImageIcon,
+    Italic,
+    Link as LinkIcon,
+    List,
+    ListOrdered,
+    LoaderCircle,
+    Maximize,
+    Minimize,
+    Minus,
+    Quote,
+    Strikethrough,
+    Table,
+    Trash2
+} from "lucide-react";
+
 import {markdownToHtml} from "@/lib/markdown";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {useToast} from "@/hooks/use-toast";
-import {LoaderCircle} from "lucide-react";
 import html2canvas from 'html2canvas'
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {Button} from "@/components/ui/button";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
 const MarkdownEditorPage = () => {
     const [markdownText, setMarkdownText] = useState<string>('');
     const [htmlPreview, setHtmlPreview] = useState<string>('');
-    const [leftPaneWidth, setLeftPaneWidth] = useState<number>(50); // 左侧宽度百分比，默认50%
-    const [showExportMenu, setShowExportMenu] = useState<boolean>(false); // 导出菜单显示状态
+    const [leftPaneWidth, setLeftPaneWidth] = useState<number>(50);
     const containerRef = useRef<HTMLDivElement>(null);
     const editorContainerRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const isDraggingRef = useRef<boolean>(false);
-    const lastUpdateTimeRef = useRef<number>(0); // 用于节流的上一次更新时间
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const {toast} = useToast();
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [exportLoading, setExportLoading] = useState(false);
 
     // 使用自定义的 useFullscreen hook
     const {isFullscreen, toggleFullscreen} = useFullscreen(editorContainerRef);
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     // 示例Markdown文本
     const defaultMarkdown = `# Markdown 编辑器示例
 
@@ -67,6 +77,8 @@ const MarkdownEditorPage = () => {
 **粗体文本** 或 __粗体文本__
 
 ***粗斜体文本*** 或 ___粗斜体文本___
+
+~~删除线文本~~
 
 ### 列表
 
@@ -140,31 +152,157 @@ hello
 
 `;
 
-    // 工具栏按钮配置
-    const toolbarButtons = [
-        {icon: HeadingOne, title: '标题1', prefix: '# ', suffix: ''},
-        {icon: HeadingTwo, title: '标题2', prefix: '## ', suffix: ''},
-        {icon: HeadingThree, title: '标题3', prefix: '### ', suffix: ''},
-        {icon: Bold, title: '粗体', prefix: '**', suffix: '**'},
-        {icon: Italic, title: '斜体', prefix: '*', suffix: '*'},
-        {icon: Quote, title: '引用', prefix: '> ', suffix: ''},
-        {icon: Code, title: '行内代码', prefix: '`', suffix: '`'},
-        {icon: Link, title: '链接', prefix: '[链接文本](', suffix: ')'},
-        {icon: ImageIcon, title: '图片', prefix: '![替代文本](', suffix: ')'},
-        {icon: List, title: '无序列表', prefix: '- ', suffix: ''},
-        {icon: OrderedList, title: '有序列表', prefix: '1. ', suffix: ''},
-        {icon: Task, title: '任务', prefix: '- [ ] ', suffix: ''},
-        {icon: Table, title: '表格', prefix: '| 表头1 | 表头2 |\n|-------|-------|\n| 内容1 | 内容2 |', suffix: ''},
-        {icon: CodeBlock, title: '代码块', prefix: '```\n', suffix: '\n```'},
-    ];
+    // 核心编辑功能
+    const handleToolbarAction = (action: string, value?: number) => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
 
-    // 文档操作按钮配置
-    const documentButtons = [
-        {icon: Trash, title: '清空', action: () => setMarkdownText('')},
-        {icon: Document, title: '加载示例', action: () => setMarkdownText(defaultMarkdown)},
-        {icon: Export, title: '导出', action: () => setShowExportMenu(!showExportMenu), primary: true, hasMenu: true},
-    ];
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = markdownText;
 
+        const before = text.substring(0, start);
+        const selection = text.substring(start, end);
+        const after = text.substring(end);
+
+        let newText = text;
+        let newSelectionStart = start;
+        let newSelectionEnd = end;
+
+        // 辅助函数：获取当前行范围
+        const getLineRange = (pos: number) => {
+            const lastNewLine = text.lastIndexOf('\n', pos - 1);
+            const nextNewLine = text.indexOf('\n', pos);
+            return {
+                start: lastNewLine === -1 ? 0 : lastNewLine + 1,
+                end: nextNewLine === -1 ? text.length : nextNewLine
+            };
+        };
+
+        switch (action) {
+            case 'bold':
+                newText = before + `**${selection}**` + after;
+                newSelectionStart = start + 2;
+                newSelectionEnd = end + 2;
+                break;
+            case 'italic':
+                newText = before + `*${selection}*` + after;
+                newSelectionStart = start + 1;
+                newSelectionEnd = end + 1;
+                break;
+            case 'strikethrough':
+                newText = before + `~~${selection}~~` + after;
+                newSelectionStart = start + 2;
+                newSelectionEnd = end + 2;
+                break;
+            case 'code':
+                newText = before + `\`${selection}\`` + after;
+                newSelectionStart = start + 1;
+                newSelectionEnd = end + 1;
+                break;
+            case 'heading':
+                const level = value as number;
+                const prefix = '#'.repeat(level) + ' ';
+                const {start: lineStart, end: lineEnd} = getLineRange(start);
+                const lineContent = text.substring(lineStart, lineEnd);
+                // 移除已有的标题前缀
+                const cleanLine = lineContent.replace(/^#+\s/, '');
+
+                // 如果当前已经是该级别的标题，则取消标题
+                if (lineContent.startsWith(prefix)) {
+                    newText = text.substring(0, lineStart) + cleanLine + text.substring(lineEnd);
+                    newSelectionEnd = newSelectionStart + cleanLine.length;
+                } else {
+                    newText = text.substring(0, lineStart) + prefix + cleanLine + text.substring(lineEnd);
+                    newSelectionEnd = newSelectionStart + prefix.length + cleanLine.length;
+                }
+                break;
+            case 'quote':
+            case 'list':
+            case 'ordered-list':
+            case 'task-list':
+                // 处理多行块级元素
+                const blockStart = text.lastIndexOf('\n', start - 1) + 1;
+                let blockEnd = text.indexOf('\n', end);
+                if (blockEnd === -1) blockEnd = text.length;
+
+                const blockContent = text.substring(blockStart, blockEnd);
+                const lines = blockContent.split('\n');
+
+                const newLines = lines.map((line, index) => {
+                    // 移除现有的前缀
+                    let cleanLine = line;
+                    if (action === 'quote') cleanLine = line.replace(/^>\s/, '');
+                    else if (action === 'list') cleanLine = line.replace(/^-\s/, '');
+                    else if (action === 'ordered-list') cleanLine = line.replace(/^\d+\.\s/, '');
+                    else if (action === 'task-list') cleanLine = line.replace(/^-\s\[[ x]\]\s/, '');
+
+                    // 如果之前有前缀且没变，说明是取消操作
+                    if (cleanLine !== line) return cleanLine;
+
+                    // 添加新前缀
+                    if (action === 'quote') return `> ${line}`;
+                    if (action === 'list') return `- ${line}`;
+                    if (action === 'ordered-list') return `${index + 1}. ${line}`;
+                    if (action === 'task-list') return `- [ ] ${line}`;
+                    return line;
+                });
+
+                newText = text.substring(0, blockStart) + newLines.join('\n') + text.substring(blockEnd);
+                newSelectionStart = blockStart;
+                newSelectionEnd = blockStart + newLines.join('\n').length;
+                break;
+            case 'link':
+                const linkText = selection || '链接文本';
+                newText = before + `[${linkText}](url)` + after;
+                newSelectionStart = start + 1;
+                newSelectionEnd = start + 1 + linkText.length;
+                break;
+            case 'image':
+                const imgText = selection || '图片描述';
+                newText = before + `![${imgText}](url)` + after;
+                newSelectionStart = start + 2;
+                newSelectionEnd = start + 2 + imgText.length;
+                break;
+            case 'table':
+                const tableTemplate = `
+| 表头1 | 表头2 | 表头3 |
+|-------|-------|-------|
+| 内容1 | 内容2 | 内容3 |
+| 内容4 | 内容5 | 内容6 |
+`;
+                newText = before + tableTemplate + after;
+                newSelectionStart = start + tableTemplate.length;
+                newSelectionEnd = start + tableTemplate.length;
+                break;
+            case 'codeblock':
+                const codeBlock = `\`\`\`language
+${selection}
+\`\`\``;
+                newText = before + codeBlock + after;
+                newSelectionStart = start + 3;
+                newSelectionEnd = start + 11; // 选中 "language"
+                break;
+            case 'hr':
+                newText = before + '\n---\n' + after;
+                newSelectionStart = start + 5;
+                newSelectionEnd = start + 5;
+                break;
+            case 'clear':
+                // 简单的清除：移除所有 Markdown 标记（简化版）
+                // 实际实现比较复杂，这里仅作为占位或简单移除选区内的 ** 等
+                newText = before + selection.replace(/[*_~`#]/g, '') + after;
+                break;
+        }
+
+        setMarkdownText(newText);
+
+        // 恢复焦点
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(newSelectionStart, newSelectionEnd);
+        }, 0);
+    };
 
     // 使用节流处理鼠标移动更新
     const updatePaneWidth = useCallback((e: MouseEvent) => {
@@ -174,9 +312,15 @@ hello
         const containerWidth = containerRect.width;
         const mouseX = e.clientX - containerRect.left;
 
-        // 计算左侧宽度百分比，限制在20%到80%之间
+        // 计算左侧宽度百分比
         let newLeftPaneWidth = (mouseX / containerWidth) * 100;
-        newLeftPaneWidth = Math.max(20, Math.min(80, newLeftPaneWidth));
+
+        // 增加吸附效果：接近边缘时自动吸附
+        if (newLeftPaneWidth < 5) newLeftPaneWidth = 0;
+        if (newLeftPaneWidth > 95) newLeftPaneWidth = 100;
+
+        // 限制在0%到100%之间
+        newLeftPaneWidth = Math.max(0, Math.min(100, newLeftPaneWidth));
 
         setLeftPaneWidth(newLeftPaneWidth);
     }, []);
@@ -189,7 +333,7 @@ hello
             }
         },
         [updatePaneWidth]
-    ); // 约60fps的更新频率
+    );
 
     const handleMouseUp = useCallback(() => {
         isDraggingRef.current = false;
@@ -201,40 +345,9 @@ hello
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         isDraggingRef.current = true;
-        lastUpdateTimeRef.current = Date.now();
         document.addEventListener('mousemove', throttledMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
     }, [handleMouseUp, throttledMouseMove]);
-
-    // 插入格式化文本
-    const insertFormat = (prefix: string, suffix: string) => {
-        const textarea = document.getElementById('markdownEditor') as HTMLTextAreaElement;
-        if (!textarea) return;
-
-        // 保存当前滚动位置
-        const scrollTop = textarea.scrollTop;
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const selectedText = markdownText.substring(start, end);
-        const beforeText = markdownText.substring(0, start);
-        const afterText = markdownText.substring(end);
-
-        const newText = beforeText + prefix + selectedText + suffix + afterText;
-        setMarkdownText(newText);
-
-        // 设置光标位置并恢复滚动位置
-        setTimeout(() => {
-            textarea.focus();
-            if (selectedText.length > 0) {
-                textarea.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length);
-            } else {
-                textarea.setSelectionRange(start + prefix.length, start + prefix.length);
-            }
-            // 恢复滚动位置
-            textarea.scrollTop = scrollTop;
-        }, 0);
-    };
 
     // 下载Markdown文件
     function downloadMarkdown() {
@@ -247,11 +360,9 @@ hello
             a.download = 'document.md';
             a.click();
             URL.revokeObjectURL(url);
-            setShowExportMenu(false);
         } finally {
             setDownloadLoading(false);
         }
-
     }
 
     // 导出为图片
@@ -290,7 +401,7 @@ hello
 
             // 设置背景和样式
             clonedContent.classList.add('prose', 'prose-invert');
-            clonedContent.style.padding = '20px';
+            clonedContent.style.padding = '40px'; // 增加内边距
             const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
             const backgroundColor = bgColor ? `hsl(${bgColor})` : '#121212';
             clonedContent.style.background = backgroundColor;
@@ -311,17 +422,13 @@ hello
                 onclone: (doc) => {
                     // 确保所有样式都被应用
                     const styles = Array.from(document.styleSheets);
-
-                    // 将所有样式表复制到克隆的文档
                     styles.forEach(styleSheet => {
                         try {
                             const cssRules = Array.from(styleSheet.cssRules);
                             const style = doc.createElement('style');
-
                             cssRules.forEach(rule => {
                                 style.appendChild(doc.createTextNode(rule.cssText));
                             });
-
                             doc.head.appendChild(style);
                         } catch (e) {
                             console.log('无法访问样式表:', e);
@@ -329,47 +436,22 @@ hello
                     });
                 }
             }).then(canvas => {
-                // 转换canvas为图片并下载
                 const image = canvas.toDataURL('image/png');
                 const a = document.createElement('a');
                 a.href = image;
                 a.download = 'markdown-preview.png';
                 a.click();
-                setShowExportMenu(false);
-
-                // 清理临时元素
                 document.body.removeChild(tempContainer);
-            })
-                .catch(error => {
-                    console.error('导出图片失败:', error);
-                    alert('导出图片失败');
-                    // 确保清理临时元素
-                    if (document.body.contains(tempContainer)) {
-                        document.body.removeChild(tempContainer);
-                    }
-                });
+            }).catch(error => {
+                console.error('导出图片失败:', error);
+                if (document.body.contains(tempContainer)) {
+                    document.body.removeChild(tempContainer);
+                }
+            });
         } finally {
             setExportLoading(false);
         }
     }
-
-    // 点击其他区域时关闭导出菜单
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-            if (!target.closest('.export-button') && !target.closest('.export-menu')) {
-                setShowExportMenu(false);
-            }
-        };
-
-        if (showExportMenu) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [showExportMenu]);
 
     // 当Markdown文本变化时更新预览
     useEffect(() => {
@@ -379,7 +461,7 @@ hello
             }
             timerRef.current = setTimeout(() => {
                 localStorage.setItem('markdownText', markdownText);
-            })
+            }, 1000)
             markdownToHtml(markdownText).then(({content}) => {
                 setHtmlPreview(content)
             })
@@ -406,197 +488,196 @@ hello
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Tab') {
             e.preventDefault();
-
             const textarea = e.currentTarget;
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
-
-            // 插入2个空格
             const newText = markdownText.substring(0, start) + '  ' + markdownText.substring(end);
             setMarkdownText(newText);
-
-            // 设置光标位置
             setTimeout(() => {
                 textarea.selectionStart = textarea.selectionEnd = start + 2;
             }, 0);
         }
     };
 
+    // 工具栏按钮组件
+    const ToolbarBtn = ({icon: Icon, title, action, active = false}: {
+        icon: React.ComponentType<{className?: string}>
+        title: string,
+        action: () => void,
+        active?: boolean
+    }) => (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={action}
+                    className={`h-8 w-8 p-0 hover:bg-muted ${active ? 'bg-muted text-primary' : 'text-muted-foreground'}`}
+                >
+                    <Icon className="h-4 w-4"/>
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>{title}</p>
+            </TooltipContent>
+        </Tooltip>
+    );
+
     return (
-        <main className="min-h-screen flex flex-col">
-            <div ref={editorContainerRef}
-                 className={`flex-1 ${isFullscreen ? 'p-0' : 'pt-32 pb-8 px-4'} main transition-all duration-300`}>
-                {!isFullscreen && (
-                    <>
-                        <h1 className="text-4xl font-bold mb-8">Markdown 编辑器</h1>
-                        <p className="text-muted-foreground mb-8">在线编辑和预览 Markdown
-                            文档，支持实时预览、语法高亮和常用格式工具栏。</p>
-                    </>
-                )}
+        <TooltipProvider>
+            <main className="min-h-screen flex flex-col">
+                <div ref={editorContainerRef}
+                     className={`flex-1 ${isFullscreen ? 'p-0' : 'pt-32 pb-8 px-4'} main transition-all duration-300`}>
+                    {!isFullscreen && (
+                        <>
+                            <h1 className="text-4xl font-bold mb-8">Markdown 编辑器</h1>
+                            <p className="text-muted-foreground mb-8">在线编辑和预览 Markdown
+                                文档，支持实时预览、语法高亮和常用格式工具栏。</p>
+                        </>
+                    )}
 
-                <div className="flex flex-col">
-                    {/* 工具栏 - 图标按钮 */}
                     <div
-                        className="flex flex-wrap items-center p-1.5 bg-muted/20 rounded-t-md border border-input border-b-0 w-full">
-                        {/* 格式化工具按钮 */}
-                        <div className="flex flex-wrap gap-1 flex-1">
-                            {toolbarButtons.map((button, index) => {
-                                const IconComponent = button.icon;
-                                return (
-                                    <button
-                                        key={index}
-                                        onClick={() => insertFormat(button.prefix, button.suffix)}
-                                        className="h-8 w-8 p-1 bg-transparent hover:bg-muted/50 rounded transition-colors flex items-center justify-center group relative"
-                                        aria-label={button.title}
-                                    >
-                                        <IconComponent/>
-                                        <span
-                                            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 border border-input text-xs py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm z-20 text-black dark:text-white pointer-events-none">
-                      {button.title}
-                    </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
+                        className={`flex flex-col border border-input rounded-md overflow-hidden bg-background shadow-sm ${isFullscreen ? 'h-full' : ''}`}>
+                        {/* Typora 风格工具栏 */}
+                        <div className="flex flex-wrap items-center p-2 border-b border-input bg-card gap-1">
+                            {/* 标题组 */}
+                            <div className="flex items-center gap-0.5 border-r border-input pr-2 mr-1">
+                                <ToolbarBtn icon={Heading1} title="一级标题"
+                                            action={() => handleToolbarAction('heading', 1)}/>
+                                <ToolbarBtn icon={Heading2} title="二级标题"
+                                            action={() => handleToolbarAction('heading', 2)}/>
+                                <ToolbarBtn icon={Heading3} title="三级标题"
+                                            action={() => handleToolbarAction('heading', 3)}/>
+                            </div>
 
-                        {/* 全屏按钮 */}
-                        <button
-                            onClick={toggleFullscreen}
-                            className="h-8 w-8 p-1 bg-transparent hover:bg-muted/50 rounded transition-colors flex items-center justify-center group relative mr-2"
-                            aria-label={isFullscreen ? "退出全屏" : "全屏模式"}
-                        >
-                            {isFullscreen ? <Collapse/> : <Expand/>}
-                            <span
-                                className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 border border-input text-xs py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm z-20 text-black dark:text-white pointer-events-none">
-                {isFullscreen ? "退出全屏" : "全屏模式"}
-              </span>
-                        </button>
+                            {/* 文本样式组 */}
+                            <div className="flex items-center gap-0.5 border-r border-input pr-2 mr-1">
+                                <ToolbarBtn icon={Bold} title="粗体" action={() => handleToolbarAction('bold')}/>
+                                <ToolbarBtn icon={Italic} title="斜体" action={() => handleToolbarAction('italic')}/>
+                                <ToolbarBtn icon={Strikethrough} title="删除线"
+                                            action={() => handleToolbarAction('strikethrough')}/>
+                                <ToolbarBtn icon={Code} title="行内代码" action={() => handleToolbarAction('code')}/>
+                                <ToolbarBtn icon={Eraser} title="清除格式" action={() => handleToolbarAction('clear')}/>
+                            </div>
 
-                        {/* 分隔线 */}
-                        <div className="h-6 w-px bg-input mx-2"></div>
+                            {/* 列表和引用组 */}
+                            <div className="flex items-center gap-0.5 border-r border-input pr-2 mr-1">
+                                <ToolbarBtn icon={Quote} title="引用" action={() => handleToolbarAction('quote')}/>
+                                <ToolbarBtn icon={List} title="无序列表" action={() => handleToolbarAction('list')}/>
+                                <ToolbarBtn icon={ListOrdered} title="有序列表"
+                                            action={() => handleToolbarAction('ordered-list')}/>
+                                <ToolbarBtn icon={CheckSquare} title="任务列表"
+                                            action={() => handleToolbarAction('task-list')}/>
+                            </div>
 
-                        {/* 文档操作按钮 */}
-                        <div className="flex gap-2">
-                            {documentButtons.map((button, index) => {
-                                const IconComponent = button.icon;
-                                return (
-                                    <button
-                                        key={index}
-                                        onClick={button.action}
-                                        className={`export-button h-8 ${button.hasMenu ? 'px-2 w-auto' : 'w-8 p-1'} rounded transition-colors flex items-center justify-center group relative ${
-                                            button.primary
-                                                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                                                : 'bg-transparent hover:bg-muted/50 border border-input'
-                                        }`}
-                                        aria-label={button.title}
-                                    >
-                                        <div className="flex items-center gap-1">
-                                            <IconComponent/>
-                                            {button.hasMenu && (
-                                                <>
-                                                    <span className="text-xs font-medium">{button.title}</span>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                         strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <path d="m6 9 6 6 6-6"/>
-                                                    </svg>
-                                                </>
-                                            )}
-                                        </div>
-                                        <span
-                                            className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-background border border-input text-xs py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm z-20 text-foreground pointer-events-none ${button.hasMenu ? 'hidden' : ''}`}>
-                                            {button.title}
-                                        </span>
+                            {/* 插入组 */}
+                            <div className="flex items-center gap-0.5 border-r border-input pr-2 mr-1">
+                                <ToolbarBtn icon={LinkIcon} title="链接" action={() => handleToolbarAction('link')}/>
+                                <ToolbarBtn icon={ImageIcon} title="图片" action={() => handleToolbarAction('image')}/>
+                                <ToolbarBtn icon={Table} title="表格" action={() => handleToolbarAction('table')}/>
+                                <ToolbarBtn icon={FileCode} title="代码块"
+                                            action={() => handleToolbarAction('codeblock')}/>
+                                <ToolbarBtn icon={Minus} title="水平线" action={() => handleToolbarAction('hr')}/>
+                            </div>
 
-                                        {button.title === '导出' && showExportMenu && (
-                                            <div
-                                                className="export-menu absolute top-full right-0 mt-1.5 bg-background border border-input rounded-md shadow-md z-30 min-w-[140px] overflow-hidden">
-                                                <div
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // 防止冒泡触发父级按钮
-                                                        downloadMarkdown()
-                                                    }}
-                                                    className="w-full px-3 py-2.5 text-left flex items-center gap-2.5 hover:bg-muted text-sm cursor-pointer transition-colors duration-200"
-                                                >
-                                                            <span
-                                                                className={`flex items-center justify-center w-5 h-5 text-foreground ${downloadLoading ? 'animate-spin' : ''}`}>
-                                                                {
-                                                                    downloadLoading ? <LoaderCircle/> : <Download/>
-                                                                }
-                                                            </span>
-                                                    <span className="text-foreground">Markdown</span>
-                                                </div>
-                                                <div
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // 防止冒泡触发父级按钮
-                                                        exportAsImage()
-                                                    }}
-                                                    className="w-full px-3 py-2.5 text-left flex items-center gap-2.5 hover:bg-muted text-sm cursor-pointer transition-colors duration-200"
-                                                >
-                                                            <span
-                                                                className={`flex items-center justify-center w-5 h-5 text-foreground ${exportLoading ? 'animate-spin' : ''}`}>
-                                                                {
-                                                                    exportLoading ? <LoaderCircle/> : <ImageIcon/>
+                            <div className="flex-1"></div>
 
-                                                                }
-                                                            </span>
-                                                    <span className="text-foreground">图片</span>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
+                            {/* 操作组 */}
+                            <div className="flex items-center gap-1">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" size="sm" className="h-8 gap-1">
+                                            <Download className="h-4 w-4"/>
+                                            <span>导出</span>
+                                            <ChevronDown className="h-3 w-3 opacity-50"/>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={downloadMarkdown}>
+                                            {downloadLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
+                                                <FileText className="mr-2 h-4 w-4"/>}
+                                            <span>导出 Markdown</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={exportAsImage}>
+                                            {exportLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
+                                                <FileImage className="mr-2 h-4 w-4"/>}
+                                            <span>导出为图片</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
 
-                    {/* 编辑器和预览区域 */}
-                    <div
-                        ref={containerRef}
-                        className="flex flex-row border border-input rounded-b-md relative"
-                        style={{height: isFullscreen ? 'calc(100vh - 50px)' : '600px'}}
-                    >
-                        {/* 编辑区 */}
-                        <div
-                            className="h-full overflow-hidden"
-                            style={{width: `${leftPaneWidth}%`}}
-                        >
-              <textarea
-                  id="markdownEditor"
-                  value={markdownText}
-                  onChange={(e) => setMarkdownText(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full h-full p-4 bg-background font-mono text-sm focus:outline-none focus:ring-0 overflow-y-auto resize-none border-0"
-                  placeholder="在此输入 Markdown 文本..."
-              />
-                        </div>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="sm" onClick={() => setMarkdownText('')}
+                                                className="h-8 w-8 p-0 text-destructive hover:text-destructive">
+                                            <Trash2 className="h-4 w-4"/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>清空文档</p></TooltipContent>
+                                </Tooltip>
 
-                        {/* 可拖动分隔线 */}
-                        <div
-                            className="w-1 h-full bg-input hover:bg-primary cursor-col-resize flex items-center justify-center relative z-10"
-                            onMouseDown={handleMouseDown}
-                        >
-                            <div
-                                className="absolute w-5 h-12 bg-muted/30 rounded-full flex items-center justify-center">
-                                <div className="w-0.5 h-6 bg-muted-foreground mx-0.5"></div>
-                                <div className="w-0.5 h-6 bg-muted-foreground mx-0.5"></div>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="sm" onClick={toggleFullscreen}
+                                                className="h-8 w-8 p-0">
+                                            {isFullscreen ? <Minimize className="h-4 w-4"/> :
+                                                <Maximize className="h-4 w-4"/>}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>{isFullscreen ? '退出全屏' : '全屏模式'}</p></TooltipContent>
+                                </Tooltip>
                             </div>
                         </div>
 
-                        {/* 预览区 */}
+                        {/* 编辑器和预览区域 */}
                         <div
-                            className="h-full overflow-hidden"
-                            style={{width: `${100 - leftPaneWidth}%`}}
+                            ref={containerRef}
+                            className="flex flex-row relative bg-background"
+                            style={{height: isFullscreen ? 'calc(100vh - 50px)' : '600px'}}
                         >
+                            {/* 编辑区 */}
                             <div
-                                className="w-full h-full p-4 bg-muted/10 overflow-y-auto prose prose-invert max-w-none"
-                                dangerouslySetInnerHTML={{__html: htmlPreview}}
-                            />
+                                className="h-full overflow-hidden"
+                                style={{width: `${leftPaneWidth}%`}}
+                            >
+                                <textarea
+                                    ref={textareaRef}
+                                    id="markdownEditor"
+                                    value={markdownText}
+                                    onChange={(e) => setMarkdownText(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    className="w-full h-full p-6 bg-background font-mono text-sm focus:outline-none focus:ring-0 overflow-y-auto resize-none border-0 leading-relaxed"
+                                    placeholder="在此输入 Markdown 文本..."
+                                    spellCheck={false}
+                                />
+                            </div>
+
+                            {/* 可拖动分隔线 */}
+                            <div
+                                className="w-1 h-full bg-border hover:bg-primary cursor-col-resize flex items-center justify-center relative z-10 transition-colors"
+                                onMouseDown={handleMouseDown}
+                            >
+                                <div
+                                    className="absolute w-4 h-8 bg-muted border border-border rounded-full flex items-center justify-center shadow-sm">
+                                    <div className="w-0.5 h-4 bg-muted-foreground/50 mx-0.5 rounded-full"></div>
+                                </div>
+                            </div>
+
+                            {/* 预览区 */}
+                            <div
+                                className="h-full overflow-hidden bg-muted/5"
+                                style={{width: `${100 - leftPaneWidth}%`}}
+                            >
+                                <div
+                                    className="w-full h-full p-8 overflow-y-auto prose prose-invert max-w-none"
+                                    dangerouslySetInnerHTML={{__html: htmlPreview}}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </TooltipProvider>
     );
 };
 
