@@ -4,9 +4,9 @@ export const serverTools: Tool[] = [
     {
         id: 'warpgate',
         name: 'Warpgate',
-        desctiption: '完全透明的 SSH、HTTPS、MySQL 和 Postgres 堡垒机/PAM，无需额外的客户端软件',
+        description: '完全透明的 SSH、HTTPS、MySQL 和 Postgres 堡垒机/PAM，无需额外的客户端软件',
         href: 'https://github.com/warp-tech/warpgate',
-        categoty: '服务器工具'
+        category: '服务器工具'
     },
     {
         id: 'fastfetch',
