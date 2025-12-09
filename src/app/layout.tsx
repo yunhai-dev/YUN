@@ -8,6 +8,8 @@ import {baseUrl, image, siteName} from '@/config/site';
 import Script from "next/script";
 import {ViewTransitions} from 'next-view-transitions'
 import {TooltipProvider} from "@/components/ui/tooltip";
+import HandControlOverlay from "@/components/HandControlOverlay";
+import { HandControlProvider } from "@/context/HandControlContext";
 
 
 const inter = Inter({subsets: ["latin"]});
@@ -84,14 +86,17 @@ export default function RootLayout({
                 data-website-id="e7012192-3cfd-4138-af60-453aa655c7f9"
             ></Script>
             <TooltipProvider>
-                <body className={inter.className}>
-                <Navbar/>
-                <Toaster/>
-                <main className="min-h-screen">
-                    {children}
-                </main>
-                <Footer/>
-                </body>
+                <HandControlProvider>
+                    <body className={inter.className}>
+                    <Navbar/>
+                    <HandControlOverlay />
+                    <Toaster/>
+                    <main className="min-h-screen">
+                        {children}
+                    </main>
+                    <Footer/>
+                    </body>
+                </HandControlProvider>
             </TooltipProvider>
 
             </html>
