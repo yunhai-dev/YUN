@@ -493,6 +493,14 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/哪里都是你 队长.mp3`,
     },
     {
+        id: 'wc-ck',
+        title: '我曾',
+        imageUrl: `${STORAGE_HOST}/我曾 程奎.jpg`,
+        author: '程奎',
+        lyricsUrl: `${STORAGE_HOST}/我曾 程奎.lrc`,
+        musicUrl: `${STORAGE_HOST}/我曾 程奎.mp3`,
+    },
+    {
         id: 'wds-mn-suhan',
         title: '我的世界没有你',
         imageUrl: `${STORAGE_HOST}/我的世界没有你 苏晗.jpg`,

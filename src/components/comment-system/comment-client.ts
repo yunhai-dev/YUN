@@ -8,7 +8,8 @@ import {
   HealthCheck,
   CommentClientConfig,
   ApiResponse,
-  ErrorResponse
+  ErrorResponse,
+  PageStats
 } from './comment';
 
 /**
@@ -229,8 +230,8 @@ export class CommentClient {
   /**
    * 获取页面统计
    */
-  async getPageStats(page: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/stats/${encodeURIComponent(page)}`);
+  async getPageStats(page: string): Promise<ApiResponse<PageStats>> {
+    return this.request<PageStats>(`/api/stats/${encodeURIComponent(page)}`);
   }
 
   /**
