@@ -52,6 +52,27 @@ const MarkdownEditorPage = () => {
     const {toast} = useToast();
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [exportLoading, setExportLoading] = useState(false);
+    
+    const [globalIsDark, setGlobalIsDark] = useState(true);
+
+    // 监听全局主题
+    useEffect(() => {
+        const checkTheme = () => {
+            const isLight = document.documentElement.classList.contains('light');
+            setGlobalIsDark(!isLight);
+        };
+
+        // 初始检查
+        checkTheme();
+
+        const observer = new MutationObserver(checkTheme);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     // 使用自定义的 useFullscreen hook
     const {isFullscreen, toggleFullscreen} = useFullscreen(editorContainerRef);
@@ -669,7 +690,9 @@ ${selection}
                                 style={{width: `${100 - leftPaneWidth}%`}}
                             >
                                 <div
-                                    className="w-full h-full p-8 overflow-y-auto prose prose-invert max-w-none"
+                                    className={`w-full h-full p-8 overflow-y-auto prose dark:prose-invert max-w-none transition-colors duration-300 ${
+                                        !globalIsDark ? 'hljs-light' : ''
+                                    }`}
                                     dangerouslySetInnerHTML={{__html: htmlPreview}}
                                 />
                             </div>

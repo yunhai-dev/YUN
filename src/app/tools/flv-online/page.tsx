@@ -17,9 +17,10 @@ import {
     AlertCircle,
     Radio
 } from "lucide-react";
+import type { MediaInfo, Player, StatisticsInfo } from 'flv.js';
 
 // 动态导入 flv.js，避免 SSR 问题
-let flvjs: any = null;
+let flvjs: typeof import('flv.js') | null = null;
 
 const FlvOnlinePage = () => {
     const [flvUrl, setFlvUrl] = useState<string>('');
@@ -30,12 +31,12 @@ const FlvOnlinePage = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [videoInfo, setVideoInfo] = useState<any>(null);
+    const [videoInfo, setVideoInfo] = useState<MediaInfo | null>(null);
     const [bufferLength, setBufferLength] = useState<number>(0);
     const [flvLoaded, setFlvLoaded] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
-    const playerRef = useRef<any>(null);
+    const playerRef = useRef<Player | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const { toast } = useToast();
 
@@ -118,7 +119,7 @@ const FlvOnlinePage = () => {
                 console.log('Player attached to video element');
 
                 // 事件监听
-                flvPlayer.on(flvjs.Events.ERROR, (errorType: string, errorDetail: string, errorInfo: any) => {
+                flvPlayer.on(flvjs.Events.ERROR, (errorType: string, errorDetail: string, errorInfo: unknown) => {
                     console.error('FLV Player Error:', errorType, errorDetail, errorInfo);
                     let errorMsg = '播放错误';
                     
@@ -146,12 +147,12 @@ const FlvOnlinePage = () => {
                     setIsLoading(false);
                 });
 
-                flvPlayer.on(flvjs.Events.MEDIA_INFO, (mediaInfo: any) => {
+                flvPlayer.on(flvjs.Events.MEDIA_INFO, (mediaInfo: MediaInfo) => {
                     console.log('Media info:', mediaInfo);
                     setVideoInfo(mediaInfo);
                 });
 
-                flvPlayer.on(flvjs.Events.STATISTICS_INFO, (stats: any) => {
+                flvPlayer.on(flvjs.Events.STATISTICS_INFO, (stats: StatisticsInfo) => {
                     setBufferLength(stats.decodedFrames || 0);
                 });
 
@@ -214,9 +215,10 @@ const FlvOnlinePage = () => {
                 setIsLoading(false);
                 console.error('FLV.js is not supported');
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Initialize error:', err);
-            setError(`初始化播放器失败: ${err.message || '未知错误'}`);
+            const errorMessage = err instanceof Error ? err.message : '未知错误';
+            setError(`初始化播放器失败: ${errorMessage}`);
             setIsLoading(false);
         }
     };
@@ -248,12 +250,13 @@ const FlvOnlinePage = () => {
                 console.log('Video playing successfully');
                 setIsPlaying(true);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Play error:', err);
-            setError(`播放失败: ${err.message || '请检查流地址是否正确'}`);
+            const errorMessage = err instanceof Error ? err.message : '请检查流地址是否正确';
+            setError(`播放失败: ${errorMessage}`);
             toast({
                 title: "播放失败",
-                description: err.message || "无法播放视频，请检查流地址",
+                description: errorMessage,
                 variant: "destructive",
             });
         }

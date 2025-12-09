@@ -18,6 +18,10 @@ import {
     Zap
 } from 'lucide-react';
 
+interface WindowWithFileSystem extends Window {
+    showSaveFilePicker(options?: unknown): Promise<FileSystemFileHandle>;
+}
+
 type ConnectionRole = 'sender' | 'receiver' | null;
 type ConnectionStep = 'select-role' | 'create-offer' | 'wait-answer' | 'receive-offer' | 'connected';
 
@@ -44,7 +48,7 @@ const P2PTransferPage = () => {
     const [transferStatus, setTransferStatus] = useState<string>('');
     const [isTransferring, setIsTransferring] = useState(false);
     const [receivingFile, setReceivingFile] = useState<FileMetadata | null>(null);
-    const [useStreamWrite, setUseStreamWrite] = useState(false);
+    const [useStreamWrite] = useState(false);
 
     // WebRTC refs
     const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -63,6 +67,7 @@ const P2PTransferPage = () => {
                 pcRef.current.close();
             }
             if (fileWriterRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 fileWriterRef.current.close();
             }
         };
@@ -197,7 +202,7 @@ const P2PTransferPage = () => {
             // 尝试使用 File System Access API（需要用户交互）
             if ('showSaveFilePicker' in window && useStreamWrite) {
                 try {
-                    const handle = await (window as any).showSaveFilePicker({
+                    const handle = await (window as unknown as WindowWithFileSystem).showSaveFilePicker({
                         suggestedName: fileName,
                         types: [{
                             description: 'File',
@@ -207,9 +212,10 @@ const P2PTransferPage = () => {
                     const writable = await handle.createWritable();
                     await writable.write(blob);
                     await writable.close();
-                } catch (err: any) {
+                } catch (err: unknown) {
                     // 用户取消或不支持，降级为自动下载
-                    if (err.name !== 'AbortError') {
+                    const isAbortError = err instanceof Error && err.name === 'AbortError';
+                    if (!isAbortError) {
                         console.warn('showSaveFilePicker 失败，使用降级方案', err);
                     }
                     triggerDownload(blob, fileName);

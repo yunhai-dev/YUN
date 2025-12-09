@@ -71,4 +71,11 @@ export const netTools: Tool[] = [
         href: 'https://github.com/searxng/searxng',
         category: '网络工具'
     },
+    {
+        id: 'zerotier',
+        name: 'ZeroTier',
+        description: '虚拟局域网（Virtual LAN）/SD-WAN 工具，能让分布在不同网络、不同地域的设备，看起来像在同一个局域网里一样互相通信。',
+        href: 'https://my.zerotier.com/',
+        category: '网络工具'
+    }
 ]
