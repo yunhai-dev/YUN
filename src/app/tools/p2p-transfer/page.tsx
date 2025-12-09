@@ -48,7 +48,7 @@ const P2PTransferPage = () => {
     const [transferStatus, setTransferStatus] = useState<string>('');
     const [isTransferring, setIsTransferring] = useState(false);
     const [receivingFile, setReceivingFile] = useState<FileMetadata | null>(null);
-    const [useStreamWrite, setUseStreamWrite] = useState(false);
+    const [useStreamWrite] = useState(false);
 
     // WebRTC refs
     const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -67,6 +67,7 @@ const P2PTransferPage = () => {
                 pcRef.current.close();
             }
             if (fileWriterRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 fileWriterRef.current.close();
             }
         };
