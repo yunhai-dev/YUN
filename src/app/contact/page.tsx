@@ -190,38 +190,6 @@ export default function Contact() {
                     </div>
                 </motion.div>
             </section>
-
-            {/* Github state */}
-            <section className="py-16 px-4">
-                <motion.div
-                    initial={{opacity: 0, y: 20}}
-                    whileInView={{opacity: 1, y: 0}}
-                    transition={{duration: 0.5}}
-                    viewport={{once: true}}
-                    className="max-w-4xl mx-auto"
-                >
-                    <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Github State</h2>
-                    <div className="grid grid-cols-2 gap-2">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="https://github-readme-stats.vercel.app/api?username=yunhai-dev&theme=transparent&show_icons=true&hide_border=true&show=reviews&hide_title=true&hide=contribs&number_format=long"
-                            alt="github stats"
-                            width={400}
-                            height={200}
-                            className="w-full max-h-[300px] object-cover border border-border p-2 rounded-lg"
-                        />
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src='https://github-readme-activity-graph.vercel.app/graph?username=yunhai-dev&theme=github-compact&hide_border=true&area=true&custom_title=Contribution%20Graph'
-                            alt={'github state'}
-                            width={800}
-                            height={200}
-                            className="w-full h-auto object-cover border border-border p-2 rounded-lg"
-                        />
-                    </div>
-                </motion.div>
-            </section>
-
         </main>
     );
 }

@@ -95,14 +95,17 @@ export function Navbar() {
         <header
             className={cn(
                 isAtTop
-                    ? "top-0 left-0 right-0"
-                    : "top-3 border border-border max-w-7xl mx-auto left-0 right-0 rounded-full",
-                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md transition-all duration-200 ease-in-out"
+                    ? "top-0 left-0 right-0 border-b"
+                    : "top-10 border max-w-7xl mx-auto left-0 right-0 rounded-full",
+                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md transition-all duration-500 ease-in-out"
             )}
         >
             {/* Container: Relative for positioning button, center on mobile, space-between on desktop */}
             <div
-                className="container mx-auto px-4 relative flex items-center justify-center md:justify-between h-full">
+                className={cn(
+                    "container mx-auto px-4 relative flex items-center h-full",
+                    isAtTop ? "justify-center md:justify-between" : "justify-center"
+                )}>
                 {/* Logo Link - Centered on mobile via container justify-center */}
                 <Link href="/" className="flex items-center gap-2">
                     <Image
