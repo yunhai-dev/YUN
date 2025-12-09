@@ -69,6 +69,11 @@ export interface HTTPValidationError {
   detail?: ValidationError[];
 }
 
+export interface PageStats {
+  comment_count: number;
+  [key: string]: unknown;
+}
+
 /**
  * 获取评论列表的查询参数
  */

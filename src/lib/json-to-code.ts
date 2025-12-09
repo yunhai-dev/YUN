@@ -53,7 +53,7 @@ class TypeAnalyzer {
     private classes: Map<string, ClassDefinition> = new Map();
     private classNameCounter: Map<string, number> = new Map();
 
-    analyze(json: any, rootName: string = 'Root'): ClassDefinition[] {
+    analyze(json: unknown, rootName: string = 'Root'): ClassDefinition[] {
         this.classes.clear();
         this.classNameCounter.clear();
 
@@ -86,7 +86,7 @@ class TypeAnalyzer {
         return `${baseName}${count + 1}`;
     }
 
-    private inferType(value: any, suggestedClassName: string): InferredType {
+    private inferType(value: unknown, suggestedClassName: string): InferredType {
         if (value === null) {
             return {kind: 'primitive', type: 'null'};
         }
@@ -116,9 +116,10 @@ class TypeAnalyzer {
             // 对象类型，创建一个新的类定义
             const className = this.getUniqueClassName(toPascalCase(suggestedClassName));
             const fields: FieldDefinition[] = [];
+            const obj = value as Record<string, unknown>;
 
-            for (const key of Object.keys(value)) {
-                const fieldValue = value[key];
+            for (const key of Object.keys(obj)) {
+                const fieldValue = obj[key];
                 // 对于嵌套对象，使用 key 作为子类名的建议
                 const childClassName = toPascalCase(key);
                 const rawType = this.inferType(fieldValue, childClassName);
@@ -448,7 +449,7 @@ class RustGenerator extends CodeGenerator {
 
 // ==================== 主入口 ====================
 
-export function jsonToCode(json: any, language: SupportedLanguage, rootClassName: string = 'Root'): string {
+export function jsonToCode(json: unknown, language: SupportedLanguage, rootClassName: string = 'Root'): string {
     const analyzer = new TypeAnalyzer();
     const classes = analyzer.analyze(json, rootClassName);
 

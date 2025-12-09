@@ -35,10 +35,25 @@ declare module 'flv.js' {
         seekParamStart?: string;
         seekParamEnd?: string;
         rangeLoadZeroStart?: boolean;
-        customSeekHandler?: any;
+        customSeekHandler?: unknown;
         reuseRedirectedURL?: boolean;
         referrerPolicy?: string;
         headers?: Record<string, string>;
+    }
+
+    export interface MediaInfo {
+        videoCodec: string;
+        audioCodec: string;
+        width: number;
+        height: number;
+        fps: number;
+        audioSampleRate: number;
+        [key: string]: unknown;
+    }
+
+    export interface StatisticsInfo {
+        decodedFrames: number;
+        [key: string]: unknown;
     }
 
     export interface Player {
@@ -56,8 +71,8 @@ declare module 'flv.js' {
         readonly volume: number;
         readonly muted: boolean;
         readonly currentTime: number;
-        readonly mediaInfo: any;
-        readonly statisticsInfo: any;
+        readonly mediaInfo: MediaInfo;
+        readonly statisticsInfo: StatisticsInfo;
     }
 
     export const Events: {
