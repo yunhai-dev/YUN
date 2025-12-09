@@ -1,15 +1,13 @@
 "use client";
 
-import React from 'react';
-import { notFound } from 'next/navigation';
-import { MediaItem } from '@/types/media';
-import { getAllMediaItems } from "@/data/media";
-import { useAudio } from './player/hooks/useAudio';
-import { useLyrics } from './player/hooks/useLyrics';
-import { ImmersivePlayer } from './player/styles/ImmersivePlayer';
-import { AppleMusicPlayer } from './player/styles/AppleMusicPlayer';
-import { useState, useEffect } from 'react';
-import { LayoutTemplate } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {notFound} from 'next/navigation';
+import {MediaItem} from '@/types/media';
+import {getAllMediaItems} from "@/data/media";
+import {useAudio} from './player/hooks/useAudio';
+import {useLyrics} from './player/hooks/useLyrics';
+import {ImmersivePlayer} from './player/styles/ImmersivePlayer';
+import {AppleMusicPlayer} from './player/styles/AppleMusicPlayer';
 
 interface Props {
     musicItem: MediaItem | undefined;
