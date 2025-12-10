@@ -119,7 +119,7 @@ export function Navbar() {
                     />
                     <span className="font-semibold">YunHai</span>
                 </Link>
-                <nav className="hidden md:flex gap-2 items-center">
+                <nav className="hidden md:flex gap-2 items-center absolute left-1/2 -translate-x-1/2">
                     {navLinks.map((link) => (
                         link.children ? (
                             <div

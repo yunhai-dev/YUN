@@ -34,7 +34,7 @@ export function Command({hotkey}: { hotkey?: boolean }) {
                         id: tool.id,
                         title: tool.name,
                         content: tool.description,
-                        type: 'tool'
+                        type: 'tools'
                     }))
 
                     // Add media data to the search index
