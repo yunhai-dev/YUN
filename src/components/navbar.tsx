@@ -5,13 +5,13 @@ import {usePathname} from "next/navigation";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
 import {useEffect, useRef, useState} from 'react';
-import {Github, Menu, X, Hand, Loader2} from 'lucide-react';
+import {Github, Hand, Loader2, Menu, X} from 'lucide-react';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {Command} from "@/components/command";
 import {ThemeToggle} from "@/components/theme-toggle";
 import EaseToolTip from "@/components/EaseToolTip";
-import { useHandControl } from '@/context/HandControlContext';
+import {useHandControl} from '@/context/HandControlContext';
 
 const navLinks = [
     {href: "/blog/", text: "Blog"},
@@ -64,7 +64,7 @@ export function Navbar() {
     const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
     const [isAtTop, setIsAtTop] = useState(true); // 新增
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const { isEnabled, toggleEnabled, isLoading } = useHandControl();
+    const {isEnabled, toggleEnabled, isLoading} = useHandControl();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -195,6 +195,7 @@ export function Navbar() {
                         <EaseToolTip tip={isEnabled ? "关闭手势控制" : "开启手势控制 (Beta)"}>
                             <button
                                 onClick={toggleEnabled}
+                                aria-label="Toggle Hand Control"
                                 className={cn(
                                     "text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted flex items-center justify-center",
                                     isEnabled && "text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-950/30"
