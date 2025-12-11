@@ -167,7 +167,10 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
                                         <img
                                             src={post.imageUrl}
                                             alt={post.title}
-                                            className="object-cover rounded-lg w-full"
+                                            width={1200}
+                                            height={630}
+                                            loading="lazy"
+                                            className="object-cover rounded-lg w-full h-full"
                                         />
                                     </div>
                                 )}
