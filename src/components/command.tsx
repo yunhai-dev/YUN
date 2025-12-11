@@ -76,6 +76,9 @@ export function Command({hotkey}: { hotkey?: boolean }) {
 
     // Generate link based on type and id
     const generateHref = (type: string, id: string) => {
+        if (id.startsWith('http://') || id.startsWith('https://')) {
+            return id
+        }
         return `/${type}/${id}/`
     }
 
