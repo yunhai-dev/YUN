@@ -13,7 +13,7 @@ export const getSearchIndex = async () => {
       const data = await response.json();
 
       const tools = getAllTools().map((tool) => ({
-        id: tool.id,
+        id: tool.href,
         title: tool.name,
         content: tool.description,
         type: "tools",
