@@ -6,8 +6,7 @@ import MiniSearch from 'minisearch'
 
 import {CommandDialog, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command"
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
-import {getAllTools} from "@/data/tools"
-import {mediaItems} from "@/data/media";
+import {getSearchIndex} from "@/lib/search-service";
 
 export function Command({hotkey}: { hotkey?: boolean }) {
     const [open, setOpen] = React.useState(false)
@@ -24,36 +23,9 @@ export function Command({hotkey}: { hotkey?: boolean }) {
     // Initialize minisearch
     React.useEffect(() => {
         const loadSearchIndex = async () => {
-            try {
-                const response = await fetch('/index.json')
-                if (response.ok) {
-                    const data = await response.json()
-
-                    // Add tools data to the search index
-                    const tools = getAllTools().map(tool => ({
-                        id: tool.id,
-                        title: tool.name,
-                        content: tool.description,
-                        type: 'tool'
-                    }))
-
-                    // Add media data to the search index
-                    const medias = mediaItems.map(media => ({
-                        id: media.id,
-                        title: media.title,
-                        content: media.author,
-                        type: 'media'
-                    }))
-
-                    const ms = new MiniSearch({
-                        fields: ["title", "content"],
-                        storeFields: ['id', 'title', 'content', 'type'], // Store all required fields
-                    });
-                    ms.addAll([...data, ...tools, ...medias])
-                    setMiniSearch(ms)
-                }
-            } catch (error) {
-                console.error('Failed to load search index:', error)
+            const ms = await getSearchIndex();
+            if (ms) {
+                setMiniSearch(ms);
             }
         }
         loadSearchIndex()
@@ -104,6 +76,9 @@ export function Command({hotkey}: { hotkey?: boolean }) {
 
     // Generate link based on type and id
     const generateHref = (type: string, id: string) => {
+        if (id.startsWith('http://') || id.startsWith('https://')) {
+            return id
+        }
         return `/${type}/${id}/`
     }
 
