@@ -10,8 +10,10 @@ export default function LoginPage() {
                     <Image
                         src={`${STORAGE_HOST}/Avatar.webp`}
                         alt="Avatar"
-                        width={50}
-                        height={50}
+                        width={48}
+                        height={48}
+                        sizes="48px"
+                        loading="lazy"
                     />
                 </div>
                 <div className="bg-card rounded-lg py-10 px-6">
