@@ -50,6 +50,11 @@ const navLinks = [
                 href: "/test/",
                 description: "Testing can be fun too"
             },
+            {
+                title: "Chat",
+                href: "/chat/",
+                description: "AI Elements chat playground demo"
+            }
         ]
     },
     {href: "/contact/", text: "Contact"},

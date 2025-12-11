@@ -42,6 +42,14 @@
         
         /* Glow effect */
         --glow-color: 139 92 246;
+
+        /* Code token colors - dark theme */
+        --code-keyword: #c792ea;
+        --code-string: #9fe885;
+        --code-number: #f78c6c;
+        --code-func: #82aaff;
+        --code-attr: #7fdbca;
+        --code-comment: #5c6370;
     }
 
     .light {
@@ -75,6 +83,14 @@
         
         /* Glow effect for light theme */
         --glow-color: 139 92 246;
+
+        /* Code token colors - light theme */
+        --code-keyword: #7c3aed;
+        --code-string: #065f46;
+        --code-number: #b45309;
+        --code-func: #2563eb;
+        --code-attr: #0d9488;
+        --code-comment: #6b7280;
         
         /* Highlight.js light theme overrides */
         color-scheme: light;
@@ -533,4 +549,67 @@ input[type="color"]::-moz-color-swatch {
 
 .glow-card:hover::before {
     opacity: 1;
+}
+
+@layer components {
+    /* Ensure Streamdown code blocks have consistent padding and no border */
+    .sd-message pre {
+        padding: 1rem !important;
+        margin: 0 !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0.5rem !important;
+        background: transparent !important;
+        color: hsl(var(--foreground)) !important;
+        font-size: 13px !important;
+        line-height: 1.5 !important;
+    }
+
+    /* Make inline code and syntax spans inherit current theme colors */
+    .sd-message pre code,
+    .sd-message code,
+    .sd-message pre span,
+    .sd-message code span {
+        background: transparent !important;
+    }
+
+    /* Token colors for code blocks (highlight.js style classes) */
+    .sd-message :is(.hljs-keyword, .hljs-operator, .hljs-selector-tag) {
+        color: var(--code-keyword) !important;
+    }
+    .sd-message :is(.hljs-string, .hljs-meta .hljs-string, .hljs-regexp) {
+        color: var(--code-string) !important;
+    }
+    .sd-message :is(.hljs-number, .hljs-literal) {
+        color: var(--code-number) !important;
+    }
+    .sd-message :is(.hljs-title.function_, .hljs-title, .hljs-built_in, .hljs-function) {
+        color: var(--code-func) !important;
+    }
+    .sd-message :is(.hljs-attr, .hljs-attribute, .hljs-variable, .hljs-params) {
+        color: var(--code-attr) !important;
+    }
+    .sd-message :is(.hljs-comment, .hljs-quote) {
+        color: var(--code-comment) !important;
+    }
+
+    /* Token colors for shiki/prism style classes */
+    .sd-message :is(.token.keyword, .token.operator, .token.selector, .token.deleted) {
+        color: var(--code-keyword) !important;
+    }
+    .sd-message :is(.token.string, .token.char, .token.inserted, .token.attr-value) {
+        color: var(--code-string) !important;
+    }
+    .sd-message :is(.token.number, .token.boolean, .token.constant, .token.symbol) {
+        color: var(--code-number) !important;
+    }
+    .sd-message :is(.token.function, .token.method, .token.class-name, .token.property-access) {
+        color: var(--code-func) !important;
+    }
+    .sd-message :is(.token.attr-name, .token.property, .token.variable, .token.parameter) {
+        color: var(--code-attr) !important;
+    }
+    .sd-message :is(.token.comment, .token.prolog, .token.doctype, .token.cdata) {
+        color: var(--code-comment) !important;
+    }
 }
