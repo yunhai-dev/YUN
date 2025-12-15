@@ -79,9 +79,18 @@ export default function RootLayout({
     return (
         <ViewTransitions>
             <html lang="zh-CN">
+            <head>
+                <link rel="preconnect" href="https://cloud.umami.is" crossOrigin="anonymous" />
+                <link rel="dns-prefetch" href="https://cloud.umami.is" />
+                <link rel="preconnect" href="https://minio-endpoint.bybxbwg.fun" crossOrigin="anonymous" />
+                <link rel="dns-prefetch" href="https://minio-endpoint.bybxbwg.fun" />
+                <link rel="preconnect" href="https://rustfs-endpoint.yhnotes.com" crossOrigin="anonymous" />
+                <link rel="dns-prefetch" href="https://rustfs-endpoint.yhnotes.com" />
+                <title>YUNHAI Notes</title>
+            </head>
             {/* 网站监控脚本 */}
             <Script
-                defer
+                strategy="lazyOnload"
                 src="https://cloud.umami.is/script.js"
                 data-website-id="e7012192-3cfd-4138-af60-453aa655c7f9"
             ></Script>

@@ -54,10 +54,11 @@ export function YunDownload() {
                         <Image
                             src={`${STORAGE_HOST}/data-label.webp`}
                             alt="D0 Tools"
-                            width={0}
-                            height={0}
-                            sizes="100vw"
-                            className="size-full"
+                            width={960}
+                            height={540}
+                            sizes="(min-width: 1024px) 640px, 100vw"
+                            className="w-full h-full object-cover"
+                            loading="lazy"
                         />
                     </div>
                 </motion.div>

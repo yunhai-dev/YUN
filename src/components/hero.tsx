@@ -57,11 +57,14 @@ function ProductDiagram() {
                     >
                         <Image
                             className="rounded-md"
-                            priority={true}
+                            priority={index === 0}
+                            loading={index === 0 ? "eager" : "lazy"}
                             width={800}
                             height={200}
+                            sizes="(min-width: 1024px) 800px, 100vw"
                             src={image.src}
-                            alt={image.alt}/>
+                            alt={image.alt}
+                        />
                     </motion.div>
                 ))
             }
@@ -103,10 +106,10 @@ export function Hero() {
                 <div className="absolute size-full z-0">
                     <Particles
                         particleColors={[particleColor, particleColor]}
-                        particleCount={150}
+                        particleCount={90}
                         particleSpread={10}
                         speed={0.1}
-                        particleBaseSize={100}
+                        particleBaseSize={80}
                         moveParticlesOnHover={false}
                         alphaParticles={false}
                         disableRotation={false}
