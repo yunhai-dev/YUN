@@ -53,7 +53,7 @@ const navLinks = [
             {
                 title: "Chat",
                 href: "/chat/",
-                description: "AI Elements chat playground demo"
+                description: "Chat playground"
             }
         ]
     },
@@ -118,9 +118,11 @@ export function Navbar() {
                     <Image
                         src={`${STORAGE_HOST}/Avatar.webp`}
                         alt="YunHai Logo"
-                        width={24}
-                        height={24}
+                        width={48}
+                        height={48}
+                        sizes="48px"
                         className="rounded-full object-cover"
+                        loading="lazy"
                     />
                     <span className="font-semibold">YunHai</span>
                 </Link>

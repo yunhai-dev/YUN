@@ -77,7 +77,7 @@ export async function markdownToHtml(markdown: string): Promise<{ content: strin
 
         // 处理图片
         image({href, title, text}) {
-            return `<img src="${href}" alt="${text}" title="${title ?? ''}" class="mk-img bg-card border border-border p-1" />`;
+            return `<img src="${href}" alt="${text}" title="${title ?? ''}" class="mk-img bg-card border border-border p-1" loading="lazy" decoding="async" />`;
         },
 
         // 处理表格
