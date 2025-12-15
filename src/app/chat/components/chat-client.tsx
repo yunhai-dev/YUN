@@ -29,7 +29,7 @@ import {Input} from "@/components/ui/input";
 import {useChat} from "@/hooks/use-chat";
 import {chatTools} from "../tools";
 
-const DEFAULT_MODEL = "free:QwQ-32B";
+const DEFAULT_MODEL = "openai-gpt-oss-20b";
 const SUGGESTIONS: string[] = [];
 
 // 优化消息渲染组件
@@ -101,7 +101,7 @@ const ChatClient = () => {
     const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
     const [customModel, setCustomModel] = useState<string>("");
     const [apiKey, setApiKey] = useState<string>("");
-    const [baseUrl, setBaseUrl] = useState<string>("https://api.suanli.cn/v1");
+    const [baseUrl, setBaseUrl] = useState<string>("");
 
     const resolvedModel = useMemo(() => customModel.trim() || model, [customModel, model]);
 
@@ -114,7 +114,7 @@ const ChatClient = () => {
         stop,
     } = useChat({
         apiKey,
-        baseUrl: baseUrl || "https://api.suanli.cn/v1",
+        baseUrl: baseUrl || "https://ai.megallm.io",
         model: resolvedModel,
         tools: chatTools,
         initialMessages: [
@@ -142,9 +142,9 @@ const ChatClient = () => {
     // Persist credentials and custom model in localStorage
     useEffect(() => {
         if (typeof window === "undefined") return;
-        const savedApiKey = localStorage.getItem("chat-api-key") || "sk-W0rpStc95T7JVYVwDYc29IyirjtpPPby6SozFMQr17m8KWeo";
-        const savedBaseUrl = localStorage.getItem("chat-base-url") || "https://api.suanli.cn";
-        const savedModel = localStorage.getItem("chat-model-id") || "free:QwQ-32B";
+        const savedApiKey = localStorage.getItem("chat-api-key") || "sk-mega-79bcf2206ac5f638ff49d734b8d1e2532e2434658ff4bbf9584fda54172c4ad5";
+        const savedBaseUrl = localStorage.getItem("chat-base-url") || "https://ai.megallm.io";
+        const savedModel = localStorage.getItem("chat-model-id") || "openai-gpt-oss-20b";
         const savedPreset = localStorage.getItem("chat-model-preset") || DEFAULT_MODEL;
         setApiKey(savedApiKey);
         setBaseUrl(savedBaseUrl);
@@ -193,14 +193,25 @@ const ChatClient = () => {
         setTimeout(() => chatHandleSubmit(), 0);
     };
 
+    const visibleMessages = useMemo(
+        () => chatMessages.filter((message) => message.role !== "system"),
+        [chatMessages],
+    );
+
     return (
         <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
             <div className="flex-1 min-h-0 overflow-hidden">
                 <Conversation className="flex h-full flex-col">
                     <ConversationContent className="flex-1 overflow-y-auto pr-1">
-                        {chatMessages
-                            .filter((message) => message.role !== "system")
-                            .map((message) => (
+                        {visibleMessages.length === 0 ? (
+                            <div className="flex min-h-[320px] flex-col items-center justify-center gap-4 px-6 py-12 text-center text-muted-foreground">
+                                <p className="text-lg font-semibold">欢迎来到 YunHai Chat</p>
+                                <p className="max-w-lg text-base leading-7">
+                                    输入你的问题或想法，我会结合站长背景为你提供可执行的解答。
+                                </p>
+                            </div>
+                        ) : (
+                            visibleMessages.map((message) => (
                                 <ChatMessage
                                     key={message.id}
                                     message={message}
@@ -211,7 +222,8 @@ const ChatClient = () => {
                                         !(message.parts && message.parts.length)
                                     }
                                 />
-                            ))}
+                            ))
+                        )}
                     </ConversationContent>
                     <ConversationScrollButton/>
                 </Conversation>
@@ -241,7 +253,7 @@ const ChatClient = () => {
                                     open={modelSelectorOpen}
                                 >
                                     <ModelSelectorTrigger asChild>
-                                        <PromptInputButton className="w-52 max-w-52 justify-center">
+                                        <PromptInputButton className="w-fit max-w-52 justify-center px-2">
                                             <span
                                                 className="truncate text-center">{customModel || resolvedModel || "模型设置"}</span>
                                         </PromptInputButton>
@@ -268,7 +280,7 @@ const ChatClient = () => {
                                             <div className="space-y-1">
                                                 <p className="text-sm font-medium">Base URL</p>
                                                 <Input
-                                                    placeholder="默认 https://api.suanli.cn/v1"
+                                                    placeholder="默认 https://ai.megallm.io"
                                                     value={baseUrl}
                                                     onChange={(e) => setBaseUrl(e.target.value)}
                                                 />
