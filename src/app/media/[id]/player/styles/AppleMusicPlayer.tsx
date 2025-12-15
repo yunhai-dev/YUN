@@ -34,6 +34,7 @@ export const AppleMusicPlayer = ({
     const {togglePlay, seek, setAutoPlay: toggleAutoPlay, clearState} = controls;
 
     const [currentLine, setCurrentLine] = useState(0);
+    const [beforeFirstLine, setBeforeFirstLine] = useState(true);
     const [bgColors, setBgColors] = useState<string[]>(['#444', '#333']);
     const mediaBgRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
@@ -70,6 +71,9 @@ export const AppleMusicPlayer = ({
 
         const updateLine = () => {
             const time = audio.currentTime;
+            const firstLyricTime = lyrics[0]?.time ?? 0;
+            const isBefore = time < firstLyricTime;
+
             let lineIndex = -1;
             for (let i = 0; i < lyrics.length; i++) {
                 if (time >= lyrics[i].time &&
@@ -80,6 +84,10 @@ export const AppleMusicPlayer = ({
             }
             if (lineIndex === -1) {
                 lineIndex = 0;
+            }
+
+            if (isBefore !== beforeFirstLine) {
+                setBeforeFirstLine(isBefore);
             }
 
             if (lineIndex !== currentLine) {
@@ -116,8 +124,10 @@ export const AppleMusicPlayer = ({
                 // Calculate target scroll position to center the element
                 // Use dynamic offset (25% of container height) to move content up visually
                 // This ensures it looks centered/slightly above center on all screen sizes
-                const offset = containerHeight * 0.25;
-                const targetScroll = elOffset - containerHeight / 2 + elHeight / 2 + offset;
+                const offset = containerHeight * (beforeFirstLine ? 0.05 : 0.2);
+                const rawTarget = elOffset - containerHeight / 2 + elHeight / 2 + offset;
+                const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+                const targetScroll = Math.min(Math.max(0, rawTarget), maxScroll);
 
                 isAutoScrolling.current = true;
                 gsap.to(container, {
@@ -277,7 +287,7 @@ export const AppleMusicPlayer = ({
                 <div className="w-full md:w-7/12 h-[40vh] md:h-[70vh] relative mask-linear-fade">
                     <div
                         ref={lyricsContainerRef}
-                        className="h-full overflow-y-auto no-scrollbar relative py-[50vh] px-4"
+                        className="h-full overflow-y-auto no-scrollbar relative py-24 md:py-32 px-4"
                         onScroll={handleScroll}
                     >
                         {lyrics.length > 0 ? lyrics.map((line, index) => {
