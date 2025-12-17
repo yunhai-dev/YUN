@@ -48,7 +48,7 @@ const footerLinks = [
 
 export function Footer() {
     const pathname = usePathname()
-    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname)) {
+    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || pathname === '/chat/') {
         return null;
     }
     return (

@@ -77,16 +77,14 @@ export default function About() {
                                 Backend Development
                             </h3>
                             <p className="text-muted-foreground text-lg mb-4 relative z-10">
-                                Sometimes, I am a backend developer. My expertise lies in Python, particularly with
-                                Django and FastAPI.
-                                I've built multiple projects using the Django Rest Framework, including the <a
-                                href="https://maadaa.ai"
-                                className="text-blue-500 hover:underline">Maadaa</a> project.
+                                Expert in Python backend development with Django and FastAPI. Proficient in building 
+                                scalable distributed systems, SSO (Single Sign-On) integration with OAuth2/OIDC 
+                                (Google, GitHub, etc.), and RESTful API design.
                             </p>
                             <p className="text-muted-foreground text-lg relative z-10">
-                                The project involved Google and Github Login integration, user management, and a
-                                Celery-based
-                                asynchronous queue system for message delivery.
+                                Experienced in message queue systems (Celery, Redis, Kafka), microservices 
+                                architecture, database optimization (PostgreSQL, MySQL), and containerized 
+                                deployment with Docker/Kubernetes.
                             </p>
                         </div>
 
