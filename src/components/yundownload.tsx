@@ -4,8 +4,23 @@ import {Link} from "next-view-transitions"
 import {motion} from "framer-motion";
 import Image from 'next/image';
 import {STORAGE_HOST} from "@/data/baseUrl";
+import TerminalPlayer, {TerminalCommand} from "@/components/terminal-player";
 
 export function YunDownload() {
+    const commands: TerminalCommand[] = [
+        {
+            command: 'yundownload https://www.yhnotes.com/test.exe',
+            output: `INFO - download(57398) - 2025-12-17 23:21:54 - Protocol HttpProtocolHandler is supported for https://www.yhnotes.com/test.exe
+INFO - download(57400) - 2025-12-17 23:21:54 - 🚀Start downloading metadata: https://www.yhnotes.com/test.exe to test.exe
+INFO - download(57400) - 2025-12-17 23:21:54 - stream download: https://www.yhnotes.com/test.exe to test.exe}
+INFO - download(57400) - 2025-12-17 23:21:59 - 📊Downloading progress: 0.37 speed: 15.18 MB/S metadata: https://www.yhnotes.com/test.exe to test.exe
+INFO - download(57400) - 2025-12-17 23:22:04 - 📊Downloading progress: 0.69 speed: 12.98 MB/S metadata: https://www.yhnotes.com/test.exe to test.exe
+INFO - download(57400) - 2025-12-17 23:22:08 - 🏁Downloading result: success metadata: https://www.yhnotes.com/test.exe to test.exe
+INFO - download(57400) - 2025-12-17 23:22:08 - 📊Downloading progress: 1.0 speed: 13.23 MB/S metadata: https://www.yhnotes.com/test.exe to test.exe
+INFO - download(57400) - 2025-12-17 23:22:08 - 📊Downloading progress: 1.0 speed: 0.0 MB/S metadata: https://www.yhnotes.com/test.exe to test.exe
+file download success: https://www.yhnotes.com/test.exe`,
+        }
+    ]
     return (
         <section className="py-24 px-4">
             <div className="max-w-7xl mx-auto">
@@ -24,7 +39,8 @@ export function YunDownload() {
                         </div>
                         <h2 className="text-3xl font-bold mb-4">Yundownload</h2>
                         <p className="text-muted-foreground mb-6">
-                            A high-speed download utility that supports HTTP, FTP, SFTP, M3U8, and other protocols. It’s designed to give users fast, stable, and efficient download performance.
+                            A high-speed download utility that supports HTTP, FTP, SFTP, M3U8, and other protocols. It’s
+                            designed to give users fast, stable, and efficient download performance.
                         </p>
 
                         <div className="space-y-4 mb-8">
@@ -51,15 +67,7 @@ export function YunDownload() {
 
                     <div
                         className="bg-gray-600 rounded-lg overflow-hidden h-80 relative flex justify-center items-center">
-                        <Image
-                            src={`${STORAGE_HOST}/data-label.webp`}
-                            alt="D0 Tools"
-                            width={960}
-                            height={540}
-                            sizes="(min-width: 1024px) 640px, 100vw"
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                        />
+                        <TerminalPlayer className="w-full" outputLineDelay={2000} commands={commands} autoPlay={false}/>
                     </div>
                 </motion.div>
             </div>

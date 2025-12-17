@@ -79,6 +79,9 @@ export function Command({hotkey}: { hotkey?: boolean }) {
         if (id.startsWith('http://') || id.startsWith('https://')) {
             return id
         }
+        if (id.startsWith('/tools/')) {
+            return id
+        }
         return `/${type}/${id}/`
     }
 
