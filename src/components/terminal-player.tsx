@@ -14,6 +14,7 @@ export interface TerminalCommand {
 interface TerminalPlayerProps {
   commands: TerminalCommand[];
   typingSpeed?: number; // 打字速度 (毫秒/字符)
+  outputLineDelay?: number; // 每行输出的间隔时间 (毫秒)
   autoPlay?: boolean;
   className?: string;
   title?: string;
@@ -22,11 +23,13 @@ interface TerminalPlayerProps {
 interface DisplayLine {
   type: 'command' | 'output' | 'prompt';
   content: string;
+  isLastOutputLine?: boolean; // 是否是该命令输出的最后一行
 }
 
 const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
   commands,
   typingSpeed = 50,
+  outputLineDelay = 0, // 默认不延迟，一次性输出
   autoPlay = true,
   className = '',
   title = 'Terminal',
@@ -35,6 +38,7 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentCommandIndex, setCurrentCommandIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [currentOutputLineIndex, setCurrentOutputLineIndex] = useState(-1); // -1 表示还在输入命令阶段
   const [showCursor, setShowCursor] = useState(true);
   const terminalRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -66,32 +70,61 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
 
     const currentCommand = commands[currentCommandIndex];
     const commandText = currentCommand.command;
+    const outputLines = currentCommand.output.split('\n').filter((line, index, arr) => 
+      // 保留所有行，但过滤掉最后一个空行（由于 split 产生）
+      index < arr.length - 1 || line !== ''
+    );
 
     // 打字机输入效果
     if (currentCharIndex < commandText.length) {
       timerRef.current = setTimeout(() => {
         setCurrentCharIndex((prev) => prev + 1);
       }, typingSpeed);
-    } else {
-      // 命令输入完毕，显示输出
+    } else if (currentOutputLineIndex === -1) {
+      // 命令输入完毕，开始输出
       timerRef.current = setTimeout(() => {
-        // 添加完整命令和输出
+        // 添加完整命令
         setDisplayLines((prev) => [
           ...prev,
           { type: 'command', content: commandText },
-          { type: 'output', content: currentCommand.output },
         ]);
-
-        // 移动到下一个命令
+        
+        if (outputLineDelay > 0 && outputLines.length > 0) {
+          // 逐行输出模式
+          setCurrentOutputLineIndex(0);
+        } else {
+          // 一次性输出所有内容
+          setDisplayLines((prev) => [
+            ...prev,
+            { type: 'output', content: currentCommand.output, isLastOutputLine: true },
+          ]);
+          setCurrentCommandIndex((prev) => prev + 1);
+          setCurrentCharIndex(0);
+        }
+      }, currentCommand.delay || 500);
+    } else if (currentOutputLineIndex < outputLines.length) {
+      // 逐行输出
+      timerRef.current = setTimeout(() => {
+        const isLast = currentOutputLineIndex === outputLines.length - 1;
+        setDisplayLines((prev) => [
+          ...prev,
+          { type: 'output', content: outputLines[currentOutputLineIndex], isLastOutputLine: isLast },
+        ]);
+        setCurrentOutputLineIndex((prev) => prev + 1);
+      }, currentOutputLineIndex === 0 ? 0 : outputLineDelay);
+    } else {
+      // 输出完毕，移动到下一个命令
+      timerRef.current = setTimeout(() => {
         setCurrentCommandIndex((prev) => prev + 1);
         setCurrentCharIndex(0);
-      }, currentCommand.delay || 500);
+        setCurrentOutputLineIndex(-1);
+      }, outputLineDelay);
     }
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [isPlaying, currentCommandIndex, currentCharIndex, commands, typingSpeed]);
+  }, [isPlaying, currentCommandIndex, currentCharIndex, currentOutputLineIndex, commands, typingSpeed, outputLineDelay]);
 
   // 播放完毕
   useEffect(() => {
@@ -116,6 +149,7 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
     setIsPlaying(false);
     setCurrentCommandIndex(0);
     setCurrentCharIndex(0);
+    setCurrentOutputLineIndex(-1);
     setDisplayLines([]);
   };
 
@@ -123,6 +157,7 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
     setIsPlaying(false);
     setCurrentCommandIndex(index);
     setCurrentCharIndex(0);
+    setCurrentOutputLineIndex(-1);
     
     // 构建到该命令为止的所有历史记录
     const newDisplayLines: DisplayLine[] = [];
@@ -134,6 +169,7 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
       newDisplayLines.push({
         type: 'output',
         content: commands[i].output,
+        isLastOutputLine: true,
       });
     }
     setDisplayLines(newDisplayLines);
@@ -167,7 +203,10 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
                 <span className="text-[#c9d1d9]">{line.content}</span>
               </div>
             ) : (
-              <div className="text-[#8b949e] whitespace-pre-wrap pl-4 mb-2">
+              <div className={cn(
+                "text-[#8b949e] whitespace-pre-wrap pl-4",
+                line.isLastOutputLine && "mb-2"
+              )}>
                 {line.content}
               </div>
             )}
@@ -176,7 +215,8 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
 
         {/* 当前正在输入的命令 */}
         {currentCommandIndex < commands.length &&
-          currentCharIndex > 0 && (
+          currentCharIndex > 0 &&
+          currentOutputLineIndex === -1 && (
             <div className="flex items-start gap-2">
               <span className="text-[#7ee787] select-none">$</span>
               <span className="text-[#c9d1d9]">
@@ -194,8 +234,8 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
             </div>
           )}
 
-        {/* 初始提示符（没有任何输入时） */}
-        {displayLines.length === 0 && currentCommandIndex === 0 && currentCharIndex === 0 && (
+        {/* 等待输入的提示符（初始状态或播放完成后） */}
+        {currentCharIndex === 0 && currentOutputLineIndex === -1 && (
           <div className="flex items-start gap-2 text-[#8b949e]">
             <span className="text-[#7ee787] select-none">$</span>
             {showCursor && (
@@ -293,5 +333,9 @@ export default TerminalPlayer;
  *   },
  * ];
  * 
+ * // 基础用法（一次性输出）
  * <TerminalPlayer commands={commands} typingSpeed={50} />
+ * 
+ * // 逐行输出，每行间隔 100ms
+ * <TerminalPlayer commands={commands} typingSpeed={50} outputLineDelay={100} />
  */
