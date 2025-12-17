@@ -2,8 +2,6 @@
 
 import {Link} from "next-view-transitions"
 import {motion} from "framer-motion";
-import Image from 'next/image';
-import {STORAGE_HOST} from "@/data/baseUrl";
 import TerminalPlayer, {TerminalCommand} from "@/components/terminal-player";
 
 export function YunDownload() {
