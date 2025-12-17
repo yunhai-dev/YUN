@@ -21,9 +21,7 @@ import {
     type PromptInputMessage,
     PromptInputSubmit,
     PromptInputTextarea,
-    PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import {ModelSelector, ModelSelectorContent, ModelSelectorTrigger} from "@/components/ai-elements/model-selector";
 import {Suggestion, Suggestions} from "@/components/ai-elements/suggestion";
 import {useChat} from "@/hooks/use-chat";
 import {chatTools} from "../tools";
