@@ -37,6 +37,41 @@ export const otherTools: Tool[] = [
         category: '监控系统'
     },
     {
+        id: 'komari',
+        name: 'Komari',
+        description: '轻量级自托管服务器监控工具，资源占用低，提供直观的 Web 界面查看服务器状态。',
+        href: 'https://github.com/komari-monitor/komari',
+        category: '监控系统'
+    },
+    {
+        id: 'nexterm',
+        name: 'Nexterm',
+        description: '开源服务器管理软件，支持 SSH、VNC、RDP 远程连接，SFTP 文件管理，Docker 部署及 Proxmox 容器管理。',
+        href: 'https://github.com/gnmyt/Nexterm',
+        category: '服务器管理'
+    },
+    {
+        id: 'watchtower',
+        name: 'Watchtower',
+        description: 'Docker 容器镜像自动更新工具，监控并自动拉取新镜像、优雅重启容器，适用于家庭实验室和开发环境。',
+        href: 'https://github.com/containrrr/watchtower',
+        category: 'Docker 工具'
+    },
+    {
+        id: 'gotify',
+        name: 'Gotify',
+        description: '自托管消息推送服务器，通过 REST API 发送消息、WebSocket 实时接收，配套 Web UI、CLI 和 Android 应用。',
+        href: 'https://github.com/gotify/server',
+        category: '消息推送'
+    },
+    {
+        id: 'docling',
+        name: 'Docling',
+        description: '多格式文档解析工具，支持 PDF、DOCX、PPTX、图片等，具备 OCR、表格识别，可集成 LangChain、LlamaIndex 等 AI 框架。',
+        href: 'https://github.com/docling-project/docling',
+        category: '文档工具'
+    },
+    {
         id: 'it-tools',
         name: 'IT Tools',
         description: '在线开发工具集。',
@@ -245,5 +280,33 @@ export const otherTools: Tool[] = [
         description: '开源、隐私友好的网页分析工具。',
         href: 'https://umami.is/',
         category: '网站分析',
+    },
+    {
+        id: 'mineru',
+        name: 'MinerU',
+        description: '开源 PDF 文档解析工具，将 PDF 转换为 Markdown/JSON 格式，支持公式、表格、OCR 等，适用于 LLM 预训练和 RAG。',
+        href: 'https://github.com/opendatalab/MinerU',
+        category: '文档工具',
+    },
+    {
+        id: 'filesamples',
+        name: 'FileSamples',
+        description: '免费的示例文件下载服务，提供 180 种格式共 814 个测试文件，涵盖视频、音频、文档、图片、字体、电子书等类型。',
+        href: 'https://filesamples.com/',
+        category: '工具集',
+    },
+    {
+        id: 'libretranslate',
+        name: 'LibreTranslate',
+        description: '免费开源的机器翻译 API，可自托管、离线使用，基于 Argos Translate 引擎，无需依赖 Google 或 Azure 等服务。',
+        href: 'https://github.com/LibreTranslate/LibreTranslate',
+        category: '翻译工具',
+    },
+    {
+        id: 'pandoc',
+        name: 'Pandoc',
+        description: '通用文档格式转换器，支持 Markdown、LaTeX、Word、HTML、PDF 等数十种格式相互转换，文档处理的瑞士军刀。',
+        href: 'https://github.com/jgm/pandoc',
+        category: '文档工具',
     }
 ];

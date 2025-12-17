@@ -9,6 +9,13 @@ export const serverTools: Tool[] = [
         category: '服务器工具'
     },
     {
+        id: 'mole',
+        name: 'Mole',
+        description: 'Mac 深度清理优化工具，集成 CleanMyMac、AppCleaner、DaisyDisk、Sensei、iStat 功能于一身。',
+        href: 'https://github.com/tw93/Mole',
+        category: '命令行工具'
+    },
+    {
         id: 'fastfetch',
         name: 'Fastfetch',
         description: '终端系统信息获取工具，注重性能和可定制性。',
