@@ -98,8 +98,148 @@ export function DocNavigation({
     );
 }
 
+// 构建嵌套的 TOC 结构
+interface TocNode extends TocItem {
+    children: TocNode[];
+}
+
+function buildTocTree(headings: TocItem[]): TocNode[] {
+    const root: TocNode[] = [];
+    const stack: TocNode[] = [];
+
+    headings.forEach((heading) => {
+        const node: TocNode = { ...heading, children: [] };
+
+        // 找到合适的父节点
+        while (stack.length > 0 && stack[stack.length - 1].level >= heading.level) {
+            stack.pop();
+        }
+
+        if (stack.length === 0) {
+            root.push(node);
+        } else {
+            stack[stack.length - 1].children.push(node);
+        }
+
+        stack.push(node);
+    });
+
+    return root;
+}
+
+// 检查节点或其子节点是否包含活跃的 ID
+function containsActiveId(node: TocNode, activeId: string | null): boolean {
+    if (node.id === activeId) return true;
+    return node.children.some((child) => containsActiveId(child, activeId));
+}
+
+function TocItemComponent({
+    node,
+    activeId,
+    expandedIds,
+    onToggle,
+    level = 0,
+}: {
+    node: TocNode;
+    activeId: string | null;
+    expandedIds: Set<string>;
+    onToggle: (id: string) => void;
+    level?: number;
+}) {
+    const hasChildren = node.children.length > 0;
+    const isExpanded = expandedIds.has(node.id);
+    const isActive = activeId === node.id;
+    const containsActive = containsActiveId(node, activeId);
+
+    return (
+        <div className="space-y-0.5">
+            <div className="flex items-center group">
+                {hasChildren && (
+                    <button
+                        onClick={() => onToggle(node.id)}
+                        className="p-0.5 mr-1 rounded hover:bg-muted/50 transition-colors"
+                        aria-label={isExpanded ? '折叠' : '展开'}
+                    >
+                        {isExpanded ? (
+                            <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        ) : (
+                            <ChevronRight className="w-3 h-3 text-muted-foreground" />
+                        )}
+                    </button>
+                )}
+                {!hasChildren && <span className="w-4 mr-1" />}
+                <a
+                    id={`table-toc-${node.id}`}
+                    href={`#${node.id}`}
+                    className={`py-1 flex-1 transition-all block text-[13px] hover:text-foreground truncate ${
+                        isActive
+                            ? 'text-foreground font-medium'
+                            : containsActive
+                            ? 'text-foreground/80'
+                            : 'text-muted-foreground'
+                    }`}
+                    title={node.title}
+                >
+                    {node.title}
+                </a>
+            </div>
+            {hasChildren && (
+                <div
+                    className={`ml-2 border-l border-border pl-2 overflow-hidden transition-all duration-200 ${
+                        isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                >
+                    {node.children.map((child) => (
+                        <TocItemComponent
+                            key={child.id}
+                            node={child}
+                            activeId={activeId}
+                            expandedIds={expandedIds}
+                            onToggle={onToggle}
+                            level={level + 1}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
 function TableOfContents({headings, className}: { headings: TocItem[]; className?: string }) {
     const [activeId, setActiveId] = useState<string | null>(null);
+    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+    // 构建树形结构
+    const tocTree = useMemo(() => buildTocTree(headings), [headings]);
+
+    // 自动展开包含活跃项的父节点
+    useEffect(() => {
+        if (!activeId) return;
+
+        const newExpandedIds = new Set(expandedIds);
+        let changed = false;
+
+        const expandParents = (nodes: TocNode[]): boolean => {
+            for (const node of nodes) {
+                if (node.id === activeId) return true;
+                if (node.children.length > 0) {
+                    if (expandParents(node.children)) {
+                        if (!newExpandedIds.has(node.id)) {
+                            newExpandedIds.add(node.id);
+                            changed = true;
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        expandParents(tocTree);
+        if (changed) {
+            setExpandedIds(newExpandedIds);
+        }
+    }, [activeId, tocTree]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return; // SSR 保护
@@ -114,7 +254,7 @@ function TableOfContents({headings, className}: { headings: TocItem[]; className
                 }
             },
             {
-                rootMargin: '0% 0px -60% 0px', // 👈 关键修改
+                rootMargin: '0% 0px -60% 0px',
                 threshold: 0,
             }
         );
@@ -129,13 +269,25 @@ function TableOfContents({headings, className}: { headings: TocItem[]; className
                     observedElements.push(el);
                 }
             });
-        }, 0); // 微任务中注册，确保 DOM 完整
+        }, 0);
 
         return () => {
             observedElements.forEach(el => observer.unobserve(el));
             observer.disconnect();
         };
     }, [headings]);
+
+    const handleToggle = (id: string) => {
+        setExpandedIds((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    };
 
     if (headings.length === 0) return null;
 
@@ -144,25 +296,15 @@ function TableOfContents({headings, className}: { headings: TocItem[]; className
             <div className="sticky top-0 pt-[64px] h-screen pointer-events-auto">
                 <nav
                     className="py-4 space-y-1 pl-2 overflow-y-auto max-h-[calc(100vh-64px)] scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent pr-4">
-                    {headings.map((heading) => {
-                        const isActive = activeId === heading.id;
-                        return (
-                            <a
-                                key={heading.id}
-                                id={`table-toc-${heading.id}`}
-                                href={`#${heading.id}`}
-                                className={`py-1 border-l-2 border-l-transparent transition-all block text-[13px] hover:text-foreground ${
-                                    heading.level === 1 ? 'pl-0' :
-                                        heading.level === 2 ? 'pl-2' :
-                                            heading.level === 3 ? 'pl-8' :
-                                                heading.level === 4 ? 'pl-14' :
-                                                    heading.level === 5 ? 'pl-20' : 'pl-8'
-                                } ${isActive ? 'text-foreground border-l-white' : 'text-muted-foreground'}`}
-                            >
-                                {heading.title}
-                            </a>
-                        );
-                    })}
+                    {tocTree.map((node) => (
+                        <TocItemComponent
+                            key={node.id}
+                            node={node}
+                            activeId={activeId}
+                            expandedIds={expandedIds}
+                            onToggle={handleToggle}
+                        />
+                    ))}
                 </nav>
             </div>
         </div>

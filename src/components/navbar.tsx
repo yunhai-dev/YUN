@@ -118,9 +118,9 @@ export function Navbar() {
                     <Image
                         src={`${STORAGE_HOST}/Avatar.webp`}
                         alt="YunHai Logo"
-                        width={48}
-                        height={48}
-                        sizes="48px"
+                        width={32}
+                        height={32}
+                        sizes="32px"
                         className="rounded-full object-cover"
                         loading="lazy"
                     />

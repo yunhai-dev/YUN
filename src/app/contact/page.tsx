@@ -132,19 +132,26 @@ export default function Contact() {
                     className="max-w-4xl mx-auto"
                 >
                     <h2 className="text-3xl font-bold mb-8 text-center mt-8 md:mt-0">Support</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">Technical Support</h3>
                             <p className="text-muted-foreground relative z-10">
-                                Need help with technical issues? Contact our support team.
+                                Need help with technical issues? Feel free to contact me.
                             </p>
                         </div>
                         <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                            <h3 className="text-xl font-bold mb-4 relative z-10">Business Inquiries</h3>
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Project Collaboration</h3>
                             <p className="text-muted-foreground relative z-10">
-                                Interested in collaboration? Let's discuss your project.
+                                Interested in working together? Let's discuss your ideas.
+                            </p>
+                        </div>
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Freelance Work</h3>
+                            <p className="text-muted-foreground relative z-10">
+                                Available for part-time projects. Web dev, AI apps, and more.
                             </p>
                         </div>
                     </div>

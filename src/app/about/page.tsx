@@ -77,16 +77,14 @@ export default function About() {
                                 Backend Development
                             </h3>
                             <p className="text-muted-foreground text-lg mb-4 relative z-10">
-                                Sometimes, I am a backend developer. My expertise lies in Python, particularly with
-                                Django and FastAPI.
-                                I've built multiple projects using the Django Rest Framework, including the <a
-                                href="https://maadaa.ai"
-                                className="text-blue-500 hover:underline">Maadaa</a> project.
+                                Expert in Python backend development with Django and FastAPI. Proficient in building 
+                                scalable distributed systems, SSO (Single Sign-On) integration with OAuth2/OIDC 
+                                (Google, GitHub, etc.), and RESTful API design.
                             </p>
                             <p className="text-muted-foreground text-lg relative z-10">
-                                The project involved Google and Github Login integration, user management, and a
-                                Celery-based
-                                asynchronous queue system for message delivery.
+                                Experienced in message queue systems (Celery, Redis, Kafka), microservices 
+                                architecture, database optimization (PostgreSQL, MySQL), and containerized 
+                                deployment with Docker/Kubernetes.
                             </p>
                         </div>
 
@@ -96,9 +94,31 @@ export default function About() {
                                 <div className="size-3 bg-green-500 mr-3 rounded-full"/>
                                 Frontend Development
                             </h3>
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
+                                Skilled in modern frontend development with React/Next.js and Vue ecosystem. 
+                                Building responsive, accessible, and performant web applications with TypeScript, 
+                                Tailwind CSS, and cutting-edge UI libraries.
+                            </p>
                             <p className="text-muted-foreground text-lg relative z-10">
-                                I'm experienced in both Vue and React. This website is my first React project,
-                                showcasing my ability to adapt and learn new technologies.
+                                Experienced in SSR/SSG rendering strategies, state management (Zustand/Pinia), 
+                                and seamless API integration. This website showcases my frontend capabilities.
+                            </p>
+                        </div>
+
+                        <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 glow-card group/card transition-colors">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
+                                <div className="size-3 bg-blue-500 mr-3 rounded-full"/>
+                                AI Application Development
+                            </h3>
+                            <p className="text-muted-foreground text-lg mb-4 relative z-10">
+                                Building intelligent applications with cutting-edge AI technologies. Experienced in 
+                                LLM integration (Claude, GPT, DeepSeek), RAG systems, and AI Agent development using 
+                                LangChain/LangGraph frameworks.
+                            </p>
+                            <p className="text-muted-foreground text-lg relative z-10">
+                                Proficient in MCP (Model Context Protocol) server implementation, AI workflow 
+                                orchestration with Dify, and building production-ready AI-powered features.
                             </p>
                         </div>
                     </div>
@@ -118,23 +138,23 @@ export default function About() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-                            <h3 className="text-xl font-bold mb-4 relative z-10">Application Development</h3>
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Full Stack Development</h3>
                             <p className="text-muted-foreground relative z-10">
-                                Desktop pyqt and pyside, mobile flutter
+                                Python (Django/FastAPI) + Next.js/Vue, Desktop with Tauri/Electron, Cross-platform mobile with Flutter
                             </p>
                         </div>
                         <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
                             <h3 className="text-xl font-bold mb-4 relative z-10">AI Development</h3>
                             <p className="text-muted-foreground relative z-10">
-                                SAM, YOLO and GPT 3 for visual data labeling, AI Agent development
+                                LLM Apps with Claude/GPT/DeepSeek, AI Agent & Workflow (LangGraph/Dify), MCP protocol integration
                             </p>
                         </div>
                         <div className="border border-border hover:border-violet-500/50 rounded-lg p-6 text-center glow-card group/card transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                            <h3 className="text-xl font-bold mb-4 relative z-10">Data Processing</h3>
+                            <h3 className="text-xl font-bold mb-4 relative z-10">Data Engineering</h3>
                             <p className="text-muted-foreground relative z-10">
-                                AI visual data analysis, audio text processing, Google mute detection
+                                RAG pipeline, Vector DB, Real-time stream processing, ETL automation
                             </p>
                         </div>
                     </div>
