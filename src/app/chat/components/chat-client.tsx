@@ -21,15 +21,12 @@ import {
     type PromptInputMessage,
     PromptInputSubmit,
     PromptInputTextarea,
-    PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import {ModelSelector, ModelSelectorContent, ModelSelectorTrigger} from "@/components/ai-elements/model-selector";
 import {Suggestion, Suggestions} from "@/components/ai-elements/suggestion";
-import {Input} from "@/components/ui/input";
 import {useChat} from "@/hooks/use-chat";
 import {chatTools} from "../tools";
 
-const DEFAULT_MODEL = "openai-gpt-oss-20b";
+const DEFAULT_MODEL = "deepseek-ai/deepseek-v3.1";
 const SUGGESTIONS: string[] = [];
 
 // 优化消息渲染组件
@@ -43,7 +40,7 @@ const ChatMessage = memo(({message, isLoading}: {
     isLoading: boolean
 }) => {
     return (
-        <div>
+        <div className="space-y-2">
             {message.role !== "tool" && (
                 <MessageBranch defaultBranch={0}>
                     <MessageBranchContent>
@@ -69,21 +66,17 @@ const ChatMessage = memo(({message, isLoading}: {
                             part.state === 'result' ? 'output-available' :
                                 'output-error';
 
+                const outputContent = part.output 
+                    ? (typeof part.output === "string" ? part.output : JSON.stringify(part.output, null, 2))
+                    : undefined;
+
                 return (
-                    <Tool key={`${message.id}-tool-${idx}`} className="group">
+                    <Tool key={`${message.id}-tool-${idx}`} className="group mb-0">
                         <ToolHeader type={part.type as `tool-${string}`} state={toolState}/>
                         <ToolContent>
                             <ToolInput input={part.input}/>
                             <ToolOutput
-                                output={
-                                    part.output ? (
-                                        <MessageResponse>
-                                            {typeof part.output === "string"
-                                                ? part.output
-                                                : JSON.stringify(part.output, null, 2)}
-                                        </MessageResponse>
-                                    ) : undefined
-                                }
+                                output={outputContent}
                                 errorText={part.errorText}
                             />
                         </ToolContent>
@@ -98,7 +91,6 @@ ChatMessage.displayName = "ChatMessage";
 
 const ChatClient = () => {
     const [model, setModel] = useState<string>(DEFAULT_MODEL);
-    const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
     const [customModel, setCustomModel] = useState<string>("");
     const [apiKey, setApiKey] = useState<string>("");
     const [baseUrl, setBaseUrl] = useState<string>("");
@@ -123,11 +115,12 @@ const ChatClient = () => {
                 role: "system",
                 content: [
                     "你是站点主人 YunHai 的 AI 助手，口号：Make technology simpler and life better。",
-                    "背景：爬虫工程（WebSocket 加密、CF、人机验证）、后端 Python/Django/FastAPI（Celery 队列、OAuth 登录）、前端 Vue/React（本站为首个 React 项目）、应用开发（PyQt/PySide/Flutter）、AI（SAM/YOLO/GPT 系列、Agent）、数据处理（视觉/音频）。",
+                    "背景：爬虫工程（WebSocket 加密、CF、人机验证）、后端 Python/Django/FastAPI（分布式系统、SSO 单点登录、Celery/Redis/RabbitMQ 消息队列、微服务架构）、前端 React/Next.js/Vue（TypeScript、Tailwind CSS、SSR/SSG）、AI 应用开发（Claude/GPT/DeepSeek LLM 集成、RAG 系统、LangChain/LangGraph Agent、MCP 协议、Dify 工作流）、数据工程（RAG pipeline、向量数据库、实时流处理）。",
                     "价值观：探索/创新，开放，持续学习；网站希望承载灵感与探索，技术应简化生活。",
                     "家乡：云南（玉龙雪山、东巴文化等）。",
-                    "联系渠道（被问到时提供）：邮箱 yunhai@yhnotes.com；GitHub https://github.com/yunhai-dev；Gitee https://gitee.com/yun2hai；微信需说明意图，二维码见联系页；一般 24h 内回复，紧急邮件标题可写 URGENT。",
-                    "回答风格：友好务实，先给可执行步骤，必要时引用上述背景，中文优先。",
+                    "联系渠道（被问到时提供）：邮箱 [yunhai@yhnotes.com](mailto:yunhai@yhnotes.com)；GitHub [yunhai-dev](https://github.com/yunhai-dev)；Gitee [yun2hai](https://gitee.com/yun2hai)；微信需说明意图，二维码见 [联系页](/contact)；一般 24h 内回复，紧急邮件标题可写 URGENT。",
+                    "兼职工作：可接受远程兼职项目，包括 Web 全栈开发、AI 应用开发等，欢迎联系洽谈。",
+                    "回答风格：友好务实，先给可执行步骤，必要时引用上述背景，中文优先。输出链接时使用 Markdown 格式 [文字](链接)。",
                 ].join("\n"),
             },
         ],
@@ -246,52 +239,7 @@ const ChatClient = () => {
                                 value={input}
                             />
                         </PromptInputBody>
-                        <PromptInputFooter>
-                            <PromptInputTools>
-                                <ModelSelector
-                                    onOpenChange={setModelSelectorOpen}
-                                    open={modelSelectorOpen}
-                                >
-                                    <ModelSelectorTrigger asChild>
-                                        <PromptInputButton className="w-fit max-w-52 justify-center px-2">
-                                            <span
-                                                className="truncate text-center">{customModel || resolvedModel || "模型设置"}</span>
-                                        </PromptInputButton>
-                                    </ModelSelectorTrigger>
-                                    <ModelSelectorContent>
-                                        <div className="space-y-3 p-3">
-                                            <div className="space-y-1">
-                                                <p className="text-sm font-medium">自定义模型 ID</p>
-                                                <Input
-                                                    placeholder="例如 free:QwQ-32B（Suanli 默认）"
-                                                    value={customModel}
-                                                    onChange={(e) => setCustomModel(e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-sm font-medium">API Key（仅本地存储）</p>
-                                                <Input
-                                                    type="password"
-                                                    placeholder="sk-..."
-                                                    value={apiKey}
-                                                    onChange={(e) => setApiKey(e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-sm font-medium">Base URL</p>
-                                                <Input
-                                                    placeholder="默认 https://ai.megallm.io"
-                                                    value={baseUrl}
-                                                    onChange={(e) => setBaseUrl(e.target.value)}
-                                                />
-                                            </div>
-                                            <p className="text-xs text-muted-foreground">
-                                                配置保存在本地浏览器，仅当前设备生效。
-                                            </p>
-                                        </div>
-                                    </ModelSelectorContent>
-                                </ModelSelector>
-                            </PromptInputTools>
+                        <PromptInputFooter className="justify-end">
                             {isLoading ? (
                                 <PromptInputButton onClick={stop} variant="default">
                                     <SquareIcon size={16}/>

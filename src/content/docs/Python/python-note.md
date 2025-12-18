@@ -5,7 +5,7 @@ title:  Python 技巧与库
 ## MarkItDown
 
 - MarkItDown 是一个由 Microsoft 开发的 Python 工具 / 命令行程序，用于将 PDF / Word / Excel / PPT / 图片 / 音频 / HTML / CSV／JSON／XML／ZIP／EPUB／YouTube-URL 等多种格式转换为 Markdown。它保留文档结构（标题、列表、表格、链接等），适合用于文本分析、LLM 等场景。
-- 与像 textract 那样只抽文本不同，MarkItDown 注重“结构 + 内容 + Markdown 格式”，因此能输出结构良好的 Markdown 文档。 
+- 与像 textract 那样只抽文本不同，MarkItDown 注重“结构 + 内容 + Markdown 格式”，因此能输出结构良好的 Markdown 文档。
 
 ### 🔧 安装步骤
 
@@ -19,16 +19,17 @@ pip install 'markitdown[all]'
 
 如果你只用某几种格式，也可以只装对应依赖，比如：
 
-~~~bash
+```bash
 pip install 'markitdown[pdf,docx,pptx]'
-``` :contentReference[oaicite:5]{index=5}
+```
 
 ## 🚀 使用方式  
 
 ### 通过命令行 (CLI)  
+
 ```bash
 markitdown path/to/file.pdf > output.md
-~~~
+```
 
 或者指定输出文件：
 
@@ -48,9 +49,9 @@ result = md.convert("path/to/your_file.xlsx")
 print(result.text_content)
 ```
 
-这会返回一个对象，你可以通过 `.text_content` 得到 Markdown 文本。 
+这会返回一个对象，你可以通过 `.text_content` 得到 Markdown 文本。
 
-如果你希望处理图片并自动生成描述（例如通过 OCR + LLM 解读图片内容），也支持——只需在初始化时传入合适的 LLM 客户端与模型参数。 
+如果你希望处理图片并自动生成描述（例如通过 OCR + LLM 解读图片内容），也支持——只需在初始化时传入合适的 LLM 客户端与模型参数。
 
 ## Tortoise ORM
 
@@ -136,8 +137,6 @@ if __name__ == '__main__':
 2. tqdm(..., position=slot_id) 是关键，确保不同行之间不互相干扰。
 3. leave=False 是为了让槽位可复用，防止进度条残留。
 
-
-
 ## PyQuery 极简的爬虫解析
 
 底层基于 `lxml` 模块，提供了一个类似前端 `jQuery` 的极简 API
@@ -206,8 +205,6 @@ title.remove()
 获取多个元素循环时需要调用 `items` 方法，否则获取到的是 `HtmlElement` 对象导致与预期不一致
 :::
 
-
-
 ## 虚拟内存映射文件
 
 在处理大型文件时，传统的文件操作（如使用 `open()` 读取整个文件到内存）可能会导致内存消耗过大，尤其是在内存资源有限的情况下。Python 的 `mmap` 模块提供了一种高效的解决方案，它允许你将文件映射到内存中进行操作，而无需将整个文件加载到内存中。通过这种方式，你可以按需读取文件内容，避免了不必要的内存占用。
@@ -221,8 +218,6 @@ title.remove()
 Python 的 `mmap` 模块提供了内存映射文件的方法，允许程序将文件的一部分或全部映射到内存中，从而可以像访问普通内存一样访问文件内容。这种方法的最大优点是，它不会一次性将文件加载到内存，而是通过操作系统的虚拟内存管理，按需加载文件内容。这对于处理大文件（尤其是当文件非常大时）非常有效。
 
 `mmap` 模块支持对文件的读取、修改和搜索操作，甚至可以与进程间的通信机制一起使用。接下来，我们将介绍如何使用 `mmap` 模块来读取大文件（如 JSON 文件）并解析其内容。
-
-------
 
 ### 2. 使用 `mmap` 读取大文件
 
@@ -244,8 +239,6 @@ with open('example.txt', 'r+b') as f:
 ```
 
 在这个示例中，`mmap` 创建了一个内存映射对象 `mm`，可以像操作内存一样访问文件的前 10 个字节。
-
-------
 
 ### 3. 读取大 JSON 文件的示例
 
@@ -298,8 +291,6 @@ with open(file_path, 'r') as f:
 - **内存效率**：通过 `mmap`，文件内容是按需加载的，不会一次性将整个文件读入内存。这对于处理大型 JSON 文件尤为重要，可以显著降低内存消耗。
 - **直接内存访问**：程序可以直接操作内存中的数据，这使得读取速度较传统方法更快。
 
-------
-
 ### 4. 其他常见操作：写入、搜索和截断
 
 #### 写入数据
@@ -346,14 +337,9 @@ with open('example.txt', 'r+b') as f:
     mm.close()
 ```
 
-------
-
 ### 5. 总结
 
 Python 的 `mmap` 模块提供了一种高效处理大文件的方式，尤其在内存受限的情况下。通过 `mmap`，文件可以被映射到内存，按需加载文件内容，避免了一次性将文件全部读取到内存。它非常适用于大文件的读取、修改、搜索和截断等操作。在读取 JSON 等大型文件时，`mmap` 使得文件内容能够被高效地解析而不会消耗过多的内存。
-
-
-
 
 ## `pathvalidate` 路径消毒校验
 
@@ -439,11 +425,9 @@ if options.filepath:
     print("filepath: {}".format(options.filepath))
 ```
 
-
-
 ## Gradio 快速生成AI应用的UI服务
 
-https://www.gradio.app/
+<https://www.gradio.app/>
 
 ## Logging 最佳实践
 
@@ -483,11 +467,11 @@ logger.info('用户操作', extra=extra)
 
 - 决定如何处理日志记录
 - 常用处理器类型：
-    - FileHandler: 将日志写入文件
-    - StreamHandler: 将日志输出到控制台
-    - RotatingFileHandler: 支持日志文件轮转
-    - SMTPHandler: 通过邮件发送日志
-    - SysLogHandler: 将日志发送到系统日志
+  - FileHandler: 将日志写入文件
+  - StreamHandler: 将日志输出到控制台
+  - RotatingFileHandler: 支持日志文件轮转
+  - SMTPHandler: 通过邮件发送日志
+  - SysLogHandler: 将日志发送到系统日志
 - 每个Handler可以有自己的日志级别和格式化器
 
 示例：
@@ -523,9 +507,9 @@ smtp_handler.setLevel(logging.ERROR)  # 只发送错误及以上级别的日志
 
 - 提供更细粒度的日志控制
 - 可以基于以下条件过滤日志：
-    - 日志记录的属性（如模块名、函数名）
-    - 自定义的业务逻辑
-    - 特定的日志模式
+  - 日志记录的属性（如模块名、函数名）
+  - 自定义的业务逻辑
+  - 特定的日志模式
 
 示例：
 
@@ -556,17 +540,17 @@ logger.addFilter(SensitiveFilter())
 
 - 定义日志记录的最终格式
 - 常用的格式化属性：
-    - %(asctime)s: 时间戳
-    - %(name)s: 日志记录器名称
-    - %(levelname)s: 日志级别
-    - %(message)s: 日志消息
-    - %(pathname)s: 完整路径名
-    - %(filename)s: 文件名
-    - %(module)s: 模块名
-    - %(funcName)s: 函数名
-    - %(lineno)d: 行号
-    - %(process)d: 进程ID
-    - %(thread)d: 线程ID
+  - %(asctime)s: 时间戳
+  - %(name)s: 日志记录器名称
+  - %(levelname)s: 日志级别
+  - %(message)s: 日志消息
+  - %(pathname)s: 完整路径名
+  - %(filename)s: 文件名
+  - %(module)s: 模块名
+  - %(funcName)s: 函数名
+  - %(lineno)d: 行号
+  - %(process)d: 进程ID
+  - %(thread)d: 线程ID
 
 示例：
 
@@ -1121,8 +1105,6 @@ class ElasticsearchHandler(logging.Handler):
             self.handleError(record)  # 处理错误，避免日志处理器失败
 ```
 
-
-
 ## 序列化与反序列化
 
 ### 序列化（Serialization）
@@ -1256,12 +1238,12 @@ except pickle.UnpicklingError:
 
 pickle模块支持以下Python数据类型：
 
-| 类型     | 示例                        |
-| -------- | --------------------------- |
+| 类型   | 示例                          |
+|------|-----------------------------|
 | 基本类型 | int, float, str, bool, None |
 | 容器类型 | list, tuple, dict, set      |
-| 自定义类 | class的实例对象             |
-| 函数和类 | 模块中定义的函数和类        |
+| 自定义类 | class的实例对象                  |
+| 函数和类 | 模块中定义的函数和类                  |
 
 #### 1.4 最佳实践
 
@@ -1343,7 +1325,7 @@ def safe_load_pickle(file_path, allowed_modules=None):
        return RestrictedUnpickler(f).load()
 ```
 
-1. 2. **数据签名验证**
+1. 1. **数据签名验证**
 
 ```python
 import hmac
@@ -1397,7 +1379,7 @@ with open('data.json', 'r', encoding='utf-8') as f:
    data = json.load(f)
 ```
 
-1. 2. **MessagePack**：
+1. 1. **MessagePack**：
 
 ```python
 import msgpack
@@ -1524,12 +1506,10 @@ if __name__ == '__main__':
 这个简化版本展示了 pickle 在网络传输中的基本用法:
 
 1. 1. 服务器监听连接
-2. 2. 客户端连接并发送序列化数据
-3. 3. 服务器接收并反序列化数据
-4. 4. 服务器发送响应
-5. 5. 客户端接收并处理响应
-
-
+2. 1. 客户端连接并发送序列化数据
+3. 1. 服务器接收并反序列化数据
+4. 1. 服务器发送响应
+5. 1. 客户端接收并处理响应
 
 ## `map` 函数详解
 
@@ -1537,8 +1517,8 @@ if __name__ == '__main__':
 
 `map(function, iterables, ...)`
 
--  `function`：要应用的函数，可以是内置函数、自定义函数或 lambda 表达式
--  `iterable`：一个或多个可迭代对象（列表、元组、字符串等）
+- `function`：要应用的函数，可以是内置函数、自定义函数或 lambda 表达式
+- `iterable`：一个或多个可迭代对象（列表、元组、字符串等）
 - 返回值：返回一个 map 对象（迭代器）
 
 ### 单参数函数映射
@@ -1556,8 +1536,6 @@ print(squared)  # 输出: [1, 4, 9, 16, 25]
 cubed = list(map(lambda x: x ** 3, numbers))
 print(cubed)    # 输出: [1, 8, 27, 64, 125]
 ```
-
-
 
 ### 多参数函数映射
 
@@ -1577,8 +1555,6 @@ result = list(map(weighted_sum, list1, list2, list3))
 print(result)  # 输出: [43.3, 86.6, 129.9, 173.2]
 ```
 
-
-
 ### 惰性求值
 
 map 返回的是迭代器，具有惰性求值的特性。这意味着只有在实际需要结果时才会进行计算：
@@ -1597,8 +1573,6 @@ for i in mapped:
         break
 ```
 
-
-
 ### 内存效率
 
 由于惰性求值的特性，map 特别适合处理大数据集：
@@ -1616,8 +1590,6 @@ with open('large_file.txt', 'r') as file:
         # 处理每一行...
         pass
 ```
-
-
 
 ## Requests-HTML：可以渲染Js的模块
 
@@ -1670,8 +1642,6 @@ results = asyncio.run(get_pages())
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) # Windows 事件循环报错时指定 // [!code warning]
 ```
-
-
 
 ## 绕过 cloudflare 人机验证
 
@@ -1844,8 +1814,8 @@ CMD ["python", "main.py"] // [!code --]
 CMD xvfb-run -a python main.py // [!code ++]
 ```
 
-4. 构建镜像 `docker build -t my-project .`
-5. 运行镜像 `docker run -d -v /data:/data my-project`
+1. 构建镜像 `docker build -t my-project .`
+2. 运行镜像 `docker run -d -v /data:/data my-project`
 
 ## `ThreadPool` 和 `ThreadPoolExecutor` 的区别
 
@@ -1855,80 +1825,80 @@ CMD xvfb-run -a python main.py // [!code ++]
 ### 1. **模块和类**
 
 - **`ThreadPool`**：
-    - `ThreadPool` 是 Python 标准库 `multiprocessing.pool` 模块中的一个类，早期版本中用于创建和管理线程池，适用于多线程环境中需要池化线程的场景。
-    - 该类已经被弃用，在 Python 3 中不推荐使用。
+  - `ThreadPool` 是 Python 标准库 `multiprocessing.pool` 模块中的一个类，早期版本中用于创建和管理线程池，适用于多线程环境中需要池化线程的场景。
+  - 该类已经被弃用，在 Python 3 中不推荐使用。
 
 - **`ThreadPoolExecutor`**：
-    - `ThreadPoolExecutor` 是 Python 3 中 `concurrent.futures` 模块中提供的一个类，它是基于 `Executor`
+  - `ThreadPoolExecutor` 是 Python 3 中 `concurrent.futures` 模块中提供的一个类，它是基于 `Executor`
       类实现的，提供了更现代、更强大、灵活的接口来管理线程池。
-    - `ThreadPoolExecutor` 是推荐使用的线程池实现，具有更一致的 API，并且更符合现代 Python 并发编程的设计思想。
+  - `ThreadPoolExecutor` 是推荐使用的线程池实现，具有更一致的 API，并且更符合现代 Python 并发编程的设计思想。
 
 ### 2. **API和接口设计**
 
 - **`ThreadPool`**：
-    - `ThreadPool` 的接口相对较基础，主要通过 `apply()`、`map()`、`apply_async()`
+  - `ThreadPool` 的接口相对较基础，主要通过 `apply()`、`map()`、`apply_async()`
       等方法来提交和处理任务。它更侧重于池化线程的创建和管理，而没有统一的异步任务管理接口。
-    - `ThreadPool` 提供了 `apply()`（阻塞）和 `apply_async()`（异步）来提交任务，还支持 `map()` 用于并行处理可迭代对象中的任务。
+  - `ThreadPool` 提供了 `apply()`（阻塞）和 `apply_async()`（异步）来提交任务，还支持 `map()` 用于并行处理可迭代对象中的任务。
 
 - **`ThreadPoolExecutor`**：
-    - `ThreadPoolExecutor` 提供了更简洁、更一致的接口，它继承自 `Executor` 类，提供了 `submit()`、`map()` 和 `shutdown()`
+  - `ThreadPoolExecutor` 提供了更简洁、更一致的接口，它继承自 `Executor` 类，提供了 `submit()`、`map()` 和 `shutdown()`
       方法来管理线程池中的任务。
-    - `submit()` 用于异步提交任务，返回一个 `Future` 对象，用户可以通过 `Future.result()` 来获取结果。`map()` 方法类似于
+  - `submit()` 用于异步提交任务，返回一个 `Future` 对象，用户可以通过 `Future.result()` 来获取结果。`map()` 方法类似于
       `Pool.map()`，但返回的是一个迭代器，可以按需获取结果。
-    - 提供了 `shutdown()` 方法来优雅地关闭线程池，等待所有线程执行完成。
+  - 提供了 `shutdown()` 方法来优雅地关闭线程池，等待所有线程执行完成。
 
 ### 3. **任务提交和回调**
 
 - **`ThreadPool`**：
-    - 任务提交通过 `apply_async()` 完成，用户可以传递回调函数来处理任务完成后的结果，但 API 相对较底层，使用起来不如
+  - 任务提交通过 `apply_async()` 完成，用户可以传递回调函数来处理任务完成后的结果，但 API 相对较底层，使用起来不如
       `ThreadPoolExecutor` 灵活。
-    - 不像 `ThreadPoolExecutor` 那样提供 `Future` 对象来追踪任务执行的状态和结果，处理异步任务时需要手动管理和获取返回结果。
+  - 不像 `ThreadPoolExecutor` 那样提供 `Future` 对象来追踪任务执行的状态和结果，处理异步任务时需要手动管理和获取返回结果。
 
 - **`ThreadPoolExecutor`**：
-    - 通过 `submit()` 方法提交任务，返回一个 `Future` 对象，`Future` 对象可以用来跟踪任务的执行状态、获取结果，并支持设置回调函数。
-    - `ThreadPoolExecutor` 的 `Future` 对象允许更灵活的结果管理，可以通过 `result()` 获取任务结果，也可以通过
+  - 通过 `submit()` 方法提交任务，返回一个 `Future` 对象，`Future` 对象可以用来跟踪任务的执行状态、获取结果，并支持设置回调函数。
+  - `ThreadPoolExecutor` 的 `Future` 对象允许更灵活的结果管理，可以通过 `result()` 获取任务结果，也可以通过
       `add_done_callback()` 设置任务完成时的回调函数。
 
 ### 4. **进程池与线程池**
 
 - **`ThreadPool`**：
-    - `ThreadPool` 仅支持线程池，适用于那些需要并发处理的轻量任务，如 I/O 密集型任务。
-    - 由于它在 `multiprocessing.pool` 模块中，它的设计更多的是为了和 `ProcessPool` 进行对比，且较为简洁、适用于小规模任务。
+  - `ThreadPool` 仅支持线程池，适用于那些需要并发处理的轻量任务，如 I/O 密集型任务。
+  - 由于它在 `multiprocessing.pool` 模块中，它的设计更多的是为了和 `ProcessPool` 进行对比，且较为简洁、适用于小规模任务。
 
 - **`ThreadPoolExecutor`**：
-    - `ThreadPoolExecutor` 同样是用于线程池的管理，它设计得更为灵活，支持高并发、异步编程，适用于需要线程池的现代应用程序。
-    - 它可以与 `ProcessPoolExecutor` 配合使用，`ThreadPoolExecutor` 可以管理线程池，而 `ProcessPoolExecutor`
+  - `ThreadPoolExecutor` 同样是用于线程池的管理，它设计得更为灵活，支持高并发、异步编程，适用于需要线程池的现代应用程序。
+  - 它可以与 `ProcessPoolExecutor` 配合使用，`ThreadPoolExecutor` 可以管理线程池，而 `ProcessPoolExecutor`
       管理进程池，适应不同的并发需求。
 
 ### 5. **管理和关闭**
 
 - **`ThreadPool`**：
-    - `ThreadPool` 提供了一个 `close()` 和 `join()` 方法来管理线程池的关闭，要求开发者显式地关闭池。
+  - `ThreadPool` 提供了一个 `close()` 和 `join()` 方法来管理线程池的关闭，要求开发者显式地关闭池。
 
 - **`ThreadPoolExecutor`**：
-    - `ThreadPoolExecutor` 提供了 `shutdown()` 方法来优雅地关闭线程池，并等待线程池中所有线程执行完成。通过
+  - `ThreadPoolExecutor` 提供了 `shutdown()` 方法来优雅地关闭线程池，并等待线程池中所有线程执行完成。通过
       `shutdown(wait=True)` 可以阻塞直到所有线程完成任务，`shutdown(wait=False)` 会立即返回，不等待任务完成。
 
 ### 6. **异常处理**
 
 - **`ThreadPool`**：
-    - 异常处理相对较为简单，在 `apply_async()` 的回调函数中捕获异常，或者直接使用 `apply()` 方法阻塞并捕获异常。
+  - 异常处理相对较为简单，在 `apply_async()` 的回调函数中捕获异常，或者直接使用 `apply()` 方法阻塞并捕获异常。
 
 - **`ThreadPoolExecutor`**：
-    - `ThreadPoolExecutor` 提供了更灵活的异常处理机制。`submit()` 返回的 `Future` 对象会在任务执行时抛出异常，用户可以通过
+  - `ThreadPoolExecutor` 提供了更灵活的异常处理机制。`submit()` 返回的 `Future` 对象会在任务执行时抛出异常，用户可以通过
       `Future.exception()` 或 `Future.result()` 捕获并处理任务中的异常。
 
 ### 7. **适用场景**
 
 - **`ThreadPool`**：
-    - `ThreadPool` 适用于需要简单线程池的任务场景，主要用于 I/O 密集型操作（如文件处理、网络请求等），因为线程池中的每个线程一般都处于阻塞状态，CPU
+  - `ThreadPool` 适用于需要简单线程池的任务场景，主要用于 I/O 密集型操作（如文件处理、网络请求等），因为线程池中的每个线程一般都处于阻塞状态，CPU
       占用较低。
 
 - **`ThreadPoolExecutor`**：
-    - `ThreadPoolExecutor` 适用于需要更高并发、更多控制、灵活的线程池管理的场景。它的 API
+  - `ThreadPoolExecutor` 适用于需要更高并发、更多控制、灵活的线程池管理的场景。它的 API
       更加简洁现代，支持异步任务管理、回调、异常处理等，适合于现代并发编程中的复杂任务。
 
-### 总结表格：
+### 总结表格
 
 | 特性          | `ThreadPool`                        | `ThreadPoolExecutor`                             |
 |-------------|-------------------------------------|--------------------------------------------------|
@@ -1942,7 +1912,7 @@ CMD xvfb-run -a python main.py // [!code ++]
 | **优雅关闭线程池** | `close()` 和 `join()`                | `shutdown()`                                     |
 | **适用场景**    | 简单的线程池，I/O 密集型任务                    | 更高并发和控制，适用于现代并发编程任务                              |
 
-### 总结：
+### 总结
 
 - **`ThreadPool`** 是较旧的线程池实现，功能相对较简单，适用于轻量的并行任务，尤其是 I/O 密集型任务。
 - **`ThreadPoolExecutor`** 是现代 Python 线程池的推荐实现，它提供了更丰富的功能、更灵活的接口、异步支持和更强的错误处理机制，适合需要高并发、复杂任务调度的场景。
@@ -1955,81 +1925,81 @@ CMD xvfb-run -a python main.py // [!code ++]
 ### 1. **基本概念和接口**
 
 - **`Pool`**：
-    - `Pool` 是 `multiprocessing` 模块中的一个类，用于创建一个进程池，能够管理多个子进程的创建、任务分配和结果收集。
-    - `Pool` 提供了多个方法来异步或同步地分配任务，例如 `apply()`、`map()`、`apply_async()`、`map_async()` 等。
+  - `Pool` 是 `multiprocessing` 模块中的一个类，用于创建一个进程池，能够管理多个子进程的创建、任务分配和结果收集。
+  - `Pool` 提供了多个方法来异步或同步地分配任务，例如 `apply()`、`map()`、`apply_async()`、`map_async()` 等。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 是 `concurrent.futures` 模块中的一个类，提供了一个基于线程池的接口来并行执行任务。它的主要设计目标是简化并行编程，提供更高级的接口。
-    - `ProcessPoolExecutor` 提供了 `submit()` 和 `map()` 方法来异步和同步执行任务。
+  - `ProcessPoolExecutor` 是 `concurrent.futures` 模块中的一个类，提供了一个基于线程池的接口来并行执行任务。它的主要设计目标是简化并行编程，提供更高级的接口。
+  - `ProcessPoolExecutor` 提供了 `submit()` 和 `map()` 方法来异步和同步执行任务。
 
 ### 2. **API设计**
 
 - **`Pool`**：
-    - `Pool` 的 API 相对更低级，要求用户直接管理进程池中的任务，手动分配任务和收集结果。
-    - 例如，使用 `Pool.map()` 可以并行处理一个迭代器中的每个任务，`apply_async()` 用于异步执行函数。
+  - `Pool` 的 API 相对更低级，要求用户直接管理进程池中的任务，手动分配任务和收集结果。
+  - 例如，使用 `Pool.map()` 可以并行处理一个迭代器中的每个任务，`apply_async()` 用于异步执行函数。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 提供了更现代化的 API，基于 `concurrent.futures` 模块的设计，符合 `ThreadPoolExecutor` 和
+  - `ProcessPoolExecutor` 提供了更现代化的 API，基于 `concurrent.futures` 模块的设计，符合 `ThreadPoolExecutor` 和
       `Executor` 的接口设计，支持 `submit()` 和 `map()` 方法，具有更简洁和一致的接口。
-    - 使用 `submit()` 可以异步提交任务，返回一个 `Future` 对象，用户可以通过 `Future.result()` 来获取结果。
+  - 使用 `submit()` 可以异步提交任务，返回一个 `Future` 对象，用户可以通过 `Future.result()` 来获取结果。
 
 ### 3. **使用方便性**
 
 - **`Pool`**：
-    - `Pool` 的接口相对较基础，需要开发者手动管理进程池中的任务，并且在任务执行完成后需要显式地处理返回结果。
-    - 适用于需要处理批量任务的场景，比如批量处理文件或数据集。
+  - `Pool` 的接口相对较基础，需要开发者手动管理进程池中的任务，并且在任务执行完成后需要显式地处理返回结果。
+  - 适用于需要处理批量任务的场景，比如批量处理文件或数据集。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 提供了更方便的 API，支持 `submit()` 来提交单个任务，并且通过 `Future` 对象可以方便地获取异步任务的结果。
-    - 适用于具有更多异步需求的场景，代码更加简洁、易于理解。
+  - `ProcessPoolExecutor` 提供了更方便的 API，支持 `submit()` 来提交单个任务，并且通过 `Future` 对象可以方便地获取异步任务的结果。
+  - 适用于具有更多异步需求的场景，代码更加简洁、易于理解。
 
 ### 4. **任务提交和回调机制**
 
 - **`Pool`**：
-    - 在 `Pool` 中，任务提交是通过 `map()` 或 `apply()` 等方法来完成的，这些方法通常是阻塞的，或者返回一个迭代器来等待任务完成。
-    - 可以通过 `apply_async()` 和 `map_async()` 实现异步任务处理，但这些方法的结果处理是通过回调函数来完成的，相对较低级。
+  - 在 `Pool` 中，任务提交是通过 `map()` 或 `apply()` 等方法来完成的，这些方法通常是阻塞的，或者返回一个迭代器来等待任务完成。
+  - 可以通过 `apply_async()` 和 `map_async()` 实现异步任务处理，但这些方法的结果处理是通过回调函数来完成的，相对较低级。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 提供了更高级的任务提交和结果获取方式。`submit()` 方法允许异步提交任务并返回一个 `Future` 对象，
+  - `ProcessPoolExecutor` 提供了更高级的任务提交和结果获取方式。`submit()` 方法允许异步提交任务并返回一个 `Future` 对象，
       `Future` 对象可以用来获取任务结果并设置回调。
-    - `map()` 方法同样支持批量任务，但它的使用方式和 `Pool.map()` 类似，更易于理解和使用。
+  - `map()` 方法同样支持批量任务，但它的使用方式和 `Pool.map()` 类似，更易于理解和使用。
 
 ### 5. **异步处理的灵活性**
 
 - **`Pool`**：
-    - 在 `Pool` 中异步执行任务时，通常会使用 `apply_async()` 或 `map_async()` 方法，并通过 `get()` 方法获取结果，这样的接口稍显繁琐。
-    - `apply_async()` 支持传入回调函数来处理结果。
+  - 在 `Pool` 中异步执行任务时，通常会使用 `apply_async()` 或 `map_async()` 方法，并通过 `get()` 方法获取结果，这样的接口稍显繁琐。
+  - `apply_async()` 支持传入回调函数来处理结果。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 提供了更加灵活的异步处理方式。通过 `submit()` 提交任务后，返回的 `Future` 对象可以通过
+  - `ProcessPoolExecutor` 提供了更加灵活的异步处理方式。通过 `submit()` 提交任务后，返回的 `Future` 对象可以通过
       `add_done_callback()` 设置回调函数，这为任务完成后的处理提供了更多的灵活性。
 
 ### 6. **异常处理**
 
 - **`Pool`**：
-    - `Pool` 中的任务异常通常需要通过 `apply_async()` 或 `map_async()` 的返回结果来捕获。如果任务执行时出现异常，需要通过
+  - `Pool` 中的任务异常通常需要通过 `apply_async()` 或 `map_async()` 的返回结果来捕获。如果任务执行时出现异常，需要通过
       `get()` 方法手动检查异常。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 在处理异步任务时，异常处理更加一致。如果 `submit()` 提交的任务在执行过程中抛出异常，可以通过
+  - `ProcessPoolExecutor` 在处理异步任务时，异常处理更加一致。如果 `submit()` 提交的任务在执行过程中抛出异常，可以通过
       `Future.result()` 或 `Future.exception()` 捕获异常。这使得异常处理更简洁，且能够直接捕获任务执行时的异常。
 
 ### 7. **性能**
 
 - **`Pool` 和 `ProcessPoolExecutor`**：
-    - 从性能上来看，`Pool` 和 `ProcessPoolExecutor` 都是基于进程池来管理多进程执行，理论上它们的性能是相似的。两者都使用多进程来执行任务，避免了全局解释器锁（GIL）的问题。
-    - 性能差异可能更多体现在具体的应用场景中，例如 `ProcessPoolExecutor` 的 API 会稍微多一些包装，这可能导致在大量任务时有一些微小的性能差异，但差异通常不明显。
+  - 从性能上来看，`Pool` 和 `ProcessPoolExecutor` 都是基于进程池来管理多进程执行，理论上它们的性能是相似的。两者都使用多进程来执行任务，避免了全局解释器锁（GIL）的问题。
+  - 性能差异可能更多体现在具体的应用场景中，例如 `ProcessPoolExecutor` 的 API 会稍微多一些包装，这可能导致在大量任务时有一些微小的性能差异，但差异通常不明显。
 
 ### 8. **适用场景**
 
 - **`Pool`**：
-    - `Pool` 更适合于需要批量处理的任务，特别是那些批量计算、数据处理的场景。比如需要处理一组独立的数据，或者批量读取文件、处理图像等任务。
+  - `Pool` 更适合于需要批量处理的任务，特别是那些批量计算、数据处理的场景。比如需要处理一组独立的数据，或者批量读取文件、处理图像等任务。
 
 - **`ProcessPoolExecutor`**：
-    - `ProcessPoolExecutor` 更适合于异步任务或混合任务的场景，尤其是在任务执行较短并且需要快速响应的情况下。它的
+  - `ProcessPoolExecutor` 更适合于异步任务或混合任务的场景，尤其是在任务执行较短并且需要快速响应的情况下。它的
       `submit()` 和 `Future` 提供了更灵活的控制方式，适合用于任务分布广泛并且需要更多并行控制的应用场景。
 
-### 总结表格：
+### 总结表格
 
 | 特性          | `Pool`                             | `ProcessPoolExecutor`                     |
 |-------------|------------------------------------|-------------------------------------------|
@@ -2042,7 +2012,7 @@ CMD xvfb-run -a python main.py // [!code ++]
 | **回调支持**    | 支持回调函数，但相对较复杂                      | 通过 `Future.add_done_callback()` 设置回调      |
 | **适用场景**    | 批量任务处理，如数据处理、文件处理等                 | 异步任务或混合任务，更灵活的控制                          |
 
-### 总结：
+### 总结
 
 - **`Pool`** 适用于简单的批量任务处理和数据并行化，它的接口相对基础，适合直接使用 `map()` 和 `apply()` 来处理任务。
 - **`ProcessPoolExecutor`** 提供了更现代化、更简洁的接口，适合需要异步处理任务、捕获异常并动态调整进程执行的场景。
@@ -2062,10 +2032,10 @@ CMD xvfb-run -a python main.py // [!code ++]
 
 - **功能**：`Manager` 可以创建线程安全的共享对象（如列表、字典、队列等），并且这些对象在多个进程之间是同步的。
 - **常见方法**：
-    - `manager.list()`：创建一个共享的列表。
-    - `manager.dict()`：创建一个共享的字典。
-    - `manager.Queue()`：创建一个共享的队列。
-    - `manager.Value()` 和 `manager.Array()`：创建共享的单一数据类型或数组。
+  - `manager.list()`：创建一个共享的列表。
+  - `manager.dict()`：创建一个共享的字典。
+  - `manager.Queue()`：创建一个共享的队列。
+  - `manager.Value()` 和 `manager.Array()`：创建共享的单一数据类型或数组。
 
   **使用场景**：在多进程中，`Manager` 被用来管理进程间的数据共享，例如在多个进程中共享一个错误列表或进度条，确保数据的一致性和同步。
 
@@ -2075,11 +2045,11 @@ CMD xvfb-run -a python main.py // [!code ++]
 
 - **功能**：`Pool` 允许创建一个进程池，通过池中的多个进程并行执行任务，从而提高程序的执行效率。它还提供了任务的异步执行和结果的回收机制。
 - **常见方法**：
-    - `pool.apply(func, args)`：同步执行函数，返回结果。
-    - `pool.apply_async(func, args)`：异步执行函数，返回一个 `AsyncResult` 对象，可以通过该对象获取任务的结果。
-    - `pool.map(func, iterable)`：将可迭代对象的每个元素传给函数 `func`，并行处理。
-    - `pool.imap(func, iterable)`：类似于 `map`，但支持惰性迭代（即按需返回结果），适合处理大规模数据。
-    - `pool.imap_unordered(func, iterable)`：与 `imap` 类似，但返回结果的顺序与输入顺序无关，处理速度更快。
+  - `pool.apply(func, args)`：同步执行函数，返回结果。
+  - `pool.apply_async(func, args)`：异步执行函数，返回一个 `AsyncResult` 对象，可以通过该对象获取任务的结果。
+  - `pool.map(func, iterable)`：将可迭代对象的每个元素传给函数 `func`，并行处理。
+  - `pool.imap(func, iterable)`：类似于 `map`，但支持惰性迭代（即按需返回结果），适合处理大规模数据。
+  - `pool.imap_unordered(func, iterable)`：与 `imap` 类似，但返回结果的顺序与输入顺序无关，处理速度更快。
 
   **使用场景**：`Pool` 适用于需要并发执行多个独立任务的场景，比如处理多个文件、执行多个计算任务等。通过进程池，可以有效控制并发进程的数量并避免创建过多进程导致的性能瓶颈。
 
@@ -2204,7 +2174,7 @@ env = os.environ.copy()
 # 防止Popen中的依赖位置与使用的虚拟环境位置不一致
 env['PYTHONPATH'] = site.getsitepackages()[-1]
 process = Popen(
-	shlex.split(command),
+ shlex.split(command),
     cwd=data_path,
     stdout=log_fp,
     stderr=log_fp,
@@ -2255,13 +2225,130 @@ with open("temp.csv", "w", "w", encoding='utf-8', newline="") as f:
     f.write(dataset.export(format="csv"))
 ```
 
+> 导出数据
+
+```python
+import tablib
+data = [
+    ['Name', 'Age', 'City'],
+    ['Alice', 30, 'New York'],
+    ['Bob', 25, 'Los Angeles'],
+    ['Charlie', 35, 'Chicago']
+]
+dataset = tablib.Dataset(*data[1:], headers=data[0])
+# 导出为不同格式
+csv_data = dataset.export('csv')
+json_data = dataset.export('json')
+xlsx_data = dataset.export('xlsx')
+```
+
+> 导入数据
+
+```python
+import tablib
+# 从CSV导入数据
+csv_data = """Name,Age,City
+Alice,30,New York
+Bob,25,Los Angeles
+Charlie,35,Chicago"""
+dataset = tablib.Dataset().load(csv_data, format='csv')
+for row in dataset:
+    print(row)
+```
+
 ## 自动化运维
 
 [pyinfra](https://docs.pyinfra.com/en/next/index.html)
 
+> pyinfra 是一个用于自动化服务器配置和部署的 Python 工具。它允许你使用 Python 脚本来定义和管理服务器的状态，从而简化了运维任务。pyinfra 支持多种操作系统和云平台，提供了丰富的模块和功能，使得自动化变得更加高效和灵活。
+
+安装：`pip install pyinfra`
+
+最小示例（上传文件 + 重启服务）：
+
+```bash
+pyinfra myhost.example.com files.put local.conf /etc/myapp.conf
+pyinfra myhost.example.com server.shell "systemctl restart myapp"
+```
+
+使用编排脚本 `deploy.py`：
+
+```python
+from pyinfra import host
+from pyinfra.operations import files, server
+
+files.put(name="上传配置", src="local.conf", dest="/etc/myapp.conf")
+server.shell(name="重启服务", commands=["systemctl restart myapp"])
+```
+
+运行：
+
+```bash
+pyinfra @local deploy.py          # 本机
+pyinfra inventory.ini deploy.py   # 多主机清单
+```
+
+示例 inventory.ini（服务器列表）：
+
+```ini
+[web]
+web1 ansible_host=1.2.3.4 user=ubuntu port=22
+web2 ansible_host=1.2.3.5 user=ubuntu
+
+[db]
+db1 ansible_host=1.2.3.6 user=ubuntu
+
+[all:vars]
+ssh_key=/home/ubuntu/.ssh/id_rsa
+sudo=true
+```
+
+说明：
+
+- 分组随意命名；`ansible_host` 为目标 IP/域名（习惯兼容 Ansible 写法）。
+- `user`/`port`/`ssh_key` 可在主机或分组或 `all:vars` 里设置。
+- 需提权时 `sudo=true`，或在命令行用 `--sudo`。
+
+要点：
+
+- 幂等：操作会检测当前状态，仅在需要时变更。
+- 连接方式：SSH（默认）、WinRM、Docker/LXD 都支持。
+- 可自定义 facts/operations 以扩展功能。
+
 ## 全能解压库
 
 [patool](https://wummel.github.io/patool/)
+
+跨平台解压/打包的 Python 封装，底层调用系统里的 `unrar`/`p7zip` 等工具。
+
+安装：
+
+```bash
+pip install patool
+# macOS 需要先安装 p7zip：brew install p7zip
+# Linux 需要对应后端：apt-get install p7zip-full unrar
+```
+
+最简用法（Python）：
+
+```python
+import patoolib
+
+patoolib.extract_archive("archive.rar", outdir="/tmp/out")
+patoolib.create_archive("logs.zip", ["log1.txt", "log2.txt"])
+```
+
+命令行：
+
+```bash
+patool extract archive.tar.gz -o /tmp/out
+patool create backup.7z file1 file2 dir/
+```
+
+注意：
+
+- 需要对应格式的系统后端（如 rar 需 unrar，7z 需 p7zip），否则会报 Missing backend。
+- 仅做封装，不负责加密破解；加密包需提供密码。
 
 ## 项目规范
 
@@ -2269,9 +2356,86 @@ with open("temp.csv", "w", "w", encoding='utf-8', newline="") as f:
 
 [原文](https://zhuanlan.zhihu.com/p/666166082)
 
-## 脚本加密
+要点摘录：
 
-<iframe style="height: 400px;width: 100%;" src="https://pyarmor.readthedocs.io/zh/stable/index.html"/>
+- 统一用 `pyproject.toml` 管理元数据、依赖与工具配置，避免混用 setup.cfg/requirements.txt。
+- 依赖分组：`dependencies`（运行时）与 `optional-dependencies.dev`（开发）、`test`、`docs` 等。
+- 建议搭配 uv/poetry/pip-tools 管理锁文件；统一格式化与静态检查（ruff/black/isort/mypy）写在同一个文件里，便于 CI 复用。
+
+最小示例：
+
+```toml
+[project]
+name = "demo"
+version = "0.1.0"
+dependencies = [
+    "requests>=2.32",
+]
+[project.optional-dependencies]
+dev = ["ruff", "black", "mypy", "pytest"]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+```
+
+使用 uv 例：
+
+```bash
+uv add requests
+uv add --group dev ruff black mypy pytest
+uv run ruff check
+```
+
+## 脚本加密（PyArmor）
+
+> 通过字节码混淆/壳加密保护 Python 脚本。适合分发给第三方但不想泄露源码的场景。
+
+安装：
+
+```bash
+pip install pyarmor
+```
+
+基础用法：
+
+```bash
+# 生成许可证/密钥 & 输出到 dist/
+pyarmor gen myapp.py -O dist
+
+# 运行加密后的脚本
+python dist/myapp.py
+```
+
+常用选项：
+
+- `-e "--enable-jit"`：启用 JIT 壳，略增启动时间但更难逆向。
+- `-m`：加密为字节码模块（.pyc），便于嵌入发行包。
+- `--exclude tests docs`：跳过目录。
+- `--platform darwin.x86_64` 等：生成跨平台包（需匹配目标平台）。
+
+批量加密目录示例：
+
+```bash
+pyarmor gen src -O dist/encrypted \
+    --exclude tests docs \
+    -e "--enable-jit" \
+    --platform darwin.x86_64 \
+    --platform manylinux2014.x86_64
+```
+
+发布/运行要点：
+
+- 运行端需有匹配平台的 `pyarmor_runtime`；`pyarmor gen` 会自动打包到输出目录。
+- 尽量配合虚拟环境，避免系统 Python 路径污染。
+- 加密无法防止内存层面的高级逆向，只适合提升拆包成本。
 
 ## 时间函数strftime与strptime
 
@@ -2289,10 +2453,9 @@ with open("temp.csv", "w", "w", encoding='utf-8', newline="") as f:
 
 ### strftime函数
 
-> **作用：**将给定格式的日期时间对象转换为字符串。**日期时间对象=>字符串，控制日期时间对象的输出格式，**
+> **作用：将给定格式的日期时间对象转换为字符串。日期时间对象=>字符串，控制日期时间对象的输出格式，**
 > date、datetime、time对象都支持strftime(format) 方法，可用来创建由一个显式格式字符串所控制的表示时间的字符串。要获取格式指令的完整列表，查看文末列表。
->
-> **用法：**datetime.strftime(format)
+> **用法：** `datetime.strftime(format)`
 
 ```python
 import datetime
@@ -2355,7 +2518,7 @@ datetime.datetime(2006, 11, 21, 16, 30)
 
 > 为包管理者提供的简易界面
 
-<iframe style="height: 600px;width: 100%;" src="https://pypistats.org/packages/yundownload"/>
+<iframe style="height: 600px;width: 100%;" src="https://pypistats.org/packages/yundownload"></iframe>
 
 ## TUI模块
 
@@ -2409,11 +2572,11 @@ PyOTP的核心概念非常简单，主要包括以下几点：
 1.
     1. **密钥（Secret Key）**：用于生成一次性密码的基础。
 2.
-    2. **TOTP（基于时间的一次性密码）**：根据当前时间和密钥生成的一次性密码。
+    1. **TOTP（基于时间的一次性密码）**：根据当前时间和密钥生成的一次性密码。
 3.
-    3. **HOTP（基于HMAC的一次性密码）**：根据计数器和密钥生成的一次性密码。
+    1. **HOTP（基于HMAC的一次性密码）**：根据计数器和密钥生成的一次性密码。
 4.
-    4. **URI**：用于在不同设备间共享OTP配置的标准格式。
+    1. **URI**：用于在不同设备间共享OTP配置的标准格式。
 
 让我们通过一个简单的例子来了解TOTP的基本用法：
 
@@ -2554,7 +2717,7 @@ str.casefold()
 #用_从右边切分前面的为0后面的为1,切一次
 str.split("_",1)[1]
 #去空格和换行符
-str.strip()	
+str.strip() 
 #用b替换字符串里的a
 str.replace('a','b')
 #用于检查字符串是否是以指定子字符串开头(一般后面俩参数不用)
@@ -2725,12 +2888,12 @@ from multiprocessing import process
 ### 多线程
 
 ```python
-from threading import Thread	#线程类
+from threading import Thread #线程类
 def a():
     pass
 if __name__=='__main__'
-	t = Thread(target=a，args=('name',))	#创建线程并给线程安排任务,args传参必须是个元组，一个参数的时候后面必须跟上逗号
-	t.start() #多线程状态为可以开始工作，具体执行的时间由CPU决定
+ t = Thread(target=a，args=('name',)) #创建线程并给线程安排任务,args传参必须是个元组，一个参数的时候后面必须跟上逗号
+ t.start() #多线程状态为可以开始工作，具体执行的时间由CPU决定
     
 #改写线程类
 class MyThread(Thread):
@@ -2757,7 +2920,7 @@ def run(name):
 
 if __name__ == "__main__":
     with ThreadPoolExecutor(20) as t: #线程池或者进程池的数量为20
-        for i in range(10):			#一共有10个任务提交给线程池或进程池
+        for i in range(10):   #一共有10个任务提交给线程池或进程池
             t.submit(run,name=f"线程{i}")
 #进程池
 
@@ -2864,8 +3027,8 @@ async def mian():
     tasks = []
     for url in urls:
         a = get(url)
-        #tasks.append(d)	#Python3.8以前
-        tasks.append(asyncio.create_task(get(url)))	#Python3.8以后
+        #tasks.append(d) #Python3.8以前
+        tasks.append(asyncio.create_task(get(url))) #Python3.8以后
         await asyncio.wait(tasks)
         
 if __name__ == '__main__':
@@ -2879,8 +3042,8 @@ import aiohttp
 async with aiohttp.ClientSession() as session:
     async with session.get(url) as respon:
         a = await respon.content.rad()    #等同于requests里的.content读取二进制数据，respon.text(),respon.json()
-        with open(name,'wb') as f:	#创建文件，aiofiles异步（async with aiofiles.open）
-            f.write(await a) #读取文件是异步操作需要await挂起	(await f.await(await a))
+        with open(name,'wb') as f: #创建文件，aiofiles异步（async with aiofiles.open）
+            f.write(await a) #读取文件是异步操作需要await挂起 (await f.await(await a))
 ```
 
 ## 抓取视频
@@ -2931,7 +3094,7 @@ obj.finditer(b)
 
 ```python
 from selenium.webdriver import Chrome
-from selenium.webdriver.common.keys import Keys	#Keys.ENTER模拟键盘回车
+from selenium.webdriver.common.keys import Keys #Keys.ENTER模拟键盘回车
 
 web = Chrome()
 web.find_element(By.xpath,'').send_keys('python',Keys.ENTER)
@@ -2947,12 +3110,12 @@ web.switch_to.frame(iframe)
 web.switch_to.default_content()
 #下拉标签select
 from selenium.webdriver.support.select import Select
-	#定位到select标签
+ #定位到select标签
 select = find_element(By.xpath,'')
-	#包装成下拉菜单
+ #包装成下拉菜单
 sel = Select(select)
 for i in range(len(sel.options))
-#无头浏览器	没图形化界面的浏览器
+#无头浏览器 没图形化界面的浏览器
 from selenium.webdriver.chrome.options import Options
 opt = Optinos()
 opt.add_argument("--headless")
@@ -2966,8 +3129,8 @@ img.screenshot_as_png
 #priform可以执行，xy是偏移量
 ActionChains(web).move_to_element_with_offset(img,x,y).click().perform()
 #自动化被检测到
-	#小于88，启动时，嵌入js代码
-	#chrome的版本大于等于88
+ #小于88，启动时，嵌入js代码
+ #chrome的版本大于等于88
 opt = Options()
 opt.add_argument('--disable-blink-features=AutomationControlled')
 web = Chrome(optins=opt)
@@ -3209,13 +3372,13 @@ CRITICAL:root:hello critical
 
 以上可看到`logging.`后面跟3个不同参数,其实除了以上三种日志等级以外,logging还支持如下几种等级:
 
-| 日志等级 | 日志数字 | 日志信息说明                          |
-| :------: | :------: | :------------------------------------ |
-|  DEBUG   |    10    | 详细信息,通常仅在调试阶段时才有意义   |
-|   INFO   |    20    | 确认事情按预期工作,正常工作时发送     |
-| WARNING  |    30    | 警告等级,表示发生了不可预料的意外     |
-|  ERROR   |    40    | 错误,比警告等级更加严重,软件无法运行  |
-| CRITICAL |    50    | 严重错误,表明程序本身可能无法继续运行 |
+|   日志等级   | 日志数字 | 日志信息说明              |
+|:--------:|:----:|:--------------------|
+|  DEBUG   |  10  | 详细信息,通常仅在调试阶段时才有意义  |
+|   INFO   |  20  | 确认事情按预期工作,正常工作时发送   |
+| WARNING  |  30  | 警告等级,表示发生了不可预料的意外   |
+|  ERROR   |  40  | 错误,比警告等级更加严重,软件无法运行 |
+| CRITICAL |  50  | 严重错误,表明程序本身可能无法继续运行 |
 
 如果想把日志等级写入文件的话,只需要在程序启动时指定配置路径即可.
 
@@ -3238,22 +3401,22 @@ logging.critical('critical message')
 
 日志的`format()`相关格式列表如下所示,以上的配置格式可以随意自定义.
 
-|    格式名称    | 格式的作用                         |
-| :------------: | :--------------------------------- |
-|    %(name)s    | Logger的名字                       |
-|  %(levelno)s   | 数字形式的日志级别                 |
-| %(levelname)s  | 文本形式的日志级别                 |
+|      格式名称      | 格式的作用             |
+|:--------------:|:------------------|
+|    %(name)s    | Logger的名字         |
+|  %(levelno)s   | 数字形式的日志级别         |
+| %(levelname)s  | 文本形式的日志级别         |
 |  %(pathname)s  | 调用日志输出函数的模块的完整路径名 |
-|  %(filename)s  | 调用日志输出函数的模块的文件名     |
-|   %(module)s   | 调用日志输出函数的模块名           |
-|  %(funcName)s  | 调用日志输出函数的函数名           |
+|  %(filename)s  | 调用日志输出函数的模块的文件名   |
+|   %(module)s   | 调用日志输出函数的模块名      |
+|  %(funcName)s  | 调用日志输出函数的函数名      |
 |   %(lineno)d   | 调用日志输出函数的语句所在的代码行 |
-|  %(created)f   | 当前时间,用UNIX标准的表示时间      |
-|  %(asctime)s   | 字符串形式的当前时间               |
-|   %(thread)d   | 线程ID,可能没有                    |
-| %(threadName)s | 线程名,可能没有                    |
-|  %(process)d   | 进程ID,可能没有                    |
-|  %(message)s   | 用户输出的消息                     |
+|  %(created)f   | 当前时间,用UNIX标准的表示时间 |
+|  %(asctime)s   | 字符串形式的当前时间        |
+|   %(thread)d   | 线程ID,可能没有         |
+| %(threadName)s | 线程名,可能没有          |
+|  %(process)d   | 进程ID,可能没有         |
+|  %(message)s   | 用户输出的消息           |
 
 其实日志文件的相关功能还很多,包括多文件日志记录功能等,笔者认为这些功能太过于繁琐,在开发中容易混用,掌握上面的常用方法就已经足够,所以不再继续往下延伸了.
 
@@ -3818,8 +3981,6 @@ print("==========准备接收消息==========")
 channel.start_consuming()              #循环接收消息
 ```
 
-
-
 ### 消息的持久化
 
 如果服务器端被强制关闭了,我们的消息就丢失了,那就需要我们对服务器端的数据做一个持久化处理.
@@ -3869,8 +4030,6 @@ print(' [*] Waiting for messages. To exit press CTRL+C')
 channel.start_consuming()
 ```
 
-
-
 ### 消息发布订阅
 
 如上的配置方式,MQ只能将消息发送给一个消费者手里,有时候我们想给所有的消费者发送消息,那就需要使用广播的方式给所有的客户端发送消息的分发,MQ支持消息的公平分发,之前的例子都基本都是1对1的消息发送和接收,即消息只能发送到指定的queue里,但有些时候你想让你的消息被所有的Queue收到,类似广播的效果,这时候就要用到exchange了,exchange在定义的时候是有类型的,以决定到底是哪些Queue符合条件,可以接收消息.
@@ -3919,8 +4078,6 @@ def callback(ch, method, properties, body):
 channel.basic_consume(callback,queue=queue_name,no_ack=True)
 channel.start_consuming()
 ```
-
-
 
 ### 选择发布订阅
 
@@ -3990,8 +4147,6 @@ channel.start_consuming()
 
 paramiko 是一个用于做远程SSH控制的模块,使用该模块可以对远程服务器进行命令或文件操作,值得一说的是,fabric和ansible内部的远程管理就是使用的paramiko来现实,其实它的底层是对ssh的上层代码的一个封装,值得注意的是,由于paramiko模块内部依赖pycrypto,所以先下载安装pycrypto模块.
 
-
-
 ### 基于密码认证
 
 **SSHClient:**
@@ -4029,8 +4184,6 @@ print stdout.read()
  
 transport.close()
 ```
-
-
 
 ### 基于公钥认证
 
@@ -4071,8 +4224,6 @@ ssh._transport = transport
 stdin,stdout,stderr = ssh.exec_command('ls -lh')
 transport.close()
 ```
-
-
 
 ### 远程传输文件
 
@@ -4217,8 +4368,6 @@ result = "".join(li)
 print(result)  # 示例输出：'F3G9H2'
 ```
 
-
-
 ## Hashlib 模块
 
 Python 里的 `hashlib` 模块提供了许多加密算法，该模块实现了多种不同的安全散列和消息摘要算法的通用接口，包括 FIPS 安全散列算法 SHA1、SHA224、SHA256、SHA384 和 SHA512，以及 RSA 的 MD5 算法。 "安全散列" 和 "消息摘要" 是可互换的，较旧的算法称为消息摘要，现代术语为安全散列。
@@ -4325,8 +4474,6 @@ with open(r'D:/lyshark.png', 'rb') as f:
 print(m.hexdigest())  # 输出文件的 md5 哈希值
 ```
 
-
-
 ## SYS 系统模块
 
 Python 的 `SYS` 模块提供访问解释器使用或维护的变量，并与解释器进行交互的函数。通俗来讲，`SYS` 模块负责程序与 Python 解释器的交互，提供了一系列的函数和变量，用于操控 Python 运行时的环境。`SYS` 模块是 Python 默认集成的模块，必须使用。
@@ -4426,8 +4573,6 @@ if __name__ == '__main__':
         time.sleep(0.1)
         view_bar(i, 100)
 ```
-
-
 
 ## OS 基础模块
 
@@ -4538,8 +4683,6 @@ os.path.getatime(path)
 os.path.getmtime(path)
 ```
 
-
-
 ## 上下文管理（contextlib）
 
 ```python
@@ -4577,8 +4720,8 @@ except:
 ## wave:处理WAV格式音频库
 
 ```python
-#打开文件	mode r,w普通读写	rb, wb 读写二进制文件
-#rb：生成wav_read对象	wb：生成wav_write对象
+#打开文件 mode r,w普通读写 rb, wb 读写二进制文件
+#rb：生成wav_read对象 wb：生成wav_write对象
 wave.open(file, mode=None)
 ```
 
@@ -4657,7 +4800,6 @@ wav.close()
   Counter()
   ```
 
-
 - defaultdict：字典的子类，提供了一个工厂函数，为字典查询提供了默认值
 
 - OrderedDict：字典的子类，保留了他们被添加的顺序
@@ -4696,7 +4838,6 @@ wav.close()
   deque(['f', 'p', 'y', 't', 'h', 'o', 'n', 'e'], maxlen=10)
   ```
 
-
 - ChainMap：类似字典的容器类，将多个映射集合到一个视图里面
 
   ```python
@@ -4724,5 +4865,3 @@ wav.close()
   banana 2
   orange 2
   ```
-
-  
