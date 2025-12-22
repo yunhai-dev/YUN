@@ -525,6 +525,14 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/月亮之矢 孤矢&虞娱.mp3`,
     },
     {
+        id: 'ac-wlh',
+        title: '爱错',
+        imageUrl: `${STORAGE_HOST}/爱错 王力宏.jpg`,
+        author: '王力宏',
+        lyricsUrl: `${STORAGE_HOST}/爱错 王力宏.lrc`,
+        musicUrl: `${STORAGE_HOST}/爱错 王力宏.mp3`,
+    },
+    {
         id: 'duoyuan-gem',
         title: '多远都要在一起',
         imageUrl: `${STORAGE_HOST}/多远都要在一起 G.E.M.邓紫棋.jpg`,
