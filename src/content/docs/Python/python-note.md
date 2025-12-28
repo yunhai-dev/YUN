@@ -2,6 +2,18 @@
 title:  Python 技巧与库
 ---
 
+## Flet
+
+[Flet](https://flet.dev/) 是一个用于构建跨平台应用程序的 Python 库，允许开发者使用 Python 代码创建桌面和移动应用程序。Flet 提供了一套丰富的 UI 组件和布局选项，使得开发者可以轻松地设计和实现用户界面。
+Flet 的主要特点包括：
+
+- 跨平台支持：Flet 支持 Windows、macOS、Linux、iOS 和 Android 等多个平台，开发者可以编写一次代码并在多个平台上运行。
+- 丰富的 UI 组件：Flet 提供了各种 UI 组件，如按钮、文本框、列表、图表等，帮助开发者快速构建用户界面。
+- 响应式布局：Flet 支持响应式布局，使得应用程序可以适应不同屏幕尺寸和分辨率。
+- 易于使用：Flet 的 API 设计简洁明了，开发者可以快速上手并开始构建应用程序。
+- 集成 Web 技术：Flet 可以与 HTML、CSS 和 JavaScript 等 Web 技术集成，允许开发者利用现有的 Web 技术栈进行开发。
+Flet 适用于需要快速构建跨平台应用程序的开发者，尤其是那些熟悉 Python 语言的开发者。通过 Flet，开发者可以专注于应用程序的功能和用户体验，而无需担心底层平台的差异。
+
 ## MarkItDown
 
 - MarkItDown 是一个由 Microsoft 开发的 Python 工具 / 命令行程序，用于将 PDF / Word / Excel / PPT / 图片 / 音频 / HTML / CSV／JSON／XML／ZIP／EPUB／YouTube-URL 等多种格式转换为 Markdown。它保留文档结构（标题、列表、表格、链接等），适合用于文本分析、LLM 等场景。
