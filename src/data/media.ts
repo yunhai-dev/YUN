@@ -794,7 +794,7 @@ export const mediaItems: MediaItem[] = [
         imageUrl: `${STORAGE_HOST}/If 七元.jpg`,
         author: '七元',
         lyricsUrl: `${STORAGE_HOST}/If 七元.lrc`,
-        musicUrl: `${STORAGE_HOST}/I    f 七元.mp3`,
+        musicUrl: `${STORAGE_HOST}/If 七元.mp3`,
     },
     {
         id: 'xwzcy-hx',
