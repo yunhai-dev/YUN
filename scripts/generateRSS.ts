@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { Marked, Renderer } from 'marked';
+import hljs from 'highlight.js';
 
 const blogsDirectory = path.join(process.cwd(), 'src/content/blogs');
 const siteUrl = 'https://www.yhnotes.com';
@@ -69,42 +71,112 @@ function getAllBlogPosts(): BlogPostForRSS[] {
     });
 }
 
-// 将 Markdown 转换为简单 HTML（基础转换）
-function markdownToHtml(markdown: string): string {
-    return markdown
-        // 移除 frontmatter
-        .replace(/^---[\s\S]*?---\n*/m, '')
-        // 标题
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-        // 粗体和斜体
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        // 代码块
-        .replace(/```[\w]*\n([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-        // 行内代码
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        // 链接
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
-        // 图片
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
-        // 无序列表
-        .replace(/^- (.+)$/gm, '<li>$1</li>')
-        // 段落（连续的非空行）
-        .replace(/^(?!<[h|l|p|u|o|c|i])(\S.*)$/gm, '<p>$1</p>')
-        // 换行
-        .replace(/\n\n+/g, '\n');
+// 使用 marked 和 highlight.js 将 Markdown 转换为 HTML（与网站保持一致）
+async function markdownToHtml(markdown: string): Promise<string> {
+    // 移除 frontmatter
+    const contentWithoutFrontmatter = markdown.replace(/^---[\s\S]*?---\n*/m, '');
+    
+    const renderer: Partial<Renderer> = {
+        // 处理代码块
+        code({ text, lang }) {
+            const langName = lang ? lang.split(' ')[0] : '';
+            if (langName === 'mermaid') {
+                return `<pre class="mermaid">${text}</pre>`;
+            }
+            const validLang = lang && hljs.getLanguage(langName) ? langName : 'plaintext';
+            const highlighted = hljs.highlight(text, { language: validLang }).value;
+            return `<pre><code class="hljs ${validLang}">${highlighted}</code></pre>`;
+        },
+
+        // 处理行内代码
+        codespan({ text }) {
+            return `<code>${text}</code>`;
+        },
+
+        // 处理标题
+        heading({ tokens, depth }) {
+            const text = this.parser!.parseInline(tokens);
+            return `<h${depth}>${text}</h${depth}>\n`;
+        },
+
+        // 处理段落
+        paragraph({ tokens }) {
+            const text = this.parser!.parseInline(tokens);
+            return `<p>${text}</p>\n`;
+        },
+
+        // 处理图片 - 转换为绝对路径
+        image({ href, title, text }) {
+            const absoluteHref = href?.startsWith('http') ? href : `${siteUrl}${href}`;
+            return `<img src="${absoluteHref}" alt="${text}" title="${title ?? ''}" />`;
+        },
+
+        // 处理表格
+        table(token) {
+            const headerCells = token.header.map(cell => {
+                const align = cell.align ? ` style="text-align:${cell.align}"` : '';
+                const content = this.parser!.parseInline(cell.tokens);
+                return `<th${align}>${content}</th>`;
+            }).join('\n');
+            
+            const bodyRows = token.rows.map(row => {
+                const cells = row.map(cell => {
+                    const align = cell.align ? ` style="text-align:${cell.align}"` : '';
+                    const content = this.parser!.parseInline(cell.tokens);
+                    return `<td${align}>${content}</td>`;
+                }).join('\n');
+                return `<tr>\n${cells}\n</tr>`;
+            }).join('\n');
+            
+            return `<table>\n<thead>\n<tr>\n${headerCells}\n</tr>\n</thead>\n<tbody>\n${bodyRows}\n</tbody>\n</table>\n`;
+        },
+
+        // 处理链接 - 转换为绝对路径
+        link({ href, title, tokens }) {
+            const text = this.parser!.parseInline(tokens);
+            const absoluteHref = href?.startsWith('http') || href?.startsWith('/') 
+                ? (href.startsWith('/') ? `${siteUrl}${href}` : href)
+                : href;
+            return `<a href="${absoluteHref}" title="${title ?? ''}">${text}</a>`;
+        },
+
+        // 处理引用块
+        blockquote({ tokens }) {
+            const content = this.parser!.parse(tokens);
+            return `<blockquote>${content}</blockquote>\n`;
+        },
+
+        // 处理列表
+        list(token) {
+            const tag = token.ordered ? 'ol' : 'ul';
+            const items = token.items.map(item => {
+                const content = this.parser!.parse(item.tokens);
+                return `<li>${content}</li>`;
+            }).join('\n');
+            return `<${tag}>\n${items}\n</${tag}>\n`;
+        },
+
+        // 处理水平线
+        hr() {
+            return '<hr />\n';
+        }
+    };
+
+    const marked = new Marked();
+    marked.use({ renderer });
+
+    const content = await marked.parse(contentWithoutFrontmatter);
+    return content;
 }
 
-function generateRSS(): string {
+async function generateRSS(): Promise<string> {
     const posts = getAllBlogPosts();
     const now = new Date().toUTCString();
     const avatarUrl = 'https://rustfs-endpoint.yhnotes.com/content/Avatar.webp';
 
-    const items = posts.slice(0, 20).map(post => {
+    const items = await Promise.all(posts.slice(0, 20).map(async post => {
         const pubDate = new Date(convertChineseDateToISO(post.lastEdited)).toUTCString();
-        const htmlContent = markdownToHtml(post.content);
+        const htmlContent = await markdownToHtml(post.content);
         
         return `
     <item>
@@ -116,7 +188,7 @@ function generateRSS(): string {
       <category>${escapeXml(post.category.split(',')[0])}</category>
       <pubDate>${pubDate}</pubDate>
     </item>`;
-    }).join('');
+    }));
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -131,19 +203,19 @@ function generateRSS(): string {
       <url>${avatarUrl}</url>
       <title>${siteName}</title>
       <link>${siteUrl}</link>
-    </image>${items}
+    </image>${items.join('')}
   </channel>
 </rss>`;
 }
 
-function generateAtom(): string {
+async function generateAtom(): Promise<string> {
     const posts = getAllBlogPosts();
     const now = new Date().toISOString();
     const avatarUrl = 'https://rustfs-endpoint.yhnotes.com/content/Avatar.webp';
 
-    const entries = posts.slice(0, 20).map(post => {
+    const entries = await Promise.all(posts.slice(0, 20).map(async post => {
         const updated = convertChineseDateToISO(post.lastEdited);
-        const htmlContent = markdownToHtml(post.content);
+        const htmlContent = await markdownToHtml(post.content);
         
         return `
   <entry>
@@ -158,7 +230,7 @@ function generateAtom(): string {
       <name>YunHai</name>
     </author>
   </entry>`;
-    }).join('');
+    }));
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -173,21 +245,21 @@ function generateAtom(): string {
   <author>
     <name>YunHai</name>
     <uri>${siteUrl}</uri>
-  </author>${entries}
+  </author>${entries.join('')}
 </feed>`;
 }
 
 // 主函数
-function main() {
+async function main() {
     const publicDir = path.join(process.cwd(), 'public');
     
     // 生成 RSS 2.0
-    const rss = generateRSS();
+    const rss = await generateRSS();
     fs.writeFileSync(path.join(publicDir, 'rss.xml'), rss, 'utf8');
     console.log('✅ RSS feed 已生成: public/rss.xml');
     
     // 生成 Atom
-    const atom = generateAtom();
+    const atom = await generateAtom();
     fs.writeFileSync(path.join(publicDir, 'atom.xml'), atom, 'utf8');
     console.log('✅ Atom feed 已生成: public/atom.xml');
 }
