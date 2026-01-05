@@ -5,6 +5,8 @@ import Script from "next/script";
 import BlogClient from "@/components/blog-client";
 import {Metadata} from "next";
 import {baseUrl, image, siteName} from '@/config/site';
+import {BreadcrumbStructuredData} from "@/components/structured-data";
+import {ReadingProgress} from "@/components/reading-progress";
 
 // 生成所有可能的博客文章路径
 export async function generateStaticParams() {
@@ -125,13 +127,22 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
     };
 
 
+    // 生成面包屑
+    const breadcrumbItems = [
+        { name: '首页', url: '/' },
+        { name: '博客', url: '/blog' },
+        { name: post.title, url: `/blog/${id}` }
+    ];
+
     return (
         <>
+            <ReadingProgress />
             <Script
                 id="article-structured-data"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
             />
+            <BreadcrumbStructuredData items={breadcrumbItems} />
             <div className="flex flex-col">
                 <div className="flex-1 pt-32 pb-24">
                     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

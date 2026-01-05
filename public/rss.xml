@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>YunHai Ideas 云海创意</title>
+    <link>https://www.yhnotes.com</link>
+    <description>专注于技术文章、项目经验、生活点滴与云端分享。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 05 Jan 2026 08:50:07 GMT</lastBuildDate>
+    <atom:link href="https://www.yhnotes.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <image>
+      <url>https://www.yhnotes.com/icons/icon-192.png</url>
+      <title>YunHai Ideas 云海创意</title>
+      <link>https://www.yhnotes.com</link>
+    </image>
+    <item>
+      <title>无标题</title>
+      <link>https://www.yhnotes.com/blog/AI-and-Cognitive-Decline-in-Humans-A-Study</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/AI-and-Cognitive-Decline-in-Humans-A-Study</guid>
+      <description> 智能系统的双向演化：大语言模型“脑腐”假设与人类“认知债务”的共生退化研究报告
+
+在人工智能（AI）与人类社会深度集成的当代背景下，认知能力的演变已不再是单一生物学或计算机科学的课题，而是一个复杂的交互式生态问题。近期由德克萨斯大学、普渡大学以及麻省理工学院（MIT）等顶尖机构发布的联合研究指出，这种集成正导致一种显著的“双向认知退化”现象。一方面，大语言模型（LLM）在长期接触互联网...</description>
+      <category>未分类</category>
+      <pubDate>Sun, 21 Dec 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>2025 年度总结</title>
+      <link>https://www.yhnotes.com/blog/2025-Summary</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/2025-Summary</guid>
+      <description>每一年又每一年的成长和感悟</description>
+      <category>感悟</category>
+      <pubDate>Fri, 12 Dec 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>YUN 评论静态网站评论服务</title>
+      <link>https://www.yhnotes.com/blog/comment-service</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/comment-service</guid>
+      <description>适用于个人网站的评论服务</description>
+      <category>API服务</category>
+      <pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>寻心之旅</title>
+      <link>https://www.yhnotes.com/blog/seeking-the-heart</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/seeking-the-heart</guid>
+      <description>每一场出游都为了寻找一个答案，自由、自我亦或诗和远方。</description>
+      <category>游记</category>
+      <pubDate>Sun, 21 Sep 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>红月下的碎碎念</title>
+      <link>https://www.yhnotes.com/blog/blood-moon</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/blood-moon</guid>
+      <description>江天一色无纤尘，皎皎空中孤月轮。</description>
+      <category>日常</category>
+      <pubDate>Mon, 08 Sep 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>LangGraph 快速上手与进阶实践</title>
+      <link>https://www.yhnotes.com/blog/langgraph-quickstart</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/langgraph-quickstart</guid>
+      <description>LangGraph 是专为大语言模型和多智能体工作流打造的高级框架，支持节点编排、工具集成、记忆管理、人工介入和“时间旅行”等特性。本文将以简洁实用的方式，带你快速上手 LangGraph 并掌握进阶用法，从零到一构建强大的 AI 工作流应用。</description>
+      <category>AI 开发</category>
+      <pubDate>Fri, 15 Aug 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>JuiceFS 分布式文件系统</title>
+      <link>https://www.yhnotes.com/blog/juicefs</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/juicefs</guid>
+      <description>JuniceFS 分布式文件系统安装与使用</description>
+      <category>分布式</category>
+      <pubDate>Sat, 26 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>OSS 对象存储 WEB 服务最优解</title>
+      <link>https://www.yhnotes.com/blog/oss-upload</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/oss-upload</guid>
+      <description>对比后端中转上传与前端直传两种主流文件上传架构，结合对象存储（如 OSS）特点，推荐采用前端直传+后端签名模式，以实现高性能、低成本、强安全的文件上传方案。</description>
+      <category>OSS</category>
+      <pubDate>Tue, 22 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>舞台下遇见诗与梦</title>
+      <link>https://www.yhnotes.com/blog/shanghai-lc</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/shanghai-lc</guid>
+      <description>原来诀别是因为深藏眷恋</description>
+      <category>游记</category>
+      <pubDate>Mon, 21 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>YUN Share 静态网页托管</title>
+      <link>https://www.yhnotes.com/blog/yun-share</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/yun-share</guid>
+      <description>介绍MCP音乐服务器的功能及使用方法，包括搜索歌曲和获取歌曲详情，帮助开发者快速集成音乐服务。</description>
+      <category>前端</category>
+      <pubDate>Mon, 07 Jul 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Docker镜像构建方法对比</title>
+      <link>https://www.yhnotes.com/blog/multi-stage-container-build</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/multi-stage-container-build</guid>
+      <description>探索最优Dockerfile构建镜像方法。</description>
+      <category>Docker</category>
+      <pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>GitHub Actions 快速使用</title>
+      <link>https://www.yhnotes.com/blog/github-actions</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/github-actions</guid>
+      <description>全面剖析一个 Rust 项目的 GitHub Actions 工作流配置，涵盖自动测试、跨平台构建与一键发布流程。</description>
+      <category>CI/CD</category>
+      <pubDate>Sat, 14 Jun 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Playwright MCP 在爬虫的应用</title>
+      <link>https://www.yhnotes.com/blog/spider-playwright-mcp</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/spider-playwright-mcp</guid>
+      <description>基于大模型技术实现的智能、高效的网页数据抓取。</description>
+      <category>技术</category>
+      <pubDate>Mon, 09 Jun 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>YUN Music MCP 服务</title>
+      <link>https://www.yhnotes.com/blog/yun-music</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/yun-music</guid>
+      <description>介绍MCP音乐服务器的功能及使用方法，包括搜索歌曲和获取歌曲详情，帮助开发者快速集成音乐服务。</description>
+      <category>技术</category>
+      <pubDate>Thu, 05 Jun 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>AST解混淆技术</title>
+      <link>https://www.yhnotes.com/blog/ast</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/ast</guid>
+      <description>使用抽象语法树来还原被混淆的代码。</description>
+      <category>技术</category>
+      <pubDate>Sat, 17 May 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>现代加密算法解析：类型、特征与实现</title>
+      <link>https://www.yhnotes.com/blog/encryption</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/encryption</guid>
+      <description>解析对称加密、非对称加密和哈希算法。</description>
+      <category>加密</category>
+      <pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>构建风格化提示词</title>
+      <link>https://www.yhnotes.com/blog/prompt</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/prompt</guid>
+      <description>风格拆解、要素提取和结构化提示词构建，让 AI 成为你风格多变的写作助手。</description>
+      <category>AI写作</category>
+      <pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>于万人中万幸得以相逢</title>
+      <link>https://www.yhnotes.com/blog/nanjing-jfxy</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/nanjing-jfxy</guid>
+      <description>山色有无中，不如就春风。</description>
+      <category>游记</category>
+      <pubDate>Mon, 05 May 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>消除异步传染性</title>
+      <link>https://www.yhnotes.com/blog/async-cure</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/async-cure</guid>
+      <description>JavaScript 中消除异步函数的传染性。</description>
+      <category>JavaScript</category>
+      <pubDate>Wed, 23 Apr 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>数据采集 CloudFlare 人机验证</title>
+      <link>https://www.yhnotes.com/blog/spider-cloudflare</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/spider-cloudflare</guid>
+      <description>数据采集中通过 CloudFlare 人机验证方案。</description>
+      <category>数据采集</category>
+      <pubDate>Fri, 18 Apr 2025 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

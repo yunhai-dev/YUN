@@ -88,10 +88,11 @@ export function Footer() {
                 <Separator className="bg-white/5 mb-8"/>
 
                 <div className="text-sm text-muted-foreground flex justify-between flex-col md:flex-row gap-3">
-                    <p>© 2025 YunHai. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} YunHai. All rights reserved.</p>
                     <p>Sharing Agreement&nbsp;
                         <Link
                             target="_blank"
+                            rel="noopener noreferrer"
                             className="hover:text-blue-400"
                             href="https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.en">
                             (CC BY-NC-SA 4.0)

@@ -1,14 +1,15 @@
 {
-  "name": "linear-clone",
+  "name": "yunhai-notes",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 --turbopack",
     "build": "next build",
-    "prebuild": "node scripts/buildAnIndex.js",
+    "prebuild": "node scripts/buildAnIndex.js && npx tsx scripts/generateRSS.ts",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "rss": "npx tsx scripts/generateRSS.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.80",
@@ -61,7 +62,8 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
     "tokenlens": "^1.3.1",
-    "use-stick-to-bottom": "^1.1.1"
+    "use-stick-to-bottom": "^1.1.1",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
