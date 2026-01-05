@@ -28,6 +28,8 @@ const footerLinks = [
         title: "Resource",
         links: [
             {href: "/api/", label: "API"},
+            {href: "/rss.xml", label: "RSS Feed"},
+            {href: "/atom.xml", label: "Atom Feed"},
         ],
     },
     {
