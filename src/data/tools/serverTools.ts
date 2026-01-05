@@ -1,6 +1,14 @@
 import {Tool} from "@/types/tools";
 
 export const serverTools: Tool[] = [
+    // https://github.com/dromara/orion-visor
+    {
+        id: 'orion-visor',
+        name: 'Orion Visor',
+        description: '一款高颜值、现代化的自动化运维及轻量堡垒机，提供全面的服务器智能运维解决方案。',
+        href: 'https://github.com/dromara/orion-visor',
+        category: '服务器工具'
+    },
     {
         id: 'warpgate',
         name: 'Warpgate',

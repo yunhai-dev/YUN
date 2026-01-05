@@ -47,6 +47,7 @@ export function Carwlsy() {
 
                         <Link
                             target="_blank"
+                            rel="noopener noreferrer"
                             href="https://github.com/yunhai-dev/crawlsy"
                             className="text-foreground font-medium hover:underline inline-flex items-center">
                             Learn more about Crawlsy

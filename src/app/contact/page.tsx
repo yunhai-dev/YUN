@@ -4,11 +4,29 @@ import Image from "next/image";
 import {Link} from "next-view-transitions"
 import {image} from '@/config/site';
 import {STORAGE_HOST} from "@/data/baseUrl";
+import {FAQStructuredData} from "@/components/structured-data";
+
+// FAQ 数据用于结构化数据
+const faqs = [
+    {
+        question: "如何联系 YunHai？",
+        answer: "您可以通过邮件 yunhai@yhnotes.com 联系我，或通过 GitHub、Gitee 等平台与我取得联系。"
+    },
+    {
+        question: "YunHai 提供哪些技术服务？",
+        answer: "我提供全栈开发（Python/Django/FastAPI + React/Next.js）、AI 应用开发（LLM/Agent）、数据爬取等技术服务。"
+    },
+    {
+        question: "回复时间一般是多久？",
+        answer: "我通常在工作日 24 小时内回复所有咨询。紧急事项请在邮件主题中标注「URGENT」。"
+    }
+];
 
 
 export default function Contact() {
     return (
         <main className="min-h-screen flex flex-col">
+            <FAQStructuredData faqs={faqs} />
 
             {/* Hero Section */}
             <section className="pt-32 pb-16 px-4">
@@ -63,7 +81,7 @@ export default function Contact() {
                                 Feel free to reach out to me via email for any inquiries or collaboration opportunities.
                             </p>
                             <Link href="mailto:yunhai@yhnotes.com" className="text-blue-500 hover:underline relative z-10"
-                                  target="_blank">
+                                  target="_blank" rel="noopener noreferrer">
                                 Click Contact me by email
                             </Link>
                         </div>
@@ -78,7 +96,7 @@ export default function Contact() {
                                 Check out my open source projects and contributions on GitHub.
                             </p>
                             <Link href="https://github.com/yunhai-dev" className="text-blue-500 hover:underline relative z-10"
-                                  target="_blank">
+                                  target="_blank" rel="noopener noreferrer">
                                 Click here to view my Github
                             </Link>
                         </div>
@@ -93,7 +111,7 @@ export default function Contact() {
                                 Follow my projects and activities on Gitee.
                             </p>
                             <Link href="https://gitee.com/yun2hai" className="text-blue-500 hover:underline relative z-10"
-                                  target="_blank">
+                                  target="_blank" rel="noopener noreferrer">
                                 Click here to view my Gitee
                             </Link>
                         </div>

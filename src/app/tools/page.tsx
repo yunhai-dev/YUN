@@ -60,7 +60,7 @@ function ToolCard({tool}: ToolCardProps) {
 // 更新 ToolsPage 组件以包含筛选逻辑
 const ToolsPage = () => {
     const allTools = useMemo(() => getAllTools(), []); // 获取所有工具数据，使用 useMemo 避免重复计算
-    
+
     // 提取所有唯一的分类，并添加 "全部" 选项
     const categories = useMemo(() => {
         const uniqueCategories = new Set(allTools.map(tool => tool.category).filter(Boolean)); // 过滤掉 undefined 或空字符串

@@ -3,6 +3,7 @@
 import React, {useState} from 'react';
 import {Link} from "next-view-transitions";
 import {cn} from "@/lib/utils";
+import {usePrefetch} from "@/components/prefetch-link";
 import {
     Pagination,
     PaginationContent,
@@ -28,10 +29,13 @@ interface RegularPostProps {
 }
 
 function RegularPost({slug, category, title, date}: RegularPostProps) {
+    const prefetchProps = usePrefetch(`/blog/${slug}`);
+    
     return (
         <Link
             href={`/blog/${slug}`}
             className="flex justify-between items-center hover:bg-muted transition-colors group w-full"
+            {...prefetchProps}
         >
             <div className="grid grid-cols-8 items-center gap-4 w-full p-4 rounded-lg hover:bg-muted">
                 <h3 className="col-span-4 text-md font-medium group-hover:text-foreground transition-colors">{title}</h3>

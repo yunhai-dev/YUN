@@ -59,6 +59,7 @@ export function ThemeToggle() {
             <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Toggle Theme"
                 className="text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
                 <Sun className="h-[1.2rem] w-[1.2rem]"/>
@@ -69,13 +70,13 @@ export function ThemeToggle() {
     let icon, tip;
     if (theme === "dark") {
         icon = <Sun className="h-[1.2rem] w-[1.2rem]"/>;
-        tip = "切换到亮色主题";
+        tip = "toggle to light theme";
     } else if (theme === "light") {
         icon = <Moon className="h-[1.2rem] w-[1.2rem]"/>;
-        tip = "切换到自动主题";
+        tip = "toggle to auto theme";
     } else {
         icon = <SunMoon className="w-[1.2rem] h-[1.2rem]" />;
-        tip = "切换到暗色主题 (自动)";
+        tip = "toggle to dark theme (auto mode)";
     }
 
     return (
