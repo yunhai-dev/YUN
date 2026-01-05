@@ -69,12 +69,42 @@ function getAllBlogPosts(): BlogPostForRSS[] {
     });
 }
 
+// 将 Markdown 转换为简单 HTML（基础转换）
+function markdownToHtml(markdown: string): string {
+    return markdown
+        // 移除 frontmatter
+        .replace(/^---[\s\S]*?---\n*/m, '')
+        // 标题
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        // 粗体和斜体
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // 代码块
+        .replace(/```[\w]*\n([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+        // 行内代码
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // 链接
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        // 图片
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
+        // 无序列表
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        // 段落（连续的非空行）
+        .replace(/^(?!<[h|l|p|u|o|c|i])(\S.*)$/gm, '<p>$1</p>')
+        // 换行
+        .replace(/\n\n+/g, '\n');
+}
+
 function generateRSS(): string {
     const posts = getAllBlogPosts();
     const now = new Date().toUTCString();
+    const avatarUrl = 'https://rustfs-endpoint.yhnotes.com/content/Avatar.webp';
 
     const items = posts.slice(0, 20).map(post => {
         const pubDate = new Date(convertChineseDateToISO(post.lastEdited)).toUTCString();
+        const htmlContent = markdownToHtml(post.content);
         
         return `
     <item>
@@ -82,6 +112,7 @@ function generateRSS(): string {
       <link>${siteUrl}/blog/${post.slug}</link>
       <guid isPermaLink="true">${siteUrl}/blog/${post.slug}</guid>
       <description>${escapeXml(post.excerpt)}</description>
+      <content:encoded><![CDATA[${htmlContent}]]></content:encoded>
       <category>${escapeXml(post.category.split(',')[0])}</category>
       <pubDate>${pubDate}</pubDate>
     </item>`;
@@ -97,7 +128,7 @@ function generateRSS(): string {
     <lastBuildDate>${now}</lastBuildDate>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
-      <url>${siteUrl}/icons/icon-192.png</url>
+      <url>${avatarUrl}</url>
       <title>${siteName}</title>
       <link>${siteUrl}</link>
     </image>${items}
@@ -108,9 +139,11 @@ function generateRSS(): string {
 function generateAtom(): string {
     const posts = getAllBlogPosts();
     const now = new Date().toISOString();
+    const avatarUrl = 'https://rustfs-endpoint.yhnotes.com/content/Avatar.webp';
 
     const entries = posts.slice(0, 20).map(post => {
         const updated = convertChineseDateToISO(post.lastEdited);
+        const htmlContent = markdownToHtml(post.content);
         
         return `
   <entry>
@@ -119,6 +152,7 @@ function generateAtom(): string {
     <id>${siteUrl}/blog/${post.slug}</id>
     <updated>${updated}</updated>
     <summary>${escapeXml(post.excerpt)}</summary>
+    <content type="html"><![CDATA[${htmlContent}]]></content>
     <category term="${escapeXml(post.category.split(',')[0])}"/>
     <author>
       <name>YunHai</name>
@@ -134,6 +168,8 @@ function generateAtom(): string {
   <id>${siteUrl}/</id>
   <updated>${now}</updated>
   <subtitle>专注于技术文章、项目经验、生活点滴与云端分享。</subtitle>
+  <icon>${avatarUrl}</icon>
+  <logo>${avatarUrl}</logo>
   <author>
     <name>YunHai</name>
     <uri>${siteUrl}</uri>
