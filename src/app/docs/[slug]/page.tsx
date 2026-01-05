@@ -8,6 +8,8 @@ import Script from "next/script";
 import {Metadata} from "next";
 import {baseUrl, image, siteName} from '@/config/site';
 import {docsNavigation, docsSlugs} from "@/data/docs-structure";
+import {BreadcrumbStructuredData} from "@/components/structured-data";
+import {ReadingProgress} from "@/components/reading-progress";
 
 // 获取文档文件目录
 const docsDirectory = path.join(process.cwd(), 'src/content/docs');
@@ -127,13 +129,22 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
             }
         };
 
+        // 生成面包屑
+        const breadcrumbItems = [
+            { name: '首页', url: '/' },
+            { name: '文档', url: '/docs' },
+            { name: doc.title, url: `/docs/${slug}` }
+        ];
+
         return (
             <>
+                <ReadingProgress />
                 <Script
                     id="doc-structured-data"
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
                 />
+                <BreadcrumbStructuredData items={breadcrumbItems} />
                 <DocsClient
                     allDocs={docsNavigation}
                     title={doc.title}

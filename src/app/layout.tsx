@@ -10,6 +10,10 @@ import {ViewTransitions} from 'next-view-transitions'
 import {TooltipProvider} from "@/components/ui/tooltip";
 import HandControlOverlay from "@/components/HandControlOverlay";
 import { HandControlProvider } from "@/context/HandControlContext";
+import { WebsiteStructuredData, PersonStructuredData } from "@/components/structured-data";
+import { BackToTop } from "@/components/back-to-top";
+import { WebVitals } from "@/components/web-vitals";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 
 const inter = Inter({subsets: ["latin"]});
@@ -78,15 +82,41 @@ export default function RootLayout({
 }>) {
     return (
         <ViewTransitions>
-            <html lang="zh-CN">
+            <html lang="zh-CN" suppressHydrationWarning>
             <head>
+                <link rel="preload" href="/MapleMono-NF-CN-Light.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
                 <link rel="preconnect" href="https://cloud.umami.is" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://cloud.umami.is" />
-                <link rel="preconnect" href="https://minio-endpoint.bybxbwg.fun" crossOrigin="anonymous" />
-                <link rel="dns-prefetch" href="https://minio-endpoint.bybxbwg.fun" />
                 <link rel="preconnect" href="https://rustfs-endpoint.yhnotes.com" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://rustfs-endpoint.yhnotes.com" />
-                <title>YUNHAI Notes</title>
+                {/* PWA 支持 */}
+                <link rel="manifest" href="/manifest.json" />
+                <meta name="theme-color" content="#8b5cf6" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                {/* RSS Feed */}
+                <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
+                <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
+                {/* 主题初始化脚本 - 防止闪烁 */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                try {
+                                    var theme = localStorage.getItem('theme') || 'dark';
+                                    if (theme === 'auto') {
+                                        var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                                        if (!isDark) {
+                                            document.documentElement.classList.add('light');
+                                        }
+                                    } else if (theme === 'light') {
+                                        document.documentElement.classList.add('light');
+                                    }
+                                } catch (e) {}
+                            })();
+                        `,
+                    }}
+                />
             </head>
             {/* 网站监控脚本 */}
             <Script
@@ -94,16 +124,30 @@ export default function RootLayout({
                 src="https://cloud.umami.is/script.js"
                 data-website-id="e7012192-3cfd-4138-af60-453aa655c7f9"
             ></Script>
+            {/* 结构化数据 */}
+            <WebsiteStructuredData />
+            <PersonStructuredData />
             <TooltipProvider>
                 <HandControlProvider>
                     <body className={inter.className}>
+                    {/* 跳过导航链接 - 可访问性优化 */}
+                    <a
+                        href="#main-content"
+                        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none"
+                    >
+                        跳过导航，直达内容
+                    </a>
                     <Navbar/>
                     <HandControlOverlay />
                     <Toaster/>
-                    <main className="min-h-screen">
-                        {children}
+                    <main id="main-content" className="min-h-screen">
+                        <ErrorBoundary>
+                            {children}
+                        </ErrorBoundary>
                     </main>
                     <Footer/>
+                    <BackToTop />
+                    <WebVitals />
                     </body>
                 </HandControlProvider>
             </TooltipProvider>

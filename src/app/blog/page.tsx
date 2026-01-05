@@ -4,6 +4,7 @@ import {image, siteName} from '@/config/site';
 import type {Metadata} from 'next';
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {MorePostsList} from './MorePostsList';
+import {BlogScrollRestoration} from './BlogScrollRestoration';
 
 interface BlogPostProps {
     index?: number;
@@ -31,6 +32,8 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
                 <img
                     src={imageUrl || `${STORAGE_HOST}/YUN Blog bg ${index}.svg`}
                     alt={title}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
                     className="w-full h-full object-cover"
                 />
             </div>
@@ -81,6 +84,7 @@ export default async function BlogPage() {
 
     return (
         <main className="min-h-screen flex flex-col">
+            <BlogScrollRestoration />
             <div className="main">
                 <div className="flex items-center justify-between mb-16">
                     <h1 className="text-4xl font-bold">博客</h1>

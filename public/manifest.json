@@ -1,0 +1,28 @@
+{
+  "name": "YunHai Ideas 云海创意",
+  "short_name": "云海创意",
+  "description": "YunHai Ideas 云海创意，专注于技术文章、项目经验、生活点滴与云端分享。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "https://rustfs-endpoint.yhnotes.com/content/Avatar.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://rustfs-endpoint.yhnotes.com/content/Avatar.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity", "entertainment"],
+  "lang": "zh-CN",
+  "dir": "ltr"
+}

@@ -69,6 +69,7 @@ export function Navbar() {
     const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
     const [isAtTop, setIsAtTop] = useState(true); // 新增
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const mobileMenuRef = useRef<HTMLDivElement | null>(null);
     const {isEnabled, toggleEnabled, isLoading} = useHandControl();
 
     useEffect(() => {
@@ -80,6 +81,24 @@ export function Navbar() {
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // 点击外部关闭移动端菜单
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (isOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+                setOpenMobileDropdown(null);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
 
     const handleMouseEnter = (linkText: string) => {
         if (hoverTimeoutRef.current) {
@@ -103,7 +122,7 @@ export function Navbar() {
             className={cn(
                 isAtTop
                     ? "top-0 left-0 right-0 border-b"
-                    : "top-10 border max-w-7xl mx-auto left-0 right-0 rounded-full",
+                    : "top-4 border max-w-7xl mx-auto left-0 right-0 rounded-full",
                 "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md transition-all duration-500 ease-in-out"
             )}
         >
@@ -122,7 +141,7 @@ export function Navbar() {
                         height={32}
                         sizes="32px"
                         className="rounded-full object-cover"
-                        loading="lazy"
+                        priority
                     />
                     <span className="font-semibold">YunHai</span>
                 </Link>
@@ -222,6 +241,7 @@ export function Navbar() {
                                 href="https://github.com/yunhai-dev"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-label="GitHub"
                                 className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted"
                             >
                                 <Github className="h-[1.2rem] w-[1.2rem]"/>
@@ -240,6 +260,8 @@ export function Navbar() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsOpen(!isOpen)}
+                        aria-label={isOpen ? "Close menu" : "Open menu"}
+                        aria-expanded={isOpen}
                         className="text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
                         {isOpen ? <X className="h-[1.2rem] w-[1.2rem]"/> : <Menu className="h-[1.2rem] w-[1.2rem]"/>}
@@ -248,6 +270,7 @@ export function Navbar() {
 
                 {isOpen && (
                     <div
+                        ref={mobileMenuRef}
                         className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border md:hidden">
                         <div className="flex flex-col px-4 py-2">
                             {navLinks.map((link) => (
