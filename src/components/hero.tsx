@@ -74,6 +74,7 @@ function ProductDiagram() {
 
 export function Hero() {
     const [particleColor, setParticleColor] = useState('#ffffff');
+    const [particleCount, setParticleCount] = useState(90);
 
     useEffect(() => {
         // 检测当前主题
@@ -82,7 +83,13 @@ export function Hero() {
             setParticleColor(isDark ? '#000000' : '#ffffff');
         };
 
+        // 移动端减少粒子数量以提升性能
+        const updateParticleCount = () => {
+            setParticleCount(window.innerWidth < 768 ? 30 : 90);
+        };
+
         updateParticleColor();
+        updateParticleCount();
 
         // 监听主题变化
         const observer = new MutationObserver(updateParticleColor);
@@ -91,7 +98,13 @@ export function Hero() {
             attributeFilter: ['class']
         });
 
-        return () => observer.disconnect();
+        // 监听窗口大小变化
+        window.addEventListener('resize', updateParticleCount);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('resize', updateParticleCount);
+        };
     }, []);
 
     return (
@@ -106,7 +119,7 @@ export function Hero() {
                 <div className="absolute size-full z-0">
                     <Particles
                         particleColors={[particleColor, particleColor]}
-                        particleCount={90}
+                        particleCount={particleCount}
                         particleSpread={10}
                         speed={0.1}
                         particleBaseSize={80}

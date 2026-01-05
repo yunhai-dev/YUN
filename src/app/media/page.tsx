@@ -1,8 +1,8 @@
 import React from 'react';
 import {getAllMediaItems} from '@/data/media';
 import type {MediaItem} from '@/types/media';
-import Image from 'next/image'
 import {Link} from "next-view-transitions"
+import {MediaScrollRestoration} from './MediaScrollRestoration';
 
 interface MediaCardProps {
     item: MediaItem;
@@ -19,11 +19,12 @@ function MediaCard({item}: MediaCardProps) {
             
             <div
                 className="aspect-square rounded-md overflow-hidden flex items-center justify-center mb-4 bg-[hsl(var(--linear-gray))/0.1] relative z-10">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                     src={imageUrl}
                     alt={title}
-                    width={100}
-                    height={100}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"/>
             </div>
             <div className="p-4 relative z-10">
@@ -45,6 +46,7 @@ const MediaPage = () => {
 
     return (
         <main className="min-h-screen flex flex-col">
+            <MediaScrollRestoration />
             <div className="flex-1 pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 container max-w-7xl mx-auto">
                 <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 px-2 sm:px-0">音乐</h1>
                 <div

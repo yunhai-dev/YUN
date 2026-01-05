@@ -52,6 +52,7 @@ file download success: https://www.yhnotes.com/test.exe`,
 
                         <Link
                             target="_blank"
+                            rel="noopener noreferrer"
                             href="https://github.com/yunhai-dev/yundownload"
                             className="text-foreground font-medium hover:underline inline-flex items-center">
                             Learn more about Yundownload

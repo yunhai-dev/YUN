@@ -29,6 +29,9 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
         // Error state.
         "has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[[data-slot][aria-invalid=true]]:border-destructive dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40",
 
+        // Override for rounded-full style
+        "[&.\\!rounded-\\[26px\\]]:rounded-[26px]",
+
         className
       )}
       {...props}

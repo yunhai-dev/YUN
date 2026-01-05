@@ -39,6 +39,7 @@ export function D0Tools() {
 
                         <Link
                             target="_blank"
+                            rel="noopener noreferrer"
                             href="https://github.com/yunhai-dev/D0-Tools"
                             className="text-foreground font-medium hover:underline inline-flex items-center">
                             Learn more about D0 Tools
