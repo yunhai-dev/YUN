@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 
 import {markdownToHtml} from "@/lib/markdown";
+import {downloadMarkdownAsDocx} from "@/lib/markdown-to-docx";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {useToast} from "@/hooks/use-toast";
 import html2canvas from 'html2canvas'
@@ -52,6 +53,7 @@ const MarkdownEditorPage = () => {
     const {toast} = useToast();
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [exportLoading, setExportLoading] = useState(false);
+    const [docxLoading, setDocxLoading] = useState(false);
     
     const [globalIsDark, setGlobalIsDark] = useState(true);
 
@@ -474,6 +476,16 @@ ${selection}
         }
     }
 
+    // 导出为 Word
+    async function exportAsDocx() {
+        try {
+            setDocxLoading(true);
+            await downloadMarkdownAsDocx(markdownText, 'document.docx');
+        } finally {
+            setDocxLoading(false);
+        }
+    }
+
     // 当Markdown文本变化时更新预览
     useEffect(() => {
         try {
@@ -614,15 +626,20 @@ ${selection}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={downloadMarkdown}>
+                                        <DropdownMenuItem onClick={downloadMarkdown} className="cursor-pointer">
                                             {downloadLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
                                                 <FileText className="mr-2 h-4 w-4"/>}
                                             <span>导出 Markdown</span>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={exportAsImage}>
+                                        <DropdownMenuItem onClick={exportAsImage} className="cursor-pointer">
                                             {exportLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
                                                 <FileImage className="mr-2 h-4 w-4"/>}
                                             <span>导出为图片</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={exportAsDocx} className="cursor-pointer">
+                                            {docxLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
+                                                <FileText className="mr-2 h-4 w-4"/>}
+                                            <span>导出为 Word</span>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
