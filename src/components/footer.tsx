@@ -11,6 +11,7 @@ const footerLinks = [
         links: [
             {href: "https://rustfs-console.yhnotes.com/", label: "OSS"},
             {href: "https://status.yhnotes.com/", label: "Server Status"},
+            {href: "https://monitor.yhnotes.com/", label: "Monitor Status"},
         ],
     },
     {
