@@ -1212,6 +1212,54 @@ export const mediaItems: MediaItem[] = [
         lyricsUrl: `${STORAGE_HOST}/把回忆拼好给你 王贰浪.lrc`,
         musicUrl: `${STORAGE_HOST}/把回忆拼好给你 王贰浪.mp3`,
     },
+    {
+        id: 'qyfdcd-ykw',
+        title: '去有风的地方',
+        imageUrl: `${STORAGE_HOST}/去有风的地方 郁可唯.jpg`,
+        author: '郁可唯',
+        lyricsUrl: `${STORAGE_HOST}/去有风的地方 郁可唯.lrc`,
+        musicUrl: `${STORAGE_HOST}/去有风的地方 郁可唯.mp3`,
+    },
+    {
+        id: 'ctx-dyj',
+        title: '春庭雪',
+        imageUrl: `${STORAGE_HOST}/春庭雪 邓寓君(等什么君).jpg`,
+        author: '邓寓君(等什么君)',
+        lyricsUrl: `${STORAGE_HOST}/春庭雪 邓寓君(等什么君).lrc`,
+        musicUrl: `${STORAGE_HOST}/春庭雪 邓寓君(等什么君).mp3`,
+    },
+    {
+        id: 'wywywht-jyg&xx&cyl',
+        title: '晚夜微雨问海棠',
+        imageUrl: `${STORAGE_HOST}/晚夜微雨问海棠 镜予歌&喧笑&陈亦洺.jpg`,
+        author: '镜予歌&喧笑&陈亦洺',
+        lyricsUrl: `${STORAGE_HOST}/晚夜微雨问海棠 镜予歌&喧笑&陈亦洺.lrc`,
+        musicUrl: `${STORAGE_HOST}/晚夜微雨问海棠 镜予歌&喧笑&陈亦洺.mp3`,
+    },
+    {
+        id: 'cmdxz-zyxts&qs',
+        title: '吹梦到西洲',
+        imageUrl: `${STORAGE_HOST}/吹梦到西洲 昭爻tsuki&千世.jpg`,
+        author: '昭爻tsuki&千世',
+        lyricsUrl: `${STORAGE_HOST}/吹梦到西洲 昭爻tsuki&千世.lrc`,
+        musicUrl: `${STORAGE_HOST}/吹梦到西洲 昭爻tsuki&千世.mp3`,
+    },
+    {
+        id: 'mtxcbnj-yc',
+        title: '满天星辰不及你',
+        imageUrl: `${STORAGE_HOST}/满天星辰不及你 ycccc.jpg`,
+        author: 'ycccc',
+        lyricsUrl: `${STORAGE_HOST}/满天星辰不及你 ycccc.lrc`,
+        musicUrl: `${STORAGE_HOST}/满天星辰不及你 ycccc.mp3`,
+    },
+    {
+        id: 'syw-ayyy&lg&xtyss',
+        title: '沈园外',
+        imageUrl: `${STORAGE_HOST}/沈园外 阿YueYue&戾格&小田音乐社.jpg`,
+        author: '阿YueYue&戾格&小田音乐社',
+        lyricsUrl: `${STORAGE_HOST}/沈园外 阿YueYue&戾格&小田音乐社.lrc`,
+        musicUrl: `${STORAGE_HOST}/沈园外 阿YueYue&戾格&小田音乐社.mp3`,
+    }
 ];
 
 export function getAllMediaItems(): MediaItem[] {
