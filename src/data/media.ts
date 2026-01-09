@@ -1229,7 +1229,7 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/春庭雪 邓寓君(等什么君).mp3`,
     },
     {
-        id: 'wywywht-jyg&xx&cyl',
+        id: 'wywywht-jygxxcyl',
         title: '晚夜微雨问海棠',
         imageUrl: `${STORAGE_HOST}/晚夜微雨问海棠 镜予歌&喧笑&陈亦洺.jpg`,
         author: '镜予歌&喧笑&陈亦洺',
@@ -1237,7 +1237,7 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/晚夜微雨问海棠 镜予歌&喧笑&陈亦洺.mp3`,
     },
     {
-        id: 'cmdxz-zyxts&qs',
+        id: 'cmdxz-zyxtsqs',
         title: '吹梦到西洲',
         imageUrl: `${STORAGE_HOST}/吹梦到西洲 昭爻tsuki&千世.jpg`,
         author: '昭爻tsuki&千世',
@@ -1253,7 +1253,7 @@ export const mediaItems: MediaItem[] = [
         musicUrl: `${STORAGE_HOST}/满天星辰不及你 ycccc.mp3`,
     },
     {
-        id: 'syw-ayyy&lg&xtyss',
+        id: 'syw-ayyylgxtyss',
         title: '沈园外',
         imageUrl: `${STORAGE_HOST}/沈园外 阿YueYue&戾格&小田音乐社.jpg`,
         author: '阿YueYue&戾格&小田音乐社',
