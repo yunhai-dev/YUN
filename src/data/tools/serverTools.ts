@@ -59,6 +59,13 @@ export const serverTools: Tool[] = [
         category: '服务器监控',
     },
     {
+        id: 'Better Stack',
+        name: 'Better Stack',
+        description: 'Better Stack 是一个 AI 原生平台，用于值班和事件响应,提供轻松监控、状态页面、 基础设施监控、日志管理和分布式追踪功能。',
+        href: 'https://betterstack.com/',
+        category: '服务器监控',
+    },
+    {
         id: 'uptime-kuma',
         name: 'uptime Kuma',
         description: '开源免费的易于使用的自托管的服务监控工具。',
