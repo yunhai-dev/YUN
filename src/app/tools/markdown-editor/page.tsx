@@ -3,12 +3,12 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import 'highlight.js/styles/github-dark.css';
 
-// 使用 lucide-react 统一图标风格
 import {
     Bold,
     CheckSquare,
     ChevronDown,
     Code,
+    CornerDownLeft,
     Download,
     Eraser,
     FileCode,
@@ -27,18 +27,25 @@ import {
     Minimize,
     Minus,
     Quote,
+    Sparkles,
+    Square,
     Strikethrough,
     Table,
-    Trash2
+    Trash2,
+    X
 } from "lucide-react";
 
 import {markdownToHtml} from "@/lib/markdown";
+import {downloadMarkdownAsDocx} from "@/lib/markdown-to-docx";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {useToast} from "@/hooks/use-toast";
 import html2canvas from 'html2canvas'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Button} from "@/components/ui/button";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {useAIGenerate} from "@/hooks/use-ai-generate";
+import {Loader} from "@/components/ai-elements/loader";
+import {MessageResponse} from "@/components/ai-elements/message";
 
 const MarkdownEditorPage = () => {
     const [markdownText, setMarkdownText] = useState<string>('');
@@ -47,12 +54,21 @@ const MarkdownEditorPage = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const editorContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const aiInputRef = useRef<HTMLTextAreaElement>(null);
     const isDraggingRef = useRef<boolean>(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const {toast} = useToast();
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [exportLoading, setExportLoading] = useState(false);
-    
+    const [docxLoading, setDocxLoading] = useState(false);
+    const [aiMode, setAiMode] = useState(false);
+    const [selectedText, setSelectedText] = useState("");
+    const [aiPrompt, setAiPrompt] = useState("");
+
+    const {generate, isLoading: isGenerating, result: aiOutput, stop} = useAIGenerate({
+        systemPrompt: "你是一个 Markdown 写作助手。根据用户的要求生成或修改 Markdown 内容。重要：当用户要求修改现有文档时，你必须输出完整的修改后文档，而不是只输出修改的部分。只输出纯 Markdown 文本，不要包含任何解释或代码块包裹。",
+    });
+
     const [globalIsDark, setGlobalIsDark] = useState(true);
 
     // 监听全局主题
@@ -474,6 +490,16 @@ ${selection}
         }
     }
 
+    // 导出为 Word
+    async function exportAsDocx() {
+        try {
+            setDocxLoading(true);
+            await downloadMarkdownAsDocx(markdownText, 'document.docx');
+        } finally {
+            setDocxLoading(false);
+        }
+    }
+
     // 当Markdown文本变化时更新预览
     useEffect(() => {
         try {
@@ -601,6 +627,20 @@ ${selection}
                                 <ToolbarBtn icon={Minus} title="水平线" action={() => handleToolbarAction('hr')}/>
                             </div>
 
+                            {/* AI 生成 */}
+                            <div className="flex items-center gap-0.5 border-r border-input pr-2 mr-1">
+                                <ToolbarBtn icon={Sparkles} title="AI 写作" active={aiMode} action={() => {
+                                    const textarea = textareaRef.current;
+                                    if (textarea) {
+                                        const start = textarea.selectionStart;
+                                        const end = textarea.selectionEnd;
+                                        setSelectedText(markdownText.substring(start, end));
+                                    }
+                                    setAiMode(!aiMode);
+                                    setAiPrompt("");
+                                }}/>
+                            </div>
+
                             <div className="flex-1"></div>
 
                             {/* 操作组 */}
@@ -614,15 +654,20 @@ ${selection}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={downloadMarkdown}>
+                                        <DropdownMenuItem onClick={downloadMarkdown} className="cursor-pointer">
                                             {downloadLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
                                                 <FileText className="mr-2 h-4 w-4"/>}
                                             <span>导出 Markdown</span>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={exportAsImage}>
+                                        <DropdownMenuItem onClick={exportAsImage} className="cursor-pointer">
                                             {exportLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
                                                 <FileImage className="mr-2 h-4 w-4"/>}
                                             <span>导出为图片</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={exportAsDocx} className="cursor-pointer">
+                                            {docxLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/> :
+                                                <FileText className="mr-2 h-4 w-4"/>}
+                                            <span>导出为 Word</span>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -697,6 +742,128 @@ ${selection}
                                 />
                             </div>
                         </div>
+
+                        {/* AI 悬浮输入框 */}
+                        {aiMode && (
+                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-20">
+                                {/* AI 输出预览 */}
+                                {(aiOutput || isGenerating) && (
+                                    <div className="mb-2 p-3 bg-card/95 backdrop-blur border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                                        {aiOutput ? (
+                                            <div className="prose dark:prose-invert max-w-none text-sm">
+                                                <MessageResponse>{aiOutput}</MessageResponse>
+                                            </div>
+                                        ) : isGenerating ? (
+                                            <div className="flex items-center gap-2 text-muted-foreground">
+                                                <Loader size={16}/>
+                                                <span className="text-sm">正在生成...</span>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                )}
+
+                                {/* 应用按钮 */}
+                                {aiOutput && !isGenerating && (
+                                    <div className="mb-2 flex gap-2 justify-center">
+                                        <Button size="sm" onClick={() => {
+                                            if (selectedText) {
+                                                setMarkdownText(markdownText.replace(selectedText, aiOutput));
+                                            } else {
+                                                setMarkdownText(aiOutput);
+                                            }
+                                            setAiMode(false);
+                                            setSelectedText("");
+                                            setAiPrompt("");
+                                        }}>
+                                            {selectedText ? "替换选中" : "替换全部"}
+                                        </Button>
+                                        <Button size="sm" variant="outline" onClick={() => {
+                                            setMarkdownText(markdownText + "\n\n" + aiOutput);
+                                            setAiMode(false);
+                                            setSelectedText("");
+                                            setAiPrompt("");
+                                        }}>
+                                            追加末尾
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {/* 输入框 */}
+                                <div className="flex items-end gap-2 bg-card/95 backdrop-blur border border-border rounded-2xl px-4 py-3 shadow-lg">
+                                    <textarea
+                                        ref={aiInputRef}
+                                        value={aiPrompt}
+                                        onChange={(e) => {
+                                            setAiPrompt(e.target.value);
+                                            e.target.style.height = 'auto';
+                                            e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                                                e.preventDefault();
+                                                if (aiPrompt.trim() && !isGenerating) {
+                                                    let prompt = aiPrompt;
+                                                    if (selectedText) {
+                                                        prompt = `请改写以下内容：\n\n${selectedText}\n\n改写要求：${aiPrompt}`;
+                                                    } else if (markdownText.trim()) {
+                                                        prompt = `以下是当前文档的完整内容：\n\n---\n${markdownText}\n---\n\n请根据以下要求修改文档，并输出修改后的完整文档：${aiPrompt}`;
+                                                    }
+                                                    generate(prompt);
+                                                }
+                                            }
+                                            if (e.key === 'Escape') {
+                                                setAiMode(false);
+                                                setAiPrompt("");
+                                                setSelectedText("");
+                                            }
+                                        }}
+                                        placeholder={selectedText ? `改写选中的 ${selectedText.length} 字...` : "描述你想生成的内容..."}
+                                        rows={1}
+                                        className="flex-1 min-h-[36px] py-1 resize-none border-none focus:outline-none focus:ring-0 bg-transparent text-sm"
+                                        style={{maxHeight: '100px'}}
+                                        autoFocus
+                                    />
+                                    <div className="flex items-center gap-1">
+                                        {isGenerating ? (
+                                            <button
+                                                onClick={stop}
+                                                className="shrink-0 rounded-full size-9 flex items-center justify-center bg-destructive text-destructive-foreground"
+                                            >
+                                                <Square className="size-4"/>
+                                            </button>
+                                        ) : (
+                                            <button
+                                                disabled={!aiPrompt.trim()}
+                                                onClick={() => {
+                                                    if (aiPrompt.trim()) {
+                                                        let prompt = aiPrompt;
+                                                        if (selectedText) {
+                                                            prompt = `请改写以下内容：\n\n${selectedText}\n\n改写要求：${aiPrompt}`;
+                                                        } else if (markdownText.trim()) {
+                                                            prompt = `以下是当前文档的完整内容：\n\n---\n${markdownText}\n---\n\n请根据以下要求修改文档，并输出修改后的完整文档：${aiPrompt}`;
+                                                        }
+                                                        generate(prompt);
+                                                    }
+                                                }}
+                                                className="shrink-0 rounded-full size-9 flex items-center justify-center bg-primary text-primary-foreground disabled:opacity-50"
+                                            >
+                                                <CornerDownLeft className="size-4"/>
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={() => {
+                                                setAiMode(false);
+                                                setAiPrompt("");
+                                                setSelectedText("");
+                                            }}
+                                            className="shrink-0 rounded-full size-9 flex items-center justify-center hover:bg-muted text-muted-foreground"
+                                        >
+                                            <X className="size-4"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>
