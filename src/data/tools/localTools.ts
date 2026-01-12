@@ -78,4 +78,11 @@ export const localTools: Tool[] = [
         href: '/tools/p2p-transfer',
         category: '网络工具',
     },
+    {
+        id: 'bg-remover',
+        name: 'AI 背景移除',
+        description: '使用 RMBG-2.0 模型在浏览器本地移除图片背景，支持滑动对比，无需上传服务器。',
+        href: '/tools/bg-remover',
+        category: '图像工具',
+    },
 ];
