@@ -4,7 +4,6 @@ category: "技术, Docker"
 excerpt: "使用自建 DockerHub 代理加速镜像拉取"
 lastEdited: "2026年1月13日"
 tags: ["Docker", "代理", "镜像加速"]
-imageUrl: https://rustfs-endpoint.yhnotes.com/content/docker.png
 ---
 
 由于众所周知的原因，国内服务器已无法直接访问 `docker.io`，导致无法正常拉取 Docker 镜像。本文介绍如何使用 `registry.yhnotes.com` 代理来解决这一问题。
