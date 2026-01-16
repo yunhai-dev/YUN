@@ -2,7 +2,13 @@
 
 import {Link} from "next-view-transitions"
 import {motion} from "framer-motion";
-import TerminalPlayer, {TerminalCommand} from "@/components/terminal-player";
+import dynamic from 'next/dynamic';
+import type {TerminalCommand} from "@/components/terminal-player";
+
+const TerminalPlayer = dynamic(() => import("@/components/terminal-player"), {
+    ssr: false,
+    loading: () => <div className="w-full h-full bg-[#0d1117] rounded-lg animate-pulse" />
+});
 
 export function YunDownload() {
     const commands: TerminalCommand[] = [

@@ -4,36 +4,9 @@ const baseUrl = 'https://www.yhnotes.com';
 
 module.exports = {
     siteUrl: baseUrl,
-    generateRobotsTxt: true,
+    generateRobotsTxt: false,
     outDir: './out',
     generateIndexSitemap: false,
-    robotsTxtOptions: {
-        policies: [
-            {
-                userAgent: '*',
-                allow: '/',
-                disallow: [
-                    '/api/',
-                    '/test/',
-                    '/share/',
-                ]
-            },
-            // 针对主要搜索引擎的友好配置
-            {
-                userAgent: 'Googlebot',
-                allow: '/',
-                disallow: ['/api/', '/test/', '/share/'],
-            },
-            {
-                userAgent: 'Bingbot',
-                allow: '/',
-                disallow: ['/api/', '/test/', '/share/'],
-            },
-        ],
-        additionalSitemaps: [
-            `${baseUrl}/sitemap.xml`,
-        ],
-    },
     sitemapSize: 5000,
     changefreq: 'weekly',
     priority: 0.7,

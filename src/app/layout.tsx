@@ -8,12 +8,12 @@ import {baseUrl, image, siteName} from '@/config/site';
 import Script from "next/script";
 import {ViewTransitions} from 'next-view-transitions'
 import {TooltipProvider} from "@/components/ui/tooltip";
-import HandControlOverlay from "@/components/HandControlOverlay";
 import { HandControlProvider } from "@/context/HandControlContext";
 import { WebsiteStructuredData, PersonStructuredData } from "@/components/structured-data";
 import { BackToTop } from "@/components/back-to-top";
-import { WebVitals } from "@/components/web-vitals";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { WebVitals } from "@/components/web-vitals";
+import HandControlOverlay from "@/components/HandControlOverlay";
 
 
 const inter = Inter({subsets: ["latin"]});
@@ -84,11 +84,10 @@ export default function RootLayout({
         <ViewTransitions>
             <html lang="zh-CN" suppressHydrationWarning>
             <head>
-                <link rel="preload" href="/MapleMono-NF-CN-Light.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-                <link rel="preconnect" href="https://cloud.umami.is" crossOrigin="anonymous" />
-                <link rel="dns-prefetch" href="https://cloud.umami.is" />
                 <link rel="preconnect" href="https://rustfs-endpoint.yhnotes.com" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://rustfs-endpoint.yhnotes.com" />
+                <link rel="preconnect" href="https://cloud.umami.is" crossOrigin="anonymous" />
+                <link rel="dns-prefetch" href="https://cloud.umami.is" />
                 {/* PWA 支持 */}
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="theme-color" content="#8b5cf6" />

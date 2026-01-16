@@ -4,7 +4,10 @@ const nextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true,
-    remotePatterns: [new URL("https://minio-endpoint.bybxbwg.fun/*")],
+    remotePatterns: [
+      new URL("https://minio-endpoint.bybxbwg.fun/*"),
+      new URL("https://rustfs-endpoint.yhnotes.com/*"),
+    ],
     minimumCacheTTL: 2678400
   },
   typescript: {

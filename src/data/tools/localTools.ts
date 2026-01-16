@@ -85,4 +85,18 @@ export const localTools: Tool[] = [
         href: '/tools/bg-remover',
         category: '图像工具',
     },
+    {
+        id: 'jwt-decoder',
+        name: 'JWT 解析器',
+        description: '在线解析 JWT Token，查看 Header、Payload 和签名信息，支持过期时间检测。',
+        href: '/tools/jwt-decoder',
+        category: '开发工具',
+    },
+    {
+        id: 'regex-tester',
+        name: '正则表达式测试器',
+        description: '实时测试正则表达式，高亮显示匹配结果，支持捕获组和常用正则模板。',
+        href: '/tools/regex-tester',
+        category: '开发工具',
+    },
 ];
