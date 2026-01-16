@@ -6,6 +6,11 @@ type Announcement = {
 
 const announcements: Announcement[] = [
     {
+        content: "🎉 DockerHub Registry Proxy Service is now available 🎉",
+        link: "/blog/dockerhub-proxy/",
+        createdAt: new Date("2026-1-13")
+    },
+    {
         content: "🎉 The comment and sharing service has been taken offline 🎉",
         createdAt: new Date("2025-12-3")
     },

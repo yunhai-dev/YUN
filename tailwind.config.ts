@@ -104,6 +104,10 @@ const config = {
               color: 'hsl(var(--foreground))',
               fontWeight: '600',
             },
+            h4: {
+              color: 'hsl(var(--foreground))',
+              fontWeight: '600',
+            },
             blockquote: {
               color: 'hsl(var(--muted-foreground))',
               borderLeftColor: 'hsl(var(--border))',

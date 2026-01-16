@@ -2,12 +2,16 @@
 
 import {Button} from "./ui/button";
 import {motion} from "framer-motion";
-import Image from 'next/image';
 import {TypeAnimation} from 'react-type-animation';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
-import Particles from "@/components/blocks/Backgrounds/Particles/Particles";
+import dynamic from 'next/dynamic';
 import {useEffect, useState} from "react";
+
+const Particles = dynamic(() => import("@/components/blocks/Backgrounds/Particles/Particles"), {
+    ssr: false,
+    loading: () => <div className="size-full" />
+});
 
 function ProductDiagram() {
     const imageMap = [
@@ -37,8 +41,6 @@ function ProductDiagram() {
                             rotateX: 40,
                             rotateY: 10,
                             rotateZ: -20,
-                            // translateX: index * 30,
-                            // translateY: index * -40,
                         }}
                         whileInView={{
                             opacity: 1,
@@ -51,17 +53,13 @@ function ProductDiagram() {
                         }}
                         viewport={{once: true, amount: 0.3}}
                         key={index}
-                        exit={{opacity: 0, x: 0}} // 添加退出动画
-                        transition={{duration: 1, delay: !index ? 0 : index + 0.3}} // 为进入和退出动画设置时长
+                        exit={{opacity: 0, x: 0}}
+                        transition={{duration: 1, delay: !index ? 0 : index + 0.3}}
                         className={index ? "max-w-4xl mx-auto absolute bottom-13" : "max-w-4xl mx-auto"}
                     >
-                        <Image
-                            className="rounded-md"
-                            priority={index === 0}
+                        <img
+                            className="rounded-md w-full max-w-[800px]"
                             loading={index === 0 ? "eager" : "lazy"}
-                            width={800}
-                            height={200}
-                            sizes="(min-width: 1024px) 800px, 100vw"
                             src={image.src}
                             alt={image.alt}
                         />
@@ -74,36 +72,36 @@ function ProductDiagram() {
 
 export function Hero() {
     const [particleColor, setParticleColor] = useState('#ffffff');
-    const [particleCount, setParticleCount] = useState(90);
+    const [particleCount, setParticleCount] = useState(60);
+    const [showParticles, setShowParticles] = useState(false);
 
     useEffect(() => {
-        // 检测当前主题
         const updateParticleColor = () => {
             const isDark = document.documentElement.classList.contains('light');
             setParticleColor(isDark ? '#000000' : '#ffffff');
         };
 
-        // 移动端减少粒子数量以提升性能
         const updateParticleCount = () => {
-            setParticleCount(window.innerWidth < 768 ? 30 : 90);
+            setParticleCount(window.innerWidth < 768 ? 20 : 60);
         };
 
         updateParticleColor();
         updateParticleCount();
+        
+        const timer = setTimeout(() => setShowParticles(true), 100);
 
-        // 监听主题变化
         const observer = new MutationObserver(updateParticleColor);
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['class']
         });
 
-        // 监听窗口大小变化
         window.addEventListener('resize', updateParticleCount);
 
         return () => {
             observer.disconnect();
             window.removeEventListener('resize', updateParticleCount);
+            clearTimeout(timer);
         };
     }, []);
 
@@ -117,16 +115,18 @@ export function Hero() {
                 className="w-full mx-auto relative min-h-screen h-fit flex flex-col justify-center"
             >
                 <div className="absolute size-full z-0">
-                    <Particles
-                        particleColors={[particleColor, particleColor]}
-                        particleCount={particleCount}
-                        particleSpread={10}
-                        speed={0.1}
-                        particleBaseSize={80}
-                        moveParticlesOnHover={false}
-                        alphaParticles={false}
-                        disableRotation={false}
-                    />
+                    {showParticles && (
+                        <Particles
+                            particleColors={[particleColor, particleColor]}
+                            particleCount={particleCount}
+                            particleSpread={10}
+                            speed={0.1}
+                            particleBaseSize={80}
+                            moveParticlesOnHover={false}
+                            alphaParticles={false}
+                            disableRotation={false}
+                        />
+                    )}
                 </div>
 
                 <div className="z-10">
@@ -167,7 +167,7 @@ export function Hero() {
                 </div>
             </motion.div>
 
-            <div className="h-[calc(100vh-128px)] w-full overflow-hidden">
+            <div className="min-h-[600px] w-full">
                 <ProductDiagram/>
             </div>
 
@@ -184,11 +184,18 @@ export function Hero() {
                 <p className="text-sm text-muted-foreground my-8">
                     None of them are me, and none of them are me.
                 </p>
-                <div className="flex flex-wrap justify-center gap-8 px-4 grayscale opacity-70">
+                <div className="flex flex-wrap justify-center gap-3 px-4">
                     {['Document', 'Record', 'Learn', 'Explore', 'Life', 'Love'].map((value, index) => (
-                        <div key={index} className="w-24 h-8 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
+                        <motion.span
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            whileHover={{ scale: 1.05 }}
+                            className="px-5 py-2 text-sm font-medium text-foreground bg-secondary/50 border border-border rounded-full cursor-default hover:bg-secondary hover:border-foreground/20 transition-colors"
+                        >
                             {value}
-                        </div>
+                        </motion.span>
                     ))}
                 </div>
             </motion.div>

@@ -166,10 +166,18 @@ function parseInlineTokens(tokens: Token[], styleOverride?: StyleOverride): (Tex
                 runs.push(new TextRun({text: token.text, ...baseStyle}));
                 break;
             case 'strong':
-                runs.push(new TextRun({text: token.text, ...baseStyle, bold: true}));
+                if ('tokens' in token && Array.isArray(token.tokens)) {
+                    runs.push(...parseInlineTokens(token.tokens, {...styleOverride, bold: true}));
+                } else {
+                    runs.push(new TextRun({text: token.text, ...baseStyle, bold: true}));
+                }
                 break;
             case 'em':
-                runs.push(new TextRun({text: token.text, ...baseStyle, italics: true}));
+                if ('tokens' in token && Array.isArray(token.tokens)) {
+                    runs.push(...parseInlineTokens(token.tokens, {...styleOverride, italics: true}));
+                } else {
+                    runs.push(new TextRun({text: token.text, ...baseStyle, italics: true}));
+                }
                 break;
             case 'codespan':
                 runs.push(new TextRun({
@@ -181,13 +189,39 @@ function parseInlineTokens(tokens: Token[], styleOverride?: StyleOverride): (Tex
                 }));
                 break;
             case 'link':
-                runs.push(new ExternalHyperlink({
-                    children: [new TextRun({text: token.text, color: colors.link, underline: {type: 'single'}})],
-                    link: token.href,
-                }));
+                if ('tokens' in token && Array.isArray(token.tokens)) {
+                    const linkRuns = parseInlineTokens(token.tokens, styleOverride);
+                    for (const run of linkRuns) {
+                        if (run instanceof TextRun) {
+                            runs.push(new ExternalHyperlink({
+                                children: [new TextRun({...(run as any).root[1], color: colors.link, underline: {type: 'single'}})],
+                                link: token.href,
+                            }));
+                        }
+                    }
+                } else {
+                    runs.push(new ExternalHyperlink({
+                        children: [new TextRun({text: token.text, color: colors.link, underline: {type: 'single'}})],
+                        link: token.href,
+                    }));
+                }
                 break;
             case 'del':
-                runs.push(new TextRun({text: token.text, ...baseStyle, strike: true}));
+                if ('tokens' in token && Array.isArray(token.tokens)) {
+                    runs.push(...parseInlineTokens(token.tokens, {...styleOverride, strike: true} as StyleOverride));
+                } else {
+                    runs.push(new TextRun({text: token.text, ...baseStyle, strike: true}));
+                }
+                break;
+            case 'image':
+                // 图片在段落级别处理，这里跳过
+                break;
+            case 'br':
+                runs.push(new TextRun({text: '', break: 1}));
+                break;
+            case 'html':
+                // HTML标签转为纯文本
+                runs.push(new TextRun({text: token.text.replace(/<[^>]*>/g, ''), ...baseStyle}));
                 break;
             default:
                 if ('text' in token && typeof token.text === 'string') {
@@ -279,9 +313,19 @@ async function tokensToDocx(tokens: Token[]): Promise<DocxChild[]> {
                 break;
             }
             case 'paragraph': {
-                // 检查段落中是否有图片
-                const imgToken = (token.tokens ?? []).find(t => t.type === 'image') as Tokens.Image | undefined;
-                if (imgToken) {
+                const imgTokens = (token.tokens ?? []).filter(t => t.type === 'image') as Tokens.Image[];
+                const nonImgTokens = (token.tokens ?? []).filter(t => t.type !== 'image');
+
+                // 先输出非图片内容
+                if (nonImgTokens.length > 0) {
+                    children.push(new Paragraph({
+                        children: parseInlineTokens(nonImgTokens),
+                        spacing: {after: imgTokens.length > 0 ? 100 : 200, line: 360},
+                    }));
+                }
+
+                // 再输出所有图片
+                for (const imgToken of imgTokens) {
                     const imgData = await fetchImage(imgToken.href);
                     if (imgData) {
                         const {width, height} = calcImageSize(imgData.width, imgData.height);
@@ -291,10 +335,9 @@ async function tokensToDocx(tokens: Token[]): Promise<DocxChild[]> {
                                 transformation: {width, height},
                                 type: 'png'
                             })],
-                            spacing: {before: 200, after: 200},
+                            spacing: {before: 100, after: 200},
                         }));
                     } else {
-                        // 图片加载失败，显示占位文本
                         children.push(new Paragraph({
                             children: [new TextRun({
                                 text: `[图片: ${imgToken.text || imgToken.href}]`,
@@ -304,11 +347,6 @@ async function tokensToDocx(tokens: Token[]): Promise<DocxChild[]> {
                             spacing: {after: 200},
                         }));
                     }
-                } else {
-                    children.push(new Paragraph({
-                        children: parseInlineTokens(token.tokens ?? []),
-                        spacing: {after: 200, line: 360},
-                    }));
                 }
                 break;
             }
@@ -347,6 +385,23 @@ async function tokensToDocx(tokens: Token[]): Promise<DocxChild[]> {
                 break;
             case 'space':
                 children.push(new Paragraph({spacing: {after: 100}}));
+                break;
+            case 'text':
+                // 顶层文本（非段落内的）
+                children.push(new Paragraph({
+                    children: [new TextRun({text: token.text})],
+                    spacing: {after: 200, line: 360},
+                }));
+                break;
+            case 'html':
+                // HTML块转为纯文本
+                const htmlText = token.text.replace(/<[^>]*>/g, '').trim();
+                if (htmlText) {
+                    children.push(new Paragraph({
+                        children: [new TextRun({text: htmlText})],
+                        spacing: {after: 200},
+                    }));
+                }
                 break;
         }
     }

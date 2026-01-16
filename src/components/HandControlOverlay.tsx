@@ -296,16 +296,18 @@ export default function HandControlOverlay() {
     return (
         <>
             {/* Video Element - Visible for debugging */}
-            <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
-                muted
-                className={cn(
-                    "fixed bottom-6 left-6 w-48 h-36 object-cover rounded-lg border-2 border-white/20 shadow-lg z-50 transition-opacity duration-300 bg-black",
-                    isEnabled ? "opacity-100" : "opacity-0 pointer-events-none"
-                )}
-            />
+            {isEnabled && (
+                <video 
+                    ref={videoRef} 
+                    autoPlay 
+                    playsInline 
+                    muted
+                    className={cn(
+                        "fixed bottom-6 left-6 w-48 h-36 object-cover rounded-lg border-2 border-white/20 shadow-lg z-50 transition-opacity duration-300 bg-black",
+                        isCameraReady ? "opacity-100" : "opacity-0 pointer-events-none"
+                    )}
+                />
+            )}
             
             {/* Virtual Cursor */}
             {isEnabled && isCameraReady && (
