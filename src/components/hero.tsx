@@ -184,24 +184,18 @@ export function Hero() {
                 <p className="text-sm text-muted-foreground my-8">
                     None of them are me, and none of them are me.
                 </p>
-                <div className="flex flex-wrap justify-center gap-4 px-4">
+                <div className="flex flex-wrap justify-center gap-3 px-4">
                     {['Document', 'Record', 'Learn', 'Explore', 'Life', 'Love'].map((value, index) => (
-                        <motion.div
+                        <motion.span
                             key={index}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            whileHover={{ scale: 1.05, y: -2 }}
-                            className="group relative px-6 py-2 rounded-full cursor-default"
+                            whileHover={{ scale: 1.05 }}
+                            className="px-5 py-2 text-sm font-medium text-foreground bg-secondary/50 border border-border rounded-full cursor-default hover:bg-secondary hover:border-foreground/20 transition-colors"
                         >
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 p-[1px]">
-                                <div className="size-full rounded-full bg-background" />
-                            </div>
-                            <span className="relative z-10 text-sm font-medium bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-                                {value}
-                            </span>
-                        </motion.div>
+                            {value}
+                        </motion.span>
                     ))}
                 </div>
             </motion.div>
