@@ -21,26 +21,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/', '/test/', '/share/'],
       },
-      {
-        userAgent: 'GPTBot',
-        disallow: ['/'],
-      },
-      {
-        userAgent: 'ChatGPT-User',
-        disallow: ['/'],
-      },
-      {
-        userAgent: 'Google-Extended',
-        disallow: ['/'],
-      },
-      {
-        userAgent: 'CCBot',
-        disallow: ['/'],
-      },
-      {
-        userAgent: 'anthropic-ai',
-        disallow: ['/'],
-      },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
   }
