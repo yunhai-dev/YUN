@@ -2,7 +2,6 @@
 
 import {Button} from "./ui/button";
 import {motion} from "framer-motion";
-import Image from 'next/image';
 import {TypeAnimation} from 'react-type-animation';
 import {Link} from "next-view-transitions"
 import {STORAGE_HOST} from "@/data/baseUrl";
@@ -58,16 +57,11 @@ function ProductDiagram() {
                         transition={{duration: 1, delay: !index ? 0 : index + 0.3}}
                         className={index ? "max-w-4xl mx-auto absolute bottom-13" : "max-w-4xl mx-auto"}
                     >
-                        <Image
-                            className="rounded-md"
-                            priority={index === 0}
+                        <img
+                            className="rounded-md w-full max-w-[800px]"
                             loading={index === 0 ? "eager" : "lazy"}
-                            width={800}
-                            height={500}
-                            sizes="(min-width: 1024px) 800px, 100vw"
                             src={image.src}
                             alt={image.alt}
-                            fetchPriority={index === 0 ? "high" : "auto"}
                         />
                     </motion.div>
                 ))
