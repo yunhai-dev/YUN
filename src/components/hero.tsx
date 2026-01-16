@@ -63,7 +63,7 @@ function ProductDiagram() {
                             priority={index === 0}
                             loading={index === 0 ? "eager" : "lazy"}
                             width={800}
-                            height={200}
+                            height={500}
                             sizes="(min-width: 1024px) 800px, 100vw"
                             src={image.src}
                             alt={image.alt}
@@ -173,7 +173,7 @@ export function Hero() {
                 </div>
             </motion.div>
 
-            <div className="h-[calc(100vh-128px)] w-full overflow-hidden">
+            <div className="min-h-[600px] w-full">
                 <ProductDiagram/>
             </div>
 
