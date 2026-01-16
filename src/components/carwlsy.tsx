@@ -16,14 +16,14 @@ export function Carwlsy() {
                     viewport={{once: true}}
                     className="mb-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
                 >
-                    <div className="order-2 md:order-1 bg-muted rounded-lg overflow-hidden h-80 relative">
+                    <div className="order-2 md:order-1 bg-muted rounded-lg overflow-hidden aspect-[584/320] relative">
                         <Image
                             src={`${STORAGE_HOST}/carwlsy.png`}
                             alt="Carwlsy"
-                            width={640}
+                            width={584}
                             height={320}
                             sizes="(min-width: 768px) 640px, 100vw"
-                            className="size-full rounded-md object-cover"
+                            className="w-full h-full rounded-md object-cover"
                             loading="lazy"
                         />
                     </div>
