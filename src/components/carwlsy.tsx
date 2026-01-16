@@ -19,10 +19,12 @@ export function Carwlsy() {
                     <div className="order-2 md:order-1 bg-muted rounded-lg overflow-hidden h-80 relative">
                         <Image
                             src={`${STORAGE_HOST}/carwlsy.png`}
-                            alt="D0 Tools"
-                            width={0}
-                            height={0}
-                            className="size-full rounded-md"
+                            alt="Carwlsy"
+                            width={640}
+                            height={320}
+                            sizes="(min-width: 768px) 640px, 100vw"
+                            className="size-full rounded-md object-cover"
+                            loading="lazy"
                         />
                     </div>
 
