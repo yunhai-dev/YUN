@@ -99,4 +99,11 @@ export const localTools: Tool[] = [
         href: '/tools/regex-tester',
         category: '开发工具',
     },
+    {
+        id: 'image-diff',
+        name: '图片对比工具',
+        description: '对比两张图片的差异，支持分割、淡化、高亮和相减等多种对比模式。',
+        href: '/tools/image-diff',
+        category: '图像工具',
+    },
 ];
