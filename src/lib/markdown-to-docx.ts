@@ -121,22 +121,68 @@ const styles = {
 const numbering = {
     config: [{
         reference: 'bullet-list',
-        levels: [{
-            level: 0,
-            format: LevelFormat.BULLET,
-            text: '•',
-            alignment: AlignmentType.LEFT,
-            style: {paragraph: {indent: {left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25)}}}
-        }],
+        levels: [
+            {
+                level: 0,
+                format: LevelFormat.BULLET,
+                text: '•',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25)}}}
+            },
+            {
+                level: 1,
+                format: LevelFormat.BULLET,
+                text: '•',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(1.0), hanging: convertInchesToTwip(0.25)}}}
+            },
+            {
+                level: 2,
+                format: LevelFormat.BULLET,
+                text: '•',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(1.5), hanging: convertInchesToTwip(0.25)}}}
+            },
+            {
+                level: 3,
+                format: LevelFormat.BULLET,
+                text: '•',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(2.0), hanging: convertInchesToTwip(0.25)}}}
+            }
+        ],
     }, {
         reference: 'ordered-list',
-        levels: [{
-            level: 0,
-            format: LevelFormat.DECIMAL,
-            text: '%1.',
-            alignment: AlignmentType.LEFT,
-            style: {paragraph: {indent: {left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25)}}}
-        }],
+        levels: [
+            {
+                level: 0,
+                format: LevelFormat.DECIMAL,
+                text: '%1.',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25)}}}
+            },
+            {
+                level: 1,
+                format: LevelFormat.DECIMAL,
+                text: '%1.%2.',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(1.0), hanging: convertInchesToTwip(0.25)}}}
+            },
+            {
+                level: 2,
+                format: LevelFormat.DECIMAL,
+                text: '%1.%2.%3.',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(1.5), hanging: convertInchesToTwip(0.25)}}}
+            },
+            {
+                level: 3,
+                format: LevelFormat.DECIMAL,
+                text: '%1.%2.%3.%4.',
+                alignment: AlignmentType.LEFT,
+                style: {paragraph: {indent: {left: convertInchesToTwip(2.0), hanging: convertInchesToTwip(0.25)}}}
+            }
+        ],
     }],
 };
 
@@ -163,7 +209,12 @@ function parseInlineTokens(tokens: Token[], styleOverride?: StyleOverride): (Tex
     for (const token of tokens) {
         switch (token.type) {
             case 'text':
-                runs.push(new TextRun({text: token.text, ...baseStyle}));
+                if ('tokens' in token && Array.isArray(token.tokens)) {
+                    // 递归处理嵌套的文本tokens
+                    runs.push(...parseInlineTokens(token.tokens, styleOverride));
+                } else if (token.text) {
+                    runs.push(new TextRun({text: token.text, ...baseStyle}));
+                }
                 break;
             case 'strong':
                 if ('tokens' in token && Array.isArray(token.tokens)) {
@@ -189,22 +240,25 @@ function parseInlineTokens(tokens: Token[], styleOverride?: StyleOverride): (Tex
                 }));
                 break;
             case 'link':
-                if ('tokens' in token && Array.isArray(token.tokens)) {
-                    const linkRuns = parseInlineTokens(token.tokens, styleOverride);
-                    for (const run of linkRuns) {
-                        if (run instanceof TextRun) {
-                            runs.push(new ExternalHyperlink({
-                                children: [new TextRun({...(run as any).root[1], color: colors.link, underline: {type: 'single'}})],
-                                link: token.href,
-                            }));
-                        }
-                    }
-                } else {
-                    runs.push(new ExternalHyperlink({
-                        children: [new TextRun({text: token.text, color: colors.link, underline: {type: 'single'}})],
-                        link: token.href,
-                    }));
-                }
+                // 处理链接，确保在任何情况下都能正确显示
+                const linkText = 'text' in token ? token.text : '';
+                
+                // 创建基础文本运行
+                const textRun = new TextRun({
+                    text: linkText,
+                    font: styleOverride?.font ?? fonts.body,
+                    size: styleOverride?.size ?? sizes.body,
+                    color: colors.link,
+                    underline: {type: 'single'},
+                    bold: styleOverride?.bold,
+                    italics: styleOverride?.italics,
+                });
+                
+                // 创建外部超链接
+                runs.push(new ExternalHyperlink({
+                    children: [textRun],
+                    link: token.href,
+                }));
                 break;
             case 'del':
                 if ('tokens' in token && Array.isArray(token.tokens)) {
@@ -262,26 +316,64 @@ function parseTable(token: Tokens.Table): Table {
     });
 }
 
-// 解析列表
-function parseList(token: Tokens.List): Paragraph[] {
-    return token.items.map((item) => {
-        // 列表项的 tokens 可能包含 paragraph，需要提取内联 tokens
-        const inlineTokens: Token[] = [];
-        for (const t of item.tokens) {
-            if (t.type === 'paragraph' && 'tokens' in t) {
-                inlineTokens.push(...(t.tokens as Token[]));
-            } else if (t.type === 'text' && 'tokens' in t && Array.isArray(t.tokens)) {
-                inlineTokens.push(...t.tokens);
-            } else {
-                inlineTokens.push(t);
+// 解析列表项内容，递归处理嵌套元素
+async function parseListItemContent(item: Tokens.ListItem, listType: 'ordered' | 'bullet', level: number = 0): Promise<DocxChild[]> {
+    const children: DocxChild[] = [];
+    const numberingRef = listType === 'ordered' ? 'ordered-list' : 'bullet-list';
+    
+    for (const t of item.tokens) {
+        if (t.type === 'paragraph' && 'tokens' in t) {
+            // 处理段落内容
+            const inlineTokens: Token[] = [];
+            for (const pt of t.tokens as Token[]) {
+                if (pt.type === 'text' && 'tokens' in pt && Array.isArray(pt.tokens)) {
+                    inlineTokens.push(...pt.tokens);
+                } else {
+                    inlineTokens.push(pt);
+                }
             }
+            children.push(new Paragraph({
+                children: parseInlineTokens(inlineTokens),
+                numbering: {reference: numberingRef, level: level},
+                spacing: {after: 80},
+            }));
+        } else if (t.type === 'list') {
+            // 递归处理嵌套列表
+            const nestedList = t as Tokens.List;
+            const nestedChildren = await parseList(nestedList, level + 1);
+            children.push(...nestedChildren);
+        } else if (t.type === 'text' && 'tokens' in t && Array.isArray(t.tokens)) {
+            // 直接文本内容
+            children.push(new Paragraph({
+                children: parseInlineTokens(t.tokens),
+                numbering: {reference: numberingRef, level: level},
+                spacing: {after: 80},
+            }));
+        } else {
+            // 其他类型的token
+            children.push(new Paragraph({
+                children: parseInlineTokens([t]),
+                numbering: {reference: numberingRef, level: level},
+                spacing: {after: 80},
+            }));
         }
-        return new Paragraph({
-            children: parseInlineTokens(inlineTokens),
-            numbering: {reference: token.ordered ? 'ordered-list' : 'bullet-list', level: 0},
-            spacing: {after: 80},
-        });
-    });
+    }
+    
+    return children;
+}
+
+// 解析列表
+async function parseList(token: Tokens.List, level: number = 0): Promise<DocxChild[]> {
+    const children: DocxChild[] = [];
+    const listType = token.ordered ? 'ordered' : 'bullet';
+    
+    for (const item of token.items) {
+        // 递归处理每个列表项的内容
+        const itemContent = await parseListItemContent(item, listType, level);
+        children.push(...itemContent);
+    }
+    
+    return children;
 }
 
 // 解析代码块
@@ -354,25 +446,67 @@ async function tokensToDocx(tokens: Token[]): Promise<DocxChild[]> {
                 children.push(...parseCodeBlock(token.text, token.lang));
                 break;
             case 'blockquote': {
-                // 引用块内容可能嵌套 paragraph
-                const quoteTokens: Token[] = [];
+                // 处理引用块的嵌套内容
+                const quoteChildren: DocxChild[] = [];
                 for (const t of token.tokens ?? []) {
                     if (t.type === 'paragraph' && 'tokens' in t) {
-                        quoteTokens.push(...(t.tokens as Token[]));
+                        // 段落内容
+                        quoteChildren.push(new Paragraph({
+                            children: parseInlineTokens(t.tokens, {italics: true, color: colors.quote}),
+                            indent: {left: convertInchesToTwip(0.5)},
+                            border: {left: {style: BorderStyle.SINGLE, size: 24, color: colors.quoteBorder, space: 10}},
+                            spacing: {before: 0, after: 100},
+                        }));
+                    } else if (t.type === 'list') {
+                        // 嵌套列表
+                        const nestedList = await parseList(t as Tokens.List, 0);
+                        // 为嵌套列表添加引用样式
+                        nestedList.forEach(item => {
+                            if (item instanceof Paragraph) {
+                                (item as any).properties.indent = {
+                                    left: convertInchesToTwip(0.5),
+                                    hanging: (item as any).properties.indent?.hanging
+                                };
+                                (item as any).properties.border = {
+                                    left: {style: BorderStyle.SINGLE, size: 24, color: colors.quoteBorder, space: 10}
+                                };
+                            }
+                        });
+                        quoteChildren.push(...nestedList);
+                    } else if (t.type === 'blockquote') {
+                        // 嵌套引用块
+                        const nestedQuoteChildren = await tokensToDocx([t]);
+                        nestedQuoteChildren.forEach(item => {
+                            if (item instanceof Paragraph) {
+                                // 确保properties对象存在
+                                if (!(item as any).properties) {
+                                    (item as any).properties = {};
+                                }
+                                // 确保indent对象存在
+                                if (!(item as any).properties.indent) {
+                                    (item as any).properties.indent = {};
+                                }
+                                // 增加嵌套引用的缩进
+                                (item as any).properties.indent.left = convertInchesToTwip(1.0);
+                            }
+                        });
+                        quoteChildren.push(...nestedQuoteChildren);
                     } else {
-                        quoteTokens.push(t);
+                        // 其他类型的内容
+                        quoteChildren.push(new Paragraph({
+                            children: parseInlineTokens([t], {italics: true, color: colors.quote}),
+                            indent: {left: convertInchesToTwip(0.5)},
+                            border: {left: {style: BorderStyle.SINGLE, size: 24, color: colors.quoteBorder, space: 10}},
+                            spacing: {before: 0, after: 100},
+                        }));
                     }
                 }
-                children.push(new Paragraph({
-                    children: parseInlineTokens(quoteTokens, {italics: true, color: colors.quote}),
-                    indent: {left: convertInchesToTwip(0.5)},
-                    border: {left: {style: BorderStyle.SINGLE, size: 24, color: colors.quoteBorder, space: 10}},
-                    spacing: {before: 200, after: 200},
-                }));
+                children.push(...quoteChildren);
                 break;
             }
             case 'list':
-                children.push(...parseList(token as Tokens.List));
+                const listChildren = await parseList(token as Tokens.List);
+                children.push(...listChildren);
                 break;
             case 'table':
                 children.push(parseTable(token as Tokens.Table));

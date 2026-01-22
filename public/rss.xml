@@ -5,13 +5,63 @@
     <link>https://www.yhnotes.com</link>
     <description>专注于技术文章、项目经验、生活点滴与云端分享。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 05 Jan 2026 20:00:34 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 22 Jan 2026 09:55:08 GMT</lastBuildDate>
     <atom:link href="https://www.yhnotes.com/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://rustfs-endpoint.yhnotes.com/content/Avatar.webp</url>
       <title>YunHai Ideas 云海创意</title>
       <link>https://www.yhnotes.com</link>
     </image>
+    <item>
+      <title>DockerHub 镜像代理使用指南</title>
+      <link>https://www.yhnotes.com/blog/dockerhub-proxy</link>
+      <guid isPermaLink="true">https://www.yhnotes.com/blog/dockerhub-proxy</guid>
+      <description>使用自建 DockerHub 代理加速镜像拉取</description>
+      <content:encoded><![CDATA[<p>由于众所周知的原因，国内服务器已无法直接访问 <code>docker.io</code>，导致无法正常拉取 Docker 镜像。本文介绍如何使用 <code>registry.yhnotes.com</code> 代理来解决这一问题。</p>
+<h2>使用方法</h2>
+<h3>方式一：直接替换镜像地址</h3>
+<p>在拉取镜像时，将 <code>docker.io</code> 替换为 <code>registry.yhnotes.com</code> 即可：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 原始命令</span>
+docker pull nginx:latest
+
+<span class="hljs-comment"># 使用代理</span>
+docker pull registry.yhnotes.com/library/nginx:latest</code></pre><p>对于非官方镜像（带有用户名前缀的），格式如下：</p>
+<pre><code class="hljs bash"><span class="hljs-comment"># 原始命令</span>
+docker pull bitnami/redis:latest
+
+<span class="hljs-comment"># 使用代理</span>
+docker pull registry.yhnotes.com/bitnami/redis:latest</code></pre><h3>方式二：配置 Docker daemon</h3>
+<p>编辑 Docker 配置文件 <code>/etc/docker/daemon.json</code>：</p>
+<pre><code class="hljs json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;registry-mirrors&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;https://registry.yhnotes.com&quot;</span><span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span></code></pre><p>重启 Docker 服务：</p>
+<pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload
+<span class="hljs-built_in">sudo</span> systemctl restart docker</code></pre><p>配置完成后，直接使用原始命令即可自动走代理：</p>
+<pre><code class="hljs bash">docker pull nginx:latest</code></pre><h2>在 Kubernetes 中使用</h2>
+<h3>修改 containerd 配置</h3>
+<p>编辑 <code>/etc/containerd/config.toml</code>，添加镜像代理配置：</p>
+<pre><code class="hljs toml"><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors]</span>
+  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;docker.io&quot;]</span>
+    <span class="hljs-attr">endpoint</span> = [<span class="hljs-string">&quot;https://registry.yhnotes.com&quot;</span>]</code></pre><p>重启 containerd：</p>
+<pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart containerd</code></pre><h3>在 Pod 中直接使用</h3>
+<pre><code class="hljs yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">registry.yhnotes.com/library/nginx:latest</span></code></pre><h2>常见问题</h2>
+<p><strong>Q: 支持哪些镜像？</strong></p>
+<p>A: 支持 DockerHub 上的所有公开镜像。</p>
+<p><strong>Q: 镜像是实时同步的吗？</strong></p>
+<p>A: 是的，代理会实时从 DockerHub 拉取镜像并缓存，首次拉取可能稍慢，后续会使用缓存加速。</p>
+<p><strong>Q: 可以推送镜像吗？</strong></p>
+<p>A: 不支持，仅提供拉取代理服务。</p>
+]]></content:encoded>
+      <category>技术</category>
+      <pubDate>Tue, 13 Jan 2026 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>智能系统的双向演化：大语言模型“脑腐”假设与人类“认知债务”的共生退化研究报告</title>
       <link>https://www.yhnotes.com/blog/AI-and-Cognitive-Decline-in-Humans-A-Study</link>
@@ -3177,189 +3227,6 @@ AI 这一强大的工具。</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></code></pre>]]></content:encoded>
       <category>JavaScript</category>
       <pubDate>Wed, 23 Apr 2025 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>数据采集 CloudFlare 人机验证</title>
-      <link>https://www.yhnotes.com/blog/spider-cloudflare</link>
-      <guid isPermaLink="true">https://www.yhnotes.com/blog/spider-cloudflare</guid>
-      <description>数据采集中通过 CloudFlare 人机验证方案。</description>
-      <content:encoded><![CDATA[<h2>绕过 cloudflare 人机验证</h2>
-<blockquote><p>Cloudflare 的人机验证（通常指的是 CAPTCHA 或 JavaScript挑战）是为了帮助网站或服务区分真实用户和恶意机器人（例如爬虫、攻击者等）而设计的一种安全措施。Cloudflare
-作为一个提供CDN和网络安全服务的公司，提供多种保护机制来防止DDoS攻击、恶意流量、滥用等。人机验证是其中的一部分。</p>
-</blockquote>
-<p>::: tip
-由于 cloudflare 会验证 TLS 连接所以建议使用 <code>curl_cffi</code>
-模块来弥补 Python 底层 openSSL 模块的底层 TLS 连接被识别的问题。
-:::</p>
-<h3>本次使用的技术</h3>
-<ul>
-<li><p><code>curl_cffi</code></p>
-</li>
-<li><p><code>DrissionPage</code></p>
-</li>
-</ul>
-<h3>示例代码</h3>
-<pre><code class="hljs python">co = ChromiumOptions().set_browser_path(<span class="hljs-string">&#x27;google-chrome&#x27;</span>)
-co.new_env()
-<span class="hljs-comment">#co.headless() # 部分 cloudflare 无头模式无法绕过 // [!code error]</span>
-<span class="hljs-comment">#co.set_proxy(&#x27;http://192.168.7.16:7890&#x27;) # 配置代理，不能忘记curl_cffi也需要代理 // [!code warning]</span>
-arguments = [
-    <span class="hljs-string">&quot;-no-first-run&quot;</span>,
-    <span class="hljs-string">&quot;-force-color-profile=srgb&quot;</span>,
-    <span class="hljs-string">&quot;-metrics-recording-only&quot;</span>,
-    <span class="hljs-string">&quot;-password-store=basic&quot;</span>,
-    <span class="hljs-string">&quot;-use-mock-keychain&quot;</span>,
-    <span class="hljs-string">&quot;-export-tagged-pdf&quot;</span>,
-    <span class="hljs-string">&quot;-no-default-browser-check&quot;</span>,
-    <span class="hljs-string">&quot;-disable-background-mode&quot;</span>,
-    <span class="hljs-string">&quot;-enable-features=NetworkService,NetworkServiceInProcess,LoadCryptoTokenExtension,PermuteTLSExtensions&quot;</span>,
-    <span class="hljs-string">&quot;-disable-features=FlashDeprecationWarning,EnablePasswordsAccountStorage&quot;</span>,
-    <span class="hljs-string">&quot;-deny-permission-prompts&quot;</span>,
-    <span class="hljs-string">&quot;-disable-gpu&quot;</span>,
-    <span class="hljs-string">&quot;-accept-lang=zh-CN&quot;</span>, <span class="hljs-comment"># 根据网站选择支持的地区 // [!code warning]</span>
-    <span class="hljs-string">&quot;--guest&quot;</span>
-]
-<span class="hljs-keyword">for</span> arg <span class="hljs-keyword">in</span> arguments:
-    co.set_argument(arg)
-co.incognito()
-co.set_argument(<span class="hljs-string">&quot;--no-sandbox&quot;</span>) <span class="hljs-comment"># Linux中不设置无法使用 // [!code error]</span>
-logger.info(<span class="hljs-string">&quot;打开浏览器&quot;</span>)
-browser = Chromium(co)
-logger.info(<span class="hljs-string">&quot;打开浏览器成功&quot;</span>)
-tab.<span class="hljs-built_in">set</span>.user_agent(<span class="hljs-string">&#x27;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36&#x27;</span>) <span class="hljs-comment"># 需要关注不同系统的UA不同 // [!code error]</span>
-tab.<span class="hljs-built_in">set</span>.window.<span class="hljs-built_in">max</span>() <span class="hljs-comment"># 实测可有可无</span>
-tab.listen.start(<span class="hljs-string">&quot;worldwide.espacenet.com&quot;</span>)
-tab.get(<span class="hljs-string">&quot;https://worldwide.espacenet.com/&quot;</span>)
-headers = <span class="hljs-literal">None</span> <span class="hljs-comment"># 采用监听的方式获取真实headers</span>
-<span class="hljs-keyword">for</span> packet <span class="hljs-keyword">in</span> tab.listen.steps():
-    headers = packet.request.headers
-    logger.info(<span class="hljs-string">f&quot;GET: headers --&gt; <span class="hljs-subst">{headers}</span>&quot;</span>)
-    <span class="hljs-keyword">break</span>
-time.sleep(<span class="hljs-number">3</span>)
-<span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-    tab.wait(<span class="hljs-number">1</span>)
-    <span class="hljs-keyword">try</span>:
-        <span class="hljs-keyword">if</span> tab.ele(<span class="hljs-string">&#x27;请完成以下操作&#x27;</span>):
-            logger.info(<span class="hljs-string">&#x27;不需要点击&#x27;</span>)
-            <span class="hljs-comment"># 模拟人为点击，等操作，根据自己的语言来调整对应的关键词和页面元素结构</span>
-            iframe = tab.ele(<span class="hljs-string">&quot;.main-content&quot;</span>)
-            iframe = (
-                iframe.ele(<span class="hljs-string">&quot;#rvwE0&quot;</span>, timeout=<span class="hljs-number">3</span>)
-                .ele(<span class="hljs-string">&quot;@tag()=div&quot;</span>)
-                .ele(<span class="hljs-string">&quot;@tag()=div&quot;</span>)
-                .shadow_root.get_frame(<span class="hljs-string">&quot;t:iframe&quot;</span>)
-            )
-            iframe_input = iframe.ele(<span class="hljs-string">&quot;t:body&quot;</span>).sr.ele(<span class="hljs-string">&quot;.cb-lb&quot;</span>).ele(<span class="hljs-string">&quot;t:input&quot;</span>)
-            <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;验证您是真人&#x27;</span> <span class="hljs-keyword">in</span> tab.html:
-                tab.get_screenshot(path=<span class="hljs-string">&#x27;tmp&#x27;</span>, name=<span class="hljs-string">&#x27;in.jpg&#x27;</span>, full_page=<span class="hljs-literal">True</span>)
-                iframe.actions.scroll(
-                        delta_y=-<span class="hljs-number">100</span>
-                ).move(
-                        <span class="hljs-number">123</span>, <span class="hljs-number">254</span>, <span class="hljs-number">1</span>
-                ).move_to(
-                        ele_or_loc=iframe_input,
-                        offset_x=random.randint(-<span class="hljs-number">100</span>, <span class="hljs-number">125</span>),
-                        offset_y=random.randint(-<span class="hljs-number">98</span>, <span class="hljs-number">140</span>),
-                        duration=<span class="hljs-number">5</span>
-                ).wait(<span class="hljs-number">0.1</span>, <span class="hljs-number">0.5</span>).move_to(
-                    ele_or_loc=iframe_input,
-                    offset_x=random.randint(-<span class="hljs-number">5</span>, <span class="hljs-number">5</span>),
-                    offset_y=random.randint(-<span class="hljs-number">5</span>, <span class="hljs-number">5</span>),
-                    duration=<span class="hljs-number">2</span>,
-                ).wait(<span class="hljs-number">0.2</span>, <span class="hljs-number">0.5</span>).click().wait(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)
-            <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;tmp/index.html&#x27;</span>, <span class="hljs-string">&#x27;w&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:
-                f.write(tab.html)
-            <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;验证您是真人&#x27;</span> <span class="hljs-keyword">in</span> tab.html:
-                logger.info(<span class="hljs-string">&#x27;让我证明我是人&#x27;</span>)
-                tab.get_screenshot(path=<span class="hljs-string">&#x27;tmp&#x27;</span>, name=<span class="hljs-string">&#x27;in.jpg&#x27;</span>, full_page=<span class="hljs-literal">True</span>)
-                iframe_input.click()
-            <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;需要几秒&#x27;</span> <span class="hljs-keyword">in</span> tab.html:
-                logger.info(<span class="hljs-string">&#x27;他说需要几秒钟&#x27;</span>)
-                tab.get_screenshot(path=<span class="hljs-string">&#x27;tmp&#x27;</span>, name=<span class="hljs-string">&#x27;in.jpg&#x27;</span>, full_page=<span class="hljs-literal">True</span>)
-                tab.wait(<span class="hljs-number">6</span>)
-                tab.get_screenshot(path=<span class="hljs-string">&#x27;tmp&#x27;</span>, name=<span class="hljs-string">&#x27;in.jpg&#x27;</span>, full_page=<span class="hljs-literal">True</span>)
-        <span class="hljs-comment">#logger.info(f&quot;点击 iframe 成功&quot;)</span>
-        <span class="hljs-comment">#tab.wait(2)</span>
-    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
-        logger.error(<span class="hljs-string">f&quot;未通过, 重试 <span class="hljs-subst">{e}</span>&quot;</span>, exc_info=<span class="hljs-literal">True</span>)
-    cookies = tab.cookies().as_dict()
-    rep = requests.get(
-        <span class="hljs-string">&quot;https://worldwide.espacenet.com&quot;</span>,
-        cookies=cookies,
-        headers=headers,
-    )
-    logger.warning(rep.status_code)
-    <span class="hljs-keyword">if</span> rep.status_code != <span class="hljs-number">403</span>:
-        logger.info(<span class="hljs-string">&quot;next cookies&quot;</span>)
-        <span class="hljs-keyword">break</span>
-    <span class="hljs-keyword">else</span>:
-        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> tab.wait.ele_deleted(<span class="hljs-string">&quot;#splashScreenContainer&quot;</span>, timeout=<span class="hljs-number">5</span>):
-            tab.refresh(<span class="hljs-literal">True</span>)
-            logger.info(<span class="hljs-string">&quot;website loading refresh&quot;</span>)
-        logger.info(<span class="hljs-string">f&quot;未通过, 重试&quot;</span>)
-    tab.get_screenshot(path=<span class="hljs-string">&#x27;tmp&#x27;</span>, name=<span class="hljs-string">&#x27;pic.jpg&#x27;</span>, full_page=<span class="hljs-literal">True</span>)
-tab.wait(<span class="hljs-number">8</span>)
-logger.info(<span class="hljs-string">f&quot;获取到的headers: <span class="hljs-subst">{headers}</span>&quot;</span>)
-tab.wait(<span class="hljs-number">5</span>)
-cookies = tab.cookies().as_dict()
-logger.info(cookies)
-logger.info(<span class="hljs-string">f&quot;refresh_cookie 成功&quot;</span>)
-<span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> (<span class="hljs-string">&quot;cf_clearance&quot;</span> <span class="hljs-keyword">in</span> cookies <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(cookies[<span class="hljs-string">&quot;cf_clearance&quot;</span>]) &gt; <span class="hljs-number">100</span>):
-    logger.error(<span class="hljs-string">f&quot;Cookie refresh failed: <span class="hljs-subst">{cookies}</span>&quot;</span>)
-    exit(<span class="hljs-number">1</span>)
-    
-<span class="hljs-comment"># 使用相同IP、Cookies 和 Headers 请求即可正常获取数据</span>
-<span class="hljs-variable language_">self</span>.cookies = cookies
-<span class="hljs-variable language_">self</span>.headers[<span class="hljs-string">&quot;user-agent&quot;</span>] = headers[<span class="hljs-string">&quot;user-agent&quot;</span>]
-browser.quit()</code></pre><h3>注意点</h3>
-<ul>
-<li><p>Cookies 不是永久有效的，你需要按照自己的情况来刷新</p>
-</li>
-<li><p>User-Agent 需要根据系统来调整，例如 Mac、Linux 与 Windows 都是不同的</p>
-</li>
-<li><p>Cloudflare 识别 TLS 连接，需要使用 <code>curl_cffi</code> 模块来绕过</p>
-</li>
-<li><p>配合代理来使用最佳，但是浏览器不支持需要账号密码的代理，所以需要使用白名单功能的代理服务</p>
-</li>
-</ul>
-<h3>Docker 部署方案</h3>
-<blockquote><p>实践时编写了支持的 <a href="https://github.com/yunhai-dev/python-headless-browser" title="">Dockerfile</a></p>
-</blockquote>
-<h4>使用方法如下</h4>
-<ol>
-<li><p>拉取仓库 <code>git clone https://github.com/yunhai-dev/python-headless-browser.git</code></p>
-</li>
-<li><p>构建基础镜像 <code>docker build -t headless-browser .</code></p>
-</li>
-<li><p>修改自己的项目的 Dockerfile 例如：</p>
-</li>
-</ol>
-<pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> python-headless-browser:latest
-
-<span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">mkdir</span> /code &amp;&amp; <span class="hljs-built_in">mkdir</span> /data</span>
-
-<span class="hljs-keyword">VOLUME</span><span class="language-bash"> /data</span>
-
-
-<span class="hljs-keyword">COPY</span><span class="language-bash"> . /code</span>
-
-<span class="hljs-keyword">RUN</span><span class="language-bash"> pip install -r /code/requirements.txt</span>
-
-<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /code</span>
-
-<span class="hljs-comment"># 无头模式使用如下，部分网站使用无头模式无法绕过</span>
-<span class="hljs-keyword">CMD</span><span class="language-bash"> [<span class="hljs-string">&quot;python&quot;</span>, <span class="hljs-string">&quot;main.py&quot;</span>]</span>
-
-<span class="hljs-comment"># 非无头模式使用如下</span>
-<span class="hljs-keyword">CMD</span><span class="language-bash"> xvfb-run -a python main.py</span></code></pre><ol>
-<li><p>构建镜像 <code>docker build -t my-project .</code></p>
-</li>
-<li><p>运行镜像 <code>docker run -d -v /data:/data my-project</code></p>
-</li>
-</ol>
-]]></content:encoded>
-      <category>数据采集</category>
-      <pubDate>Fri, 18 Apr 2025 00:00:00 GMT</pubDate>
     </item>
   </channel>
 </rss>
