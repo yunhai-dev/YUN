@@ -99,4 +99,11 @@ export const localTools: Tool[] = [
         href: '/tools/regex-tester',
         category: '开发工具',
     },
+    {
+        id: 'code-to-card',
+        name: '代码卡片生成器',
+        description: '将代码转换为精美的卡片图片，支持多种主题和样式定制，适合分享到社交媒体。',
+        href: '/tools/code-to-card',
+        category: '开发工具',
+    },
 ];

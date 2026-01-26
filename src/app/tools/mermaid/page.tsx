@@ -8,6 +8,10 @@ import {Expand} from "@/components/icon/expand";
 import {Collapse} from "@/components/icon/collapse";
 import {Reset} from "@/components/icon/reset";
 import {useFullscreen} from "@/hooks/use-fullscreen";
+import {useAIGenerate} from "@/hooks/use-ai-generate";
+import {Loader} from "@/components/ai-elements/loader";
+import {MessageResponse} from "@/components/ai-elements/message";
+import {Sparkles, CornerDownLeft, Square, X} from "lucide-react";
 
 const MermaidPage = () => {
     const [inputCode, setInputCode] = useState('');
@@ -21,7 +25,17 @@ const MermaidPage = () => {
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const previewRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
-    
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const aiInputRef = useRef<HTMLTextAreaElement>(null);
+
+    // AI 相关状态
+    const [aiMode, setAiMode] = useState(false);
+    const [aiPrompt, setAiPrompt] = useState("");
+
+    const {generate, isLoading: isGenerating, result: aiOutput, stop} = useAIGenerate({
+        systemPrompt: "你是一个 Mermaid 图表代码助手。根据用户的要求生成或修改 Mermaid 代码。重要：当用户要求修改现有代码时，你必须输出完整的修改后代码，而不是只输出修改的部分。只输出纯 Mermaid 代码，不要包含任何解释或代码块包裹（不要用 ```mermaid 包裹）。支持流程图、时序图、甘特图、类图、状态图、饼图等各种 Mermaid 图表类型。",
+    });
+
     // 使用自定义的 useFullscreen hook
     const { isFullscreen, toggleFullscreen } = useFullscreen(previewRef);
 
@@ -49,6 +63,26 @@ const MermaidPage = () => {
             setPosition({ x: 0, y: 0 });
         }
     }, [isFullscreen]);
+
+    // 自适应 SVG 大小
+    useEffect(() => {
+        if (contentRef.current && svgOutput) {
+            const svg = contentRef.current.querySelector('svg');
+            if (svg) {
+                if (!isFullscreen) {
+                    // 非全屏模式：自适应容器大小
+                    svg.style.maxWidth = '100%';
+                    svg.style.maxHeight = '100%';
+                    svg.style.width = 'auto';
+                    svg.style.height = 'auto';
+                } else {
+                    // 全屏模式：移除限制，允许缩放
+                    svg.style.maxWidth = 'none';
+                    svg.style.maxHeight = 'none';
+                }
+            }
+        }
+    }, [svgOutput, isFullscreen]);
     
     // 处理键盘快捷键
     useEffect(() => {
@@ -73,7 +107,9 @@ const MermaidPage = () => {
         };
     }, [isFullscreen]); // 添加 isFullscreen 作为依赖项
 
-    const handleRender = async () => {
+    const handleRender = async (code?: string) => {
+        const codeToRender = code ?? inputCode;
+
         if (!mermaidApi) {
             setError('Mermaid 库尚未加载完成，请稍候...');
             return;
@@ -82,13 +118,13 @@ const MermaidPage = () => {
         setError(null);
         setSvgOutput('');
 
-        if (!inputCode.trim()) {
+        if (!codeToRender.trim()) {
             setError("请输入 Mermaid 代码。");
             return;
         }
 
         try {
-            const {svg} = await mermaidApi.render('mermaid', inputCode.trim());
+            const {svg} = await mermaidApi.render('mermaid', codeToRender.trim());
             setSvgOutput(svg);
         } catch (e) {
             console.error('Mermaid 渲染错误:', e);
@@ -184,11 +220,12 @@ const MermaidPage = () => {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
+                    <div className="relative">
                         <label htmlFor="inputCode" className="block text-sm font-medium text-muted-foreground mb-2">
                             输入 Mermaid 代码:
                         </label>
                         <textarea
+                            ref={textareaRef}
                             id="inputCode"
                             value={inputCode}
                             onChange={(e) => setInputCode(e.target.value)}
@@ -270,6 +307,17 @@ const MermaidPage = () => {
                     <div className="flex items-center gap-4">
                         <Button onClick={handleRender}>生成图表</Button>
                         <Button variant="outline" onClick={handleClear}>清空</Button>
+                        <Button
+                            variant={aiMode ? "default" : "outline"}
+                            onClick={() => {
+                                setAiMode(!aiMode);
+                                setAiPrompt("");
+                            }}
+                            className="gap-2"
+                        >
+                            <Sparkles className="h-4 w-4" />
+                            AI 助手
+                        </Button>
                         {svgOutput && (
                             <Button variant="outline" onClick={handleDownloadSVG}>
                                 下载 SVG
@@ -291,6 +339,118 @@ const MermaidPage = () => {
                         </select>
                     </div>
                 </div>
+
+                {/* AI 悬浮输入框 */}
+                {aiMode && (
+                    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-50">
+                        {/* AI 输出预览 */}
+                        {(aiOutput || isGenerating) && (
+                            <div className="mb-2 p-3 bg-card/95 backdrop-blur border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                                {aiOutput ? (
+                                    <div className="prose dark:prose-invert max-w-none text-sm">
+                                        <MessageResponse>{aiOutput}</MessageResponse>
+                                    </div>
+                                ) : isGenerating ? (
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <Loader size={16}/>
+                                        <span className="text-sm">正在生成...</span>
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+
+                        {/* 应用按钮 */}
+                        {aiOutput && !isGenerating && (
+                            <div className="mb-2 flex gap-2 justify-center">
+                                <Button size="sm" onClick={() => {
+                                    setInputCode(aiOutput);
+                                    setAiMode(false);
+                                    setAiPrompt("");
+                                    // 直接传递 aiOutput 给 handleRender
+                                    handleRender(aiOutput);
+                                }}>
+                                    替换代码
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={() => {
+                                    setInputCode(inputCode + "\n\n" + aiOutput);
+                                    setAiMode(false);
+                                    setAiPrompt("");
+                                }}>
+                                    追加末尾
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* 输入框 */}
+                        <div className="flex items-end gap-2 bg-card/95 backdrop-blur border border-border rounded-2xl px-4 py-3 shadow-lg">
+                            <textarea
+                                ref={aiInputRef}
+                                value={aiPrompt}
+                                onChange={(e) => {
+                                    setAiPrompt(e.target.value);
+                                    e.target.style.height = 'auto';
+                                    e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                                        e.preventDefault();
+                                        if (aiPrompt.trim() && !isGenerating) {
+                                            let prompt = aiPrompt;
+                                            if (inputCode.trim()) {
+                                                prompt = `以下是当前的 Mermaid 代码：\n\n---\n${inputCode}\n---\n\n请根据以下要求修改代码，并输出修改后的完整代码：${aiPrompt}`;
+                                            }
+                                            generate(prompt);
+                                        }
+                                    }
+                                    if (e.key === 'Escape') {
+                                        setAiMode(false);
+                                        setAiPrompt("");
+                                    }
+                                }}
+                                placeholder={inputCode.trim() ? "描述你想如何修改图表..." : "描述你想生成的图表..."}
+                                rows={1}
+                                className="flex-1 min-h-[36px] py-1 resize-none border-none focus:outline-none focus:ring-0 bg-transparent text-sm"
+                                style={{maxHeight: '100px'}}
+                                autoFocus
+                            />
+                            <div className="flex items-center gap-1">
+                                {isGenerating ? (
+                                    <button
+                                        onClick={stop}
+                                        className="shrink-0 rounded-full size-9 flex items-center justify-center bg-destructive text-destructive-foreground"
+                                    >
+                                        <Square className="size-4"/>
+                                    </button>
+                                ) : (
+                                    <button
+                                        disabled={!aiPrompt.trim()}
+                                        onClick={() => {
+                                            if (aiPrompt.trim()) {
+                                                let prompt = aiPrompt;
+                                                if (inputCode.trim()) {
+                                                    prompt = `以下是当前的 Mermaid 代码：\n\n---\n${inputCode}\n---\n\n请根据以下要求修改代码，并输出修改后的完整代码：${aiPrompt}`;
+                                                }
+                                                generate(prompt);
+                                            }
+                                        }}
+                                        className="shrink-0 rounded-full size-9 flex items-center justify-center bg-primary text-primary-foreground disabled:opacity-50"
+                                    >
+                                        <CornerDownLeft className="size-4"/>
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => {
+                                        setAiMode(false);
+                                        setAiPrompt("");
+                                    }}
+                                    className="shrink-0 rounded-full size-9 flex items-center justify-center hover:bg-muted text-muted-foreground"
+                                >
+                                    <X className="size-4"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </main>
     );
