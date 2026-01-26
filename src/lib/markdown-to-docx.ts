@@ -147,6 +147,7 @@ interface StyleOverride {
     font?: string;
     size?: number;
     color?: string;
+    underline?: { type: string };
 }
 
 // 解析内联 tokens
@@ -158,6 +159,7 @@ function parseInlineTokens(tokens: Token[], styleOverride?: StyleOverride): (Tex
         color: styleOverride?.color,
         bold: styleOverride?.bold,
         italics: styleOverride?.italics,
+        underline: styleOverride?.underline,
     };
 
     for (const token of tokens) {
@@ -190,18 +192,35 @@ function parseInlineTokens(tokens: Token[], styleOverride?: StyleOverride): (Tex
                 break;
             case 'link':
                 if ('tokens' in token && Array.isArray(token.tokens)) {
-                    const linkRuns = parseInlineTokens(token.tokens, styleOverride);
+                    // 递归解析链接内的 tokens，传入链接样式
+                    const linkRuns = parseInlineTokens(token.tokens, {
+                        ...styleOverride,
+                        color: colors.link,
+                        underline: {type: 'single'}
+                    });
+
+                    // 收集所有 TextRun 作为链接的子元素
+                    const textRuns: TextRun[] = [];
                     for (const run of linkRuns) {
                         if (run instanceof TextRun) {
-                            runs.push(new ExternalHyperlink({
-                                children: [new TextRun({...(run as any).root[1], color: colors.link, underline: {type: 'single'}})],
-                                link: token.href,
-                            }));
+                            textRuns.push(run);
                         }
+                    }
+
+                    if (textRuns.length > 0) {
+                        runs.push(new ExternalHyperlink({
+                            children: textRuns,
+                            link: token.href,
+                        }));
                     }
                 } else {
                     runs.push(new ExternalHyperlink({
-                        children: [new TextRun({text: token.text, color: colors.link, underline: {type: 'single'}})],
+                        children: [new TextRun({
+                            text: token.text,
+                            ...baseStyle,
+                            color: colors.link,
+                            underline: {type: 'single'}
+                        })],
                         link: token.href,
                     }));
                 }
