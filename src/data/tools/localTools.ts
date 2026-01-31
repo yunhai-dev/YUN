@@ -106,4 +106,11 @@ export const localTools: Tool[] = [
         href: '/tools/code-to-card',
         category: '开发工具',
     },
+    {
+        id: 'image-diff',
+        name: '图片对比工具',
+        description: '支持分割、淡化、高亮、相减等多种模式对比两张图片差异，查看图片元数据。',
+        href: '/tools/image-diff',
+        category: '图像工具',
+    },
 ];
