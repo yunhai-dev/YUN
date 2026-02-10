@@ -9,6 +9,7 @@ import {designTools} from "@/data/tools/designTools";
 import {serverTools} from "@/data/tools/serverTools";
 import {otherTools} from "@/data/tools/otherTools";
 import {netTools} from "@/data/tools/netTools";
+import {skillsTools} from "@/data/tools/skillsTools";
 
 
 const allToolDataMap = new Map<string, Tool>();
@@ -23,7 +24,8 @@ const allToolDataMap = new Map<string, Tool>();
     ...designTools,
     ...serverTools,
     ...otherTools,
-    ...netTools
+    ...netTools,
+    ...skillsTools
 ].forEach(tool => {
     if (!allToolDataMap.has(tool.id)) {
         allToolDataMap.set(tool.id, tool); // 添加唯一工具到 Map
