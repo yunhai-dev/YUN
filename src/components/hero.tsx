@@ -16,16 +16,16 @@ const Particles = dynamic(() => import("@/components/blocks/Backgrounds/Particle
 function ProductDiagram() {
     const imageMap = [
         {
-            src: `${STORAGE_HOST}/ide.png`,
-            alt: "Ide",
+            src: `${STORAGE_HOST}/workflow.webp`,
+            alt: "Workflow",
         },
         {
-            src: `${STORAGE_HOST}/carwlsy.png`,
-            alt: "Carwlsy",
+            src: `${STORAGE_HOST}/agent.webp`,
+            alt: "Agent",
         },
         {
-            src: `${STORAGE_HOST}/node.png`,
-            alt: "Node",
+            src: `${STORAGE_HOST}/admin-panel.webp`,
+            alt: "admin-panel",
         },
     ]
     return (
@@ -58,7 +58,7 @@ function ProductDiagram() {
                         className={index ? "max-w-4xl mx-auto absolute bottom-13" : "max-w-4xl mx-auto"}
                     >
                         <img
-                            className="rounded-md w-full max-w-[800px]"
+                            className="rounded-md w-full max-w-[800px] border border-gray-100/20"
                             loading={index === 0 ? "eager" : "lazy"}
                             src={image.src}
                             alt={image.alt}
