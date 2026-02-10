@@ -14,8 +14,8 @@ export default async function AnniversaryPage() {
         {
             id: '2',
             title: '戒烟',
-            date: '2025-11-07',
-            dateTime: '2025-11-07T09:00',
+            date: '2026-01-27',
+            dateTime: '2026-01-27T09:00',
             repeat: false,
             category: '健康',
         },
