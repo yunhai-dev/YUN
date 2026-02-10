@@ -6,6 +6,7 @@ import {D0Tools} from "@/components/d0-tools";
 import {TechStack} from "@/components/tech-stack";
 import {Announcement} from "@/components/announcement";
 import {YunDownload} from "@/components/yundownload";
+import {Clouisle} from "@/components/clouisle";
 
 export default function Home() {
     return (
@@ -14,6 +15,7 @@ export default function Home() {
             <Hero/>
             <FeaturesSection/>
             <TechStack/>
+            <Clouisle/>
             <D0Tools/>
             <Carwlsy/>
             <YunDownload/>
