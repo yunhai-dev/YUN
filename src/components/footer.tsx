@@ -17,6 +17,7 @@ const footerLinks = [
     {
         title: "Project",
         links: [
+            {href: "https://clouisle.asia", label: "Clouisle"},
             {href: "https://github.com/yunhai-dev/D0-Tools", label: "D0 Tools"},
             {href: "https://github.com/yunhai-dev/naive-for-qt", label: "Naive for Qt"},
             {href: "https://github.com/yunhai-dev/job_hive", label: "Job Hive"},
