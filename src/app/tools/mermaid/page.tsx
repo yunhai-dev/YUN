@@ -108,7 +108,7 @@ const MermaidPage = () => {
     }, [isFullscreen]); // 添加 isFullscreen 作为依赖项
 
     const handleRender = async (code?: string) => {
-        const codeToRender = code ?? inputCode;
+        const codeToRender = String(code ?? inputCode ?? '');
 
         if (!mermaidApi) {
             setError('Mermaid 库尚未加载完成，请稍候...');
@@ -305,7 +305,7 @@ const MermaidPage = () => {
 
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <Button onClick={handleRender}>生成图表</Button>
+                        <Button onClick={() => handleRender()}>生成图表</Button>
                         <Button variant="outline" onClick={handleClear}>清空</Button>
                         <Button
                             variant={aiMode ? "default" : "outline"}
