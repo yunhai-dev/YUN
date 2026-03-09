@@ -205,7 +205,6 @@ export const AppleMusicPlayer = ({
                             alt={title}
                             fill
                             className="rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] object-cover transition-transform duration-500"
-                            crossOrigin="anonymous"
                         />
                     </div>
 
