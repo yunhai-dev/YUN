@@ -8,7 +8,7 @@ const nextConfig = {
       new URL("https://minio-endpoint.bybxbwg.fun/*"),
       new URL("https://rustfs-endpoint.yhnotes.com/*"),
     ],
-    minimumCacheTTL: 0
+    minimumCacheTTL: 2678400
   },
   typescript: {
     ignoreBuildErrors: true,
