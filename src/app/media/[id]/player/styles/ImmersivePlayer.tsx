@@ -233,7 +233,6 @@ export const ImmersivePlayer = ({
                                     }
                                 </div>
                                 <Image
-                                    crossOrigin={"anonymous"}
                                     ref={imgRef}
                                     src={imageUrl}
                                     alt={title}
