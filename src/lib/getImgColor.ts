@@ -11,6 +11,30 @@ async function extractThemeColors(
     img: HTMLImageElement | string,
     difference = 30
 ): Promise<string[]> {
+    try {
+        return await extractColorsFromImage(colorCount, img, difference);
+    } catch (error) {
+        if (img instanceof HTMLImageElement) {
+            const fallbackSrc = img.currentSrc || img.src;
+            if (fallbackSrc && fallbackSrc !== img.src) {
+                try {
+                    return await extractColorsFromImage(colorCount, fallbackSrc, difference);
+                } catch {
+                    // Fall through to deterministic fallback palette.
+                }
+            }
+        }
+
+        console.warn('extractThemeColors: falling back because image pixels are unavailable', error);
+        return createFallbackPalette(colorCount);
+    }
+}
+
+async function extractColorsFromImage(
+    colorCount: number,
+    img: HTMLImageElement | string,
+    difference = 30
+): Promise<string[]> {
     // 加载图片元素，支持传入图片URL字符串
     const image = await loadImage(img);
 
@@ -164,23 +188,26 @@ async function extractThemeColors(
     return colors.map(c => `#${toHex(Math.round(c[0]))}${toHex(Math.round(c[1]))}${toHex(Math.round(c[2]))}`);
 }
 
+function createFallbackPalette(colorCount: number): string[] {
+    const basePalette = ['#1f2937', '#334155', '#0f172a', '#1e3a8a', '#312e81'];
+    return Array.from({ length: colorCount }, (_, index) => basePalette[index % basePalette.length]);
+}
+
 // 辅助：加载图片，支持HTMLImageElement或URL字符串
 function loadImage(img: HTMLImageElement | string): Promise<HTMLImageElement> {
-    if (img instanceof HTMLImageElement) {
-        if (img.complete && img.naturalWidth !== 0) return Promise.resolve(img);
-        return new Promise((resolve, reject) => {
-            img.onload = () => resolve(img);
-            img.onerror = e => reject(e);
-        });
-    } else {
-        return new Promise((resolve, reject) => {
-            const image = new Image();
-            image.crossOrigin = 'anonymous';
-            image.src = img;
-            image.onload = () => resolve(image);
-            image.onerror = e => reject(e);
-        });
+    const src = typeof img === 'string' ? img : (img.currentSrc || img.src);
+    if (!src) {
+        return Promise.reject(new Error('图片地址为空'));
     }
+
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.decoding = 'async';
+        image.onload = () => resolve(image);
+        image.onerror = e => reject(e);
+        image.src = src;
+    });
 }
 
 export default extractThemeColors;
