@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const devTools: Tool[] = [
     {
+        id: 'postgresql-conf',
+        name: 'PostgreSQL 配置',
+        description: 'PostgreSQL 配置参数优化指南',
+        href: 'https://www.postgresql.org/docs/current/runtime-config.html',
+        category: '开发工具'
+    },
+    {
         id: 'pinme',
         name: 'PinMe',
         description: '单命令部署工具，只需一条命令即可部署前端',
