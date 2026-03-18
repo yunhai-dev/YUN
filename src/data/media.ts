@@ -1335,10 +1335,10 @@ export const mediaItems: MediaItem[] = [
   {
     id: "smsim-hyn",
     title: "海屿你",
-    imageUrl: getMediaUrl("海屿你 叁木simon.jpg"),
-    author: "叁木simon",
-    lyricsUrl: getMediaUrl("海屿你 叁木simon.lrc"),
-    musicUrl: getMediaUrl("海屿你 叁木simon.mp3"),
+    imageUrl: getMediaUrl("海屿你 马也_Crabbit&Cole先生.jpg"),
+    author: "马也_Crabbit&Cole先生",
+    lyricsUrl: getMediaUrl("海屿你 马也_Crabbit&Cole先生.lrc"),
+    musicUrl: getMediaUrl("海屿你 马也_Crabbit&Cole先生.mp3"),
   },
   {
     id: "xrx-dear-d",
