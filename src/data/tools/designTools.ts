@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const designTools: Tool[] = [
     {
+        id: 'pencil',
+        name: 'Pencil',
+        description: 'Pencil 是一个开源的图形设计工具，适合 Vibe Coding 使用。',
+        href: 'https://pencil.dev',
+        category: '设计工具',
+    },
+    {
         id: 'tapnow',
         name: 'TapNow',
         description: 'TapNow是面向企业和创作者的新一代AI视觉创作引擎。从电商广告到电影短片，从实验艺术到品牌营销。',
