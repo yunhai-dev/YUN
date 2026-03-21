@@ -1,6 +1,7 @@
 import {Tool} from "@/types/tools";
 import {localTools} from "@/data/tools/localTools";
-import {devTools} from "@/data/tools/devTools";
+import { devTools } from "@/data/tools/devTools";
+import { frontendTools } from "@/data/tools/frontendTools";
 import {mcpTools} from "@/data/tools/mcpTools";
 import {aiCommunityTools} from "@/data/tools/aiCommunityTools";
 import {llmProviderTools} from "@/data/tools/llmProviderTools";
@@ -17,6 +18,7 @@ const allToolDataMap = new Map<string, Tool>();
 [
     ...localTools,
     ...devTools,
+    ...frontendTools,
     ...mcpTools,
     ...aiCommunityTools,
     ...llmProviderTools,
