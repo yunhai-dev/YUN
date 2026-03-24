@@ -1,11 +1,10 @@
 import {getAllBlogPosts} from "@/data/blog-posts";
 import {Link} from "next-view-transitions"
-import {baseUrl, image, siteName} from '@/config/site';
+import {image, siteName} from '@/config/site';
 import type {Metadata} from 'next';
 import {STORAGE_HOST} from "@/data/baseUrl";
 import {MorePostsList} from './MorePostsList';
 import {BlogScrollRestoration} from './BlogScrollRestoration';
-import Script from "next/script";
 
 interface BlogPostProps {
     index?: number;
@@ -59,24 +58,12 @@ function FeaturedPost({index, slug, category, title, imageUrl, excerpt}: BlogPos
 }
 
 export const metadata: Metadata = {
-    title: `技术博客 - AI开发与全栈开发文章`,
-    description: `${siteName} 博客 - 技术文章、AI开发、全栈开发经验与项目分享。`,
-    keywords: ['技术博客', 'AI开发', 'Python', 'Next.js', '全栈开发', 'YunHai'],
+    title: `博客`,
+    description: `${siteName} 博客文章与技术分享`,
     openGraph: {
         title: `博客 | ${siteName}`,
-        description: `${siteName} 博客 - 技术文章、AI开发、全栈开发经验与项目分享。`,
-        url: `${baseUrl}/blog`,
+        description: `${siteName} 博客文章与技术分享`,
         images: [image],
-        type: 'website',
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: `博客 | ${siteName}`,
-        description: `${siteName} 博客 - 技术文章、AI开发、全栈开发经验与项目分享。`,
-        images: [image],
-    },
-    alternates: {
-        canonical: `${baseUrl}/blog`,
     },
 };
 
@@ -95,28 +82,10 @@ export default async function BlogPage() {
     const featuredPosts = allPosts.slice(0, 5);
     const recentPosts = allPosts.slice(5);
 
-    const collectionSchema = {
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        "name": `博客 | ${siteName}`,
-        "description": `${siteName} 博客 - 技术文章、AI开发、全栈开发经验与项目分享。`,
-        "url": `${baseUrl}/blog`,
-        "mainEntity": {
-            "@type": "ItemList",
-            "itemListElement": allPosts.slice(0, 10).map((post, i) => ({
-                "@type": "ListItem",
-                "position": i + 1,
-                "url": `${baseUrl}/blog/${post.slug}`,
-                "name": post.title
-            }))
-        }
-    };
-
     return (
         <main className="min-h-screen flex flex-col">
-            <Script id="blog-collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
             <BlogScrollRestoration />
-            <div className="main pt-32 pb-16">
+            <div className="main">
                 <div className="flex items-center justify-between mb-16">
                     <h1 className="text-4xl font-bold">博客</h1>
                 </div>

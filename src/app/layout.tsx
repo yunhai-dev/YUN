@@ -23,8 +23,8 @@ export const metadata: Metadata = {
         default: siteName,
         template: `%s | ${siteName}`
     },
-    description: `${siteName} - 全栈开发者 YunHai 的个人网站，专注于 AI 应用开发、Python、React/Next.js 技术分享与项目实践。`,
-    keywords: [siteName, 'YunHai', '云海', '全栈开发', 'AI应用开发', 'Python', 'Next.js', 'React', '技术博客'],
+    description: `${siteName}，专注于技术文章、项目经验、生活点滴与云端分享。`,
+    keywords: [siteName, "云海亦云", "技术博客", "前端开发", "全栈开发", "项目经验", "生活分享"],
     authors: [{name: siteName}],
     creator: siteName,
     publisher: siteName,
@@ -39,14 +39,14 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: siteName,
-        description: `${siteName} - 全栈开发者 YunHai 的个人网站，专注于 AI 应用开发、Python、React/Next.js 技术分享与项目实践。`,
+        description: `${siteName}，专注于技术文章、项目经验、生活点滴与云端分享。`,
         url: baseUrl,
         siteName: siteName,
         images: [
             {
                 url: image,
-                width: 1200,
-                height: 630,
+                width: 800,
+                height: 600,
             },
         ],
         locale: 'zh_CN',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     twitter: {
         card: 'summary_large_image',
         title: siteName,
-        description: `${siteName} - 全栈开发者 YunHai 的个人网站，专注于 AI 应用开发、Python、React/Next.js 技术分享与项目实践。`,
+        description: `${siteName}，专注于技术文章、项目经验、生活点滴与云端分享。`,
         images: [image],
     },
     icons: {

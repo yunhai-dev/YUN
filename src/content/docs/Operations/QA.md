@@ -1,7 +1,5 @@
 ---
-title: "运维常见问题解决方案"
-description: "收录 Nginx、Docker、Minio、Linux 等常见运维问题及解决方案"
-keywords: ["运维", "常见问题", "Nginx", "Docker", "Minio", "Linux", "故障排查"]
+title: 常见问题
 ---
 
 ## OpenResty 代理 Minio Endpoint

@@ -14,12 +14,12 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           className="mb-12 text-center"
         >
-          <h2 className="text-3xl font-bold mb-4">持续进步是成功的关键</h2>
+          <h2 className="text-3xl font-bold mb-4">Improvement is the key to success</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            我相信开源能带来更多创新、更好的体验和更紧密的社区。
+            We believe that open source can lead to more innovation, better experiences, and better communities.
           </p>
           <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
-            所以我是
+            So I'am
           </p>
         </motion.div>
 
@@ -31,8 +31,8 @@ export function FeaturesSection() {
             viewport={{ once: true }}
           >
             <FeatureCard
-              title="Web 开发者"
-              description="创意转化为现实，让设计落地生根。"
+              title="Web Developer"
+              description="Creative drawing, let the design become a reality."
             />
           </motion.div>
 
@@ -43,8 +43,8 @@ export function FeaturesSection() {
             viewport={{ once: true }}
           >
             <FeatureCard
-              title="应用开发者"
-              description="便利成为现实，代码赋能生活。"
+              title="App Developer"
+              description="Convenience becomes reality, and code empowers life."
             />
           </motion.div>
 
@@ -55,8 +55,8 @@ export function FeaturesSection() {
             viewport={{ once: true }}
           >
             <FeatureCard
-              title="数据开发者"
-              description="数据支撑未来。"
+              title="Data Developer"
+              description="Data supports the future."
             />
           </motion.div>
         </div>

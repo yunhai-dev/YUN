@@ -7,15 +7,15 @@ import {usePathname} from "next/navigation";
 
 const footerLinks = [
     {
-        title: "服务",
+        title: "Service",
         links: [
-            {href: "https://rustfs-console.yhnotes.com/", label: "对象存储"},
-            {href: "https://status.yhnotes.com/", label: "服务状态"},
-            {href: "https://monitor.yhnotes.com/", label: "监控状态"},
+            {href: "https://rustfs-console.yhnotes.com/", label: "OSS"},
+            {href: "https://status.yhnotes.com/", label: "Server Status"},
+            {href: "https://monitor.yhnotes.com/", label: "Monitor Status"},
         ],
     },
     {
-        title: "项目",
+        title: "Project",
         links: [
             {href: "https://clouisle.asia", label: "Clouisle"},
             {href: "https://github.com/yunhai-dev/D0-Tools", label: "D0 Tools"},
@@ -27,25 +27,25 @@ const footerLinks = [
         ],
     },
     {
-        title: "资源",
+        title: "Resource",
         links: [
             {href: "/api/", label: "API"},
-            {href: "/rss.xml", label: "RSS 订阅"},
-            {href: "/atom.xml", label: "Atom 订阅"},
+            {href: "/rss.xml", label: "RSS Feed"},
+            {href: "/atom.xml", label: "Atom Feed"},
         ],
     },
     {
-        title: "联系",
+        title: "Contact",
         links: [
             {href: "https://github.com/yunhai-dev", label: "GitHub"},
             {href: "https://gitee.com/yun2hai", label: "Gitee"},
-            {href: "mailto:yunhai@yhnotes.com", label: "邮件"},
+            {href: "mailto:yunhai@yhnotes.com", label: "Email"},
         ],
     },
     {
-        title: "帮助",
+        title: "Help",
         links: [
-            {href: "/contact/", label: "支持"},
+            {href: "/contact/", label: "Support"},
         ]
     },
 ];
@@ -92,8 +92,8 @@ export function Footer() {
                 <Separator className="bg-white/5 mb-8"/>
 
                 <div className="text-sm text-muted-foreground flex justify-between flex-col md:flex-row gap-3">
-                    <p>© {new Date().getFullYear()} YunHai. 保留所有权利。</p>
-                    <p>分享协议&nbsp;
+                    <p>© {new Date().getFullYear()} YunHai. All rights reserved.</p>
+                    <p>Sharing Agreement&nbsp;
                         <Link
                             target="_blank"
                             rel="noopener noreferrer"

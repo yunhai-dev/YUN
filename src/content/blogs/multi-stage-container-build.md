@@ -1,5 +1,5 @@
 ---
-title: "Docker 镜像构建方法对比"
+title:  Docker镜像构建方法对比
 category: "Docker"
 excerpt: 探索最优Dockerfile构建镜像方法。
 lastEdited: 2025年6月18日

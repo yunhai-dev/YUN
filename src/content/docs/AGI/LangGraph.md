@@ -1,12 +1,9 @@
 ---
 title: "LangGraph 核心概念"
 description: "掌握 LangGraph 构建可靠、可控的 AI 智能体工作流"
-keywords: ["LangGraph", "AI工作流", "AI智能体", "状态管理", "LangChain", "多智能体"]
 ---
 
 LangGraph 是构建长期运行、有状态智能体的低级编排框架。它专注于**编排**能力：持久化执行、流式输出、人机协作等，不抽象提示词或架构设计。
-
-详细内容参考：[LangGraph](https://docs.langchain.com/oss/python/langgraph)
 
 ## 准备工作
 

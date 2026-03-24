@@ -14,46 +14,51 @@ import EaseToolTip from "@/components/EaseToolTip";
 import {useHandControl} from '@/context/HandControlContext';
 
 const navLinks = [
-    {href: "/blog/", text: "博客"},
-    {href: "/docs/", text: "文档"},
+    {href: "/blog/", text: "Blog"},
+    {href: "/docs/", text: "Document"},
     {
         href: null,
-        text: "探索",
+        text: "Explore",
         children: [
             {
-                title: "工具",
+                title: "Tools",
                 href: "/tools/",
-                description: "高效开发的实用工具集"
+                description: "Powerful tools for efficient development"
             },
+            // {
+            //     title: "Share",
+            //     href: "/share/",
+            //     description: "Share easily, collaborate happily"
+            // },
             {
                 title: "API",
                 href: "/api/",
-                description: "探索接口，轻松集成"
+                description: "Explore our API, integrate with ease"
             },
             {
-                title: "音乐",
+                title: "Music",
                 href: "/media/",
-                description: "发现好音乐，尽情享受"
+                description: "Discover great music and enjoy it"
             },
             {
-                title: "纪念日",
+                title: "Anniversary",
                 href: "/anniversary/",
-                description: "特别的时刻"
+                description: "Special moment"
             },
             {
-                title: "测试",
+                title: "Test",
                 href: "/test/",
-                description: "测试也可以很有趣"
+                description: "Testing can be fun too"
             },
             {
-                title: "对话",
+                title: "Chat",
                 href: "/chat/",
-                description: "AI 对话playground"
+                description: "Chat playground"
             }
         ]
     },
-    {href: "/contact/", text: "联系"},
-    {href: "/about/", text: "关于"},
+    {href: "/contact/", text: "Contact"},
+    {href: "/about/", text: "About"},
 ];
 
 

@@ -72,9 +72,7 @@ function formatDateToISO(dateStr: string): string {
         const day = match[3].padStart(2, '0');
         return `${year}-${month}-${day}T00:00:00+08:00`;
     }
-    // Try parsing as-is, fallback to current date
-    const parsed = new Date(dateStr);
-    return isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+    return dateStr; // 如果不是中文格式，则返回原始字符串
 }
 
 // 博客文章页面组件
@@ -102,7 +100,7 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
         "@type": "Article",
         "headline": post.title,
         "description": post.excerpt,
-        "image": post.imageUrl ? [post.imageUrl] : [image],
+        "image": post.imageUrl ? [post.imageUrl] : undefined,
         "author": {
             "@type": "Person",
             "name": post.author,

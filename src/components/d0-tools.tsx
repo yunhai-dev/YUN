@@ -20,20 +20,21 @@ export function D0Tools() {
                         <div
                             className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-sm text-muted-foreground mb-4">
                             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                            数据标注工具
+                            Data annotation tools
                         </div>
                         <h2 className="text-3xl font-bold mb-4">D0 Tools</h2>
                         <p className="text-muted-foreground mb-6">
-                            专注于统一的数据标注体验与开放接口。深度集成 YOLO、SAM 等模型，提供更智能的标注体验。
+                            Focus on a unified data annotation experience and open interfaces. Deeply integrate D0 with
+                            YOLO, SAM, and other models to provide a smarter annotation experience.
                         </p>
 
                         <div className="space-y-4 mb-8">
                             <Feature
-                                title="安全可靠"
-                                description="集中管理数据采集、标注与交付，支持设置数据过期时间，保障数据安全。"/>
+                                title="Safe and reliable"
+                                description="Centralize data collection, annotation, and delivery, set expiration times for data, and ensure data security."/>
                             <Feature
-                                title="功能极其丰富"
-                                description="内置矩形、多边形、分割、点等标注工具，支持像素级操作、图层调整、数据微调等高级功能。"/>
+                                title="Extremely versatile"
+                                description="Built-in rectangle, polygon, segment, and point callouts. Pixel-level operations as well as commonality, layer adjustments, data fine-tuning, and more."/>
                         </div>
 
                         <Link
@@ -41,7 +42,7 @@ export function D0Tools() {
                             rel="noopener noreferrer"
                             href="https://github.com/yunhai-dev/D0-Tools"
                             className="text-foreground font-medium hover:underline inline-flex items-center">
-                            了解更多关于 D0 Tools
+                            Learn more about D0 Tools
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                  xmlns="http://www.w3.org/2000/svg" className="ml-1">
                                 <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"

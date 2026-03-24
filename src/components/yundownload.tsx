@@ -39,20 +39,21 @@ file download success: https://www.yhnotes.com/test.exe`,
                         <div
                             className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-sm text-muted-foreground mb-4">
                             <div className="w-2 h-2 bg-teal-400 rounded-full mr-2"></div>
-                            高速下载工具
+                            High-speed download tool
                         </div>
                         <h2 className="text-3xl font-bold mb-4">Yundownload</h2>
                         <p className="text-muted-foreground mb-6">
-                            支持 HTTP、FTP、SFTP、M3U8 等多种协议的高速下载工具，为用户提供快速、稳定、高效的下载体验。
+                            A high-speed download utility that supports HTTP, FTP, SFTP, M3U8, and other protocols. It’s
+                            designed to give users fast, stable, and efficient download performance.
                         </p>
 
                         <div className="space-y-4 mb-8">
                             <Feature
-                                title="动态并发下载"
-                                description="内置自适应并发控制器，根据响应码和延迟动态调整并发连接数，优化下载速度。"/>
+                                title="Dynamic concurrent downloads"
+                                description="Built-in adaptive concurrency controller that dynamically adjusts the number of concurrent connections—based on response codes and latency—to optimize download speeds."/>
                             <Feature
-                                title="高度可定制"
-                                description="统一的 API 接口，轻松与内部系统构建自定义集成。"/>
+                                title="Fully customizable"
+                                description="A unified API lets you build custom integrations with internal systems."/>
                         </div>
 
                         <Link
@@ -60,7 +61,7 @@ file download success: https://www.yhnotes.com/test.exe`,
                             rel="noopener noreferrer"
                             href="https://github.com/yunhai-dev/yundownload"
                             className="text-foreground font-medium hover:underline inline-flex items-center">
-                            了解更多关于 Yundownload
+                            Learn more about Yundownload
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                  xmlns="http://www.w3.org/2000/svg" className="ml-1">
                                 <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
