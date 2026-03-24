@@ -20,6 +20,7 @@ async function getDocBySlug(slug: string) {
     try {
         const fullPath = path.join(docsDirectory, `${slug.replace(/-yun-/g, '/')}.md`);
         const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const stat = fs.statSync(fullPath);
         const {data, content} = matter(fileContents);
 
         return {
@@ -27,6 +28,7 @@ async function getDocBySlug(slug: string) {
             title: data.title || '无标题',
             description: data.description || '',
             keywords: data.keywords || [],
+            date: data.date ? new Date(data.date).toISOString() : stat.mtime.toISOString(),
             content
         };
     } catch (error) {
@@ -110,6 +112,8 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
                 "width": 1200,
                 "height": 630
             }],
+            "datePublished": doc.date,
+            "dateModified": doc.date,
             "author": {
                 "@type": "Person",
                 "name": "YunHai",
