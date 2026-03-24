@@ -100,9 +100,9 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
         // 生成结构化数据
         const structuredData = {
             "@context": "https://schema.org",
-            "@type": "Article",
+            "@type": "TechArticle",
             "headline": doc.title,
-            "description": doc.description,
+            "description": doc.description || `${doc.title} 的详细文档、教程与使用说明。`,
             "image": [{
                 "@type": "ImageObject",
                 "url": image,
@@ -111,7 +111,8 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
             }],
             "author": {
                 "@type": "Person",
-                "name": siteName
+                "name": "YunHai",
+                "url": `${baseUrl}/about`
             },
             "publisher": {
                 "@type": "Organization",
@@ -121,8 +122,6 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
                     "url": image
                 }
             },
-            "datePublished": new Date().toISOString(),
-            "dateModified": new Date().toISOString(),
             "mainEntityOfPage": {
                 "@type": "WebPage",
                 "@id": `${baseUrl}/docs/${slug}`

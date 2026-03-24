@@ -1,5 +1,7 @@
 ---
-title: Docker
+title: "Docker 容器化部署指南"
+description: "Docker 从入门到实践：容器原理、镜像构建、Compose 编排、常用命令速查"
+keywords: ["Docker", "容器化", "Docker Compose", "镜像构建", "部署", "DevOps"]
 ---
 
 > Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux
@@ -834,7 +836,13 @@ networks:
 - volumes 目录映射
 - networks 配置容器网络 network里直接用container_name 即可访问到该容器
 
-`docker-compose up -d`运行docker-compose
+### 常用命令
+
+- `docker-compose up -d` 运行 docker compose
+- `docker-compose down` 停止运行 docker compose
+- `docker-compose logs -f` 流式查看日志
+
+
 
 ## Python项目部署
 

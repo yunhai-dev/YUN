@@ -1,5 +1,7 @@
 ---
-title:  Poetry 使用指南
+title: "Poetry Python 包管理指南"
+description: "Poetry 安装配置、依赖管理、虚拟环境、发布包等 Python 项目工程化实战"
+keywords: ["Poetry", "Python包管理", "虚拟环境", "依赖管理", "pyproject.toml", "Python工程化"]
 ---
 
 # Poetry 使用指南

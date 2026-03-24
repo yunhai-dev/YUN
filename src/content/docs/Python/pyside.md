@@ -1,5 +1,7 @@
 ---
-title:  PySide框架
+title: "PySide6 桌面开发指南"
+description: "PySide6 窗口组件、布局、信号槽、样式美化等 Python 桌面应用开发实战"
+keywords: ["PySide6", "Qt", "Python桌面开发", "GUI", "信号槽", "PyQt", "桌面应用"]
 ---
 
 ## Windows 11 云母(MICA)效果

@@ -1,5 +1,7 @@
 ---
-title: HTML标签使用
+title: "HTML 基础与实战指南"
+description: "HTML 编码规范、常用标签用法、表单、布局结构等前端基础知识速查"
+keywords: ["HTML", "HTML基础", "前端开发", "Web页面", "表单", "语义化"]
 ---
 
 ### 1 编码（head）

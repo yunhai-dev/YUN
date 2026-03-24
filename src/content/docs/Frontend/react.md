@@ -1,5 +1,7 @@
 ---
-title:  React框架
+title: "React 框架开发指南"
+description: "React 组件、Hooks、状态管理、路由等核心概念与实战开发速查"
+keywords: ["React", "前端框架", "Hooks", "组件化", "状态管理", "JSX", "前端开发"]
 ---
 
 

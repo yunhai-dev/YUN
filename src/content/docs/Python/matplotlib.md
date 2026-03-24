@@ -1,5 +1,7 @@
 ---
-title: Matplotlib模块
+title: "Matplotlib 数据可视化指南"
+description: "Matplotlib 绘图基础、图表类型、样式配置、子图布局等数据可视化实战速查"
+keywords: ["Matplotlib", "数据可视化", "Python", "图表", "数据分析", "折线图", "散点图"]
 ---
 
 # Python API
