@@ -1,7 +1,13 @@
 import {Tool} from "@/types/tools";
 
 export const serverTools: Tool[] = [
-    // https://github.com/dromara/orion-visor
+    {
+        id: 'linuxmirrors',
+        name: 'LinuxMirrors',
+        description: 'Linux 一键换源工具。',
+        href: 'https://linuxmirrors.cn/',
+        category: '服务器工具'
+    },
     {
         id: 'orion-visor',
         name: 'Orion Visor',
