@@ -1,5 +1,7 @@
 ---
-title: 常用命令
+title: "开发常用命令速查"
+description: "Linux、Docker、Git、Python、Node 等开发场景下的常用命令与工具使用速查"
+keywords: ["命令行", "Linux命令", "Shell", "开发工具", "终端", "DevOps", "速查手册"]
 ---
 
 ### delfer/alpine-ftp-server 简单使用教程

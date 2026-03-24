@@ -60,7 +60,7 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
                     title: data.title || '无标题',
                     category: data.category || '未分类',
                     lastEdited: lastEdited, // Use determined lastEdited
-                    author: data.author || '匿名',
+                    author: data.author || 'YunHai',
                     authorRole: data.authorRole || '',
                     tags: data.tags || [],
                     content,

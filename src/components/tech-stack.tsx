@@ -13,8 +13,8 @@ export function TechStack() {
                     viewport={{ once: true }}
                     className="mb-12 text-center"
                 >
-                    <h2 className="text-3xl font-bold mb-2">Tech Stack</h2>
-                    <p className="text-muted-foreground">My core technical skills and proficiency levels</p>
+                    <h2 className="text-3xl font-bold mb-2">技术栈</h2>
+                    <p className="text-muted-foreground">核心技术能力与熟练程度</p>
                 </motion.div>
 
                 <div className="flex gap-3 flex-col">

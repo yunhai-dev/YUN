@@ -1,5 +1,7 @@
 ---
-title:  Django前后端分离模式
+title: "Django REST Framework 前后端分离"
+description: "DRF 序列化、视图集、权限认证、分页等核心用法，构建高效 RESTful API"
+keywords: ["DRF", "Django REST Framework", "RESTful API", "前后端分离", "序列化", "Python"]
 ---
 
 

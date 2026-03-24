@@ -1,5 +1,7 @@
 ---
-title:  HTML标签参考
+title: "HTML 标签参考手册"
+description: "常用 HTML 标签速查，涵盖语义化标签、表单、媒体、元数据等完整参考"
+keywords: ["HTML", "HTML标签", "语义化HTML", "前端开发", "Web开发", "标签参考"]
 ---
 
 ## [声明](https://www.w3school.com.cn/tags/tag_doctype.asp)

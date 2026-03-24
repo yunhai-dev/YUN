@@ -1,5 +1,7 @@
 ---
-title: Rust 技巧与库
+title: "Rust 实用技巧与生态库"
+description: "Rust 开发实用技巧、常用 crate 推荐、文件操作、并发、序列化等进阶实战"
+keywords: ["Rust", "Rust技巧", "crate", "Rust生态", "并发", "Tokio", "Rust进阶"]
 ---
 
 ## File 文件操作

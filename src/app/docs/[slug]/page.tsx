@@ -20,12 +20,15 @@ async function getDocBySlug(slug: string) {
     try {
         const fullPath = path.join(docsDirectory, `${slug.replace(/-yun-/g, '/')}.md`);
         const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const stat = fs.statSync(fullPath);
         const {data, content} = matter(fileContents);
 
         return {
             slug,
             title: data.title || '无标题',
             description: data.description || '',
+            keywords: data.keywords || [],
+            date: data.date ? new Date(data.date).toISOString() : stat.mtime.toISOString(),
             content
         };
     } catch (error) {
@@ -50,7 +53,7 @@ export async function generateMetadata({params}: { params: Promise<{ slug: strin
     return {
         title: doc.title,
         description: doc.description || `${doc.title} 的详细文档、教程与使用说明。`,
-        keywords: doc.title ? [doc.title, 'YunHai', '文档', '教程', '使用说明'] : ['YunHai', '文档'],
+        keywords: doc.keywords?.length ? doc.keywords : [doc.title, 'YunHai', '文档', '教程'],
         openGraph: {
             title: `${doc.title} | ${siteName}`,
             description: doc.description || `${doc.title} 的详细文档、教程与使用说明。`,
@@ -100,18 +103,21 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
         // 生成结构化数据
         const structuredData = {
             "@context": "https://schema.org",
-            "@type": "Article",
+            "@type": "TechArticle",
             "headline": doc.title,
-            "description": doc.description,
+            "description": doc.description || `${doc.title} 的详细文档、教程与使用说明。`,
             "image": [{
                 "@type": "ImageObject",
                 "url": image,
                 "width": 1200,
                 "height": 630
             }],
+            "datePublished": doc.date,
+            "dateModified": doc.date,
             "author": {
                 "@type": "Person",
-                "name": siteName
+                "name": "YunHai",
+                "url": `${baseUrl}/about`
             },
             "publisher": {
                 "@type": "Organization",
@@ -121,8 +127,6 @@ export default async function DocPage({params}: { params: Promise<{ slug: string
                     "url": image
                 }
             },
-            "datePublished": new Date().toISOString(),
-            "dateModified": new Date().toISOString(),
             "mainEntityOfPage": {
                 "@type": "WebPage",
                 "@id": `${baseUrl}/docs/${slug}`

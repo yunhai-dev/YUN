@@ -1,5 +1,7 @@
 ---
-title: gRPC远程调用
+title: "gRPC 远程调用实战指南"
+description: "gRPC 基础概念、ProtoBuf 定义、Python 服务实现、客户端调用完整教程"
+keywords: ["gRPC", "RPC", "ProtoBuf", "微服务", "Python", "HTTP2", "分布式系统"]
 ---
 
 > gRPC是一个高性能、通用的开源RPC框架，其由Google主要面向移动应用开发并基于HTTP/2协议标准而设计，基于ProtoBuf（Protocol Buffers）序列化协议开发，且支持众多开发语言（Python、Golang、JavaScript、C、C++等）。

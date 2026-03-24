@@ -1,5 +1,7 @@
 ---
-title: Git
+title: "Git 版本控制完全指南"
+description: "Git 常用命令、分支管理、工作流规范及实战技巧速查"
+keywords: ["Git", "版本控制", "Git命令", "分支管理", "代码管理", "DevOps"]
 ---
 
 Git 是一种去中心化的版本管理软件

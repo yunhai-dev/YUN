@@ -21,6 +21,31 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/', '/test/', '/share/'],
       },
+      {
+        userAgent: 'GPTBot',
+        allow: '/',
+        disallow: ['/api/', '/test/', '/share/'],
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        allow: '/',
+        disallow: ['/api/', '/test/', '/share/'],
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: '/',
+        disallow: ['/api/', '/test/', '/share/'],
+      },
+      {
+        userAgent: 'ClaudeBot',
+        allow: '/',
+        disallow: ['/api/', '/test/', '/share/'],
+      },
+      {
+        userAgent: 'anthropic-ai',
+        allow: '/',
+        disallow: ['/api/', '/test/', '/share/'],
+      },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
   }

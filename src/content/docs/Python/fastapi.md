@@ -1,5 +1,7 @@
 ---
-title: FastAPI框架
+title: "FastAPI 框架开发指南"
+description: "FastAPI 路由、依赖注入、Pydantic 验证、异步处理、自动文档等核心用法速查"
+keywords: ["FastAPI", "Python框架", "异步API", "Pydantic", "RESTful", "后端开发", "OpenAPI"]
 ---
 
 > FastAPI是建立在Pydantic和Starlette基础上的，Pydantic是一个基于Python类型提示来定义数据验证、序列化和文档的库。Starlette是一种轻量级的ASGI框架，用于构建高性能Asyncio服务的理性选择。

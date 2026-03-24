@@ -1,5 +1,7 @@
 ---
-title: Nginx 服务器
+title: "Nginx 服务器配置指南"
+description: "Nginx 安装配置、反向代理、location 匹配、SSL、gzip 压缩等实战配置速查"
+keywords: ["Nginx", "反向代理", "Web服务器", "location匹配", "SSL配置", "gzip", "DevOps"]
 ---
 
 # Nginx
