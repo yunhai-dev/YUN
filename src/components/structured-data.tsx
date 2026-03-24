@@ -39,12 +39,12 @@ export function PersonStructuredData() {
     "alternateName": "云海",
     "url": baseUrl,
     "image": image,
-    "description": "Full Stack Developer, AI Application Developer",
+    "description": "全栈开发者 & AI 应用开发者，专注于 Python、React/Next.js、LLM 开发",
     "sameAs": [
       "https://github.com/yunhai-dev",
       "https://gitee.com/yun2hai"
     ],
-    "jobTitle": "Full Stack Developer",
+    "jobTitle": "全栈开发者",
     "knowsAbout": [
       "Python", "Django", "FastAPI",
       "React", "Next.js", "Vue.js",

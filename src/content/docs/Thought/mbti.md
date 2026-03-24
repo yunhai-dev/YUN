@@ -1,5 +1,7 @@
 ---
-title: MBTI 综合介绍
+title: "MBTI 人格类型综合介绍"
+description: "MBTI 16 种人格类型详解，了解认知功能、性格特征与人际关系中的应用"
+keywords: ["MBTI", "人格类型", "性格分析", "认知功能", "INFJ", "ENTP", "心理学"]
 ---
 
 ## 1. 为什么关心 MBTI  

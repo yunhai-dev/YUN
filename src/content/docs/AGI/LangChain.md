@@ -1,9 +1,12 @@
 ---
 title: "LangChain 快速入门"
 description: "全面掌握 LangChain 核心组件，构建生产级 AI 智能体"
+keywords: ["LangChain", "AI智能体", "LLM应用开发", "RAG", "Python AI框架", "大模型集成"]
 ---
 
 LangChain 是构建 LLM 应用的主流框架，让你能快速将大模型能力集成到应用中。LangGraph 作为 Agent 运行时，提供状态管理、持久化和流式输出等高级功能。
+
+详细内容参考：[LangChain](https://docs.langchain.com/oss/python/langchain)
 
 ## 准备工作
 
