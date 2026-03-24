@@ -26,6 +26,7 @@ async function getDocBySlug(slug: string) {
             slug,
             title: data.title || '无标题',
             description: data.description || '',
+            keywords: data.keywords || [],
             content
         };
     } catch (error) {
@@ -50,7 +51,7 @@ export async function generateMetadata({params}: { params: Promise<{ slug: strin
     return {
         title: doc.title,
         description: doc.description || `${doc.title} 的详细文档、教程与使用说明。`,
-        keywords: doc.title ? [doc.title, 'YunHai', '文档', '教程', '使用说明'] : ['YunHai', '文档'],
+        keywords: doc.keywords?.length ? doc.keywords : [doc.title, 'YunHai', '文档', '教程'],
         openGraph: {
             title: `${doc.title} | ${siteName}`,
             description: doc.description || `${doc.title} 的详细文档、教程与使用说明。`,
