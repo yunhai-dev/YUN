@@ -32,24 +32,23 @@ export function Clouisle() {
                         <div
                             className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-sm text-muted-foreground mb-4">
                             <div className="w-2 h-2 bg-sky-500 rounded-full mr-2"></div>
-                            Enterprise AI Platform
+                            企业级 AI 平台
                         </div>
                         <h2 className="text-3xl font-bold mb-4">Clouisle</h2>
                         <p className="text-muted-foreground mb-6">
-                            Clouisle brings together AI agents, workflow automation, and enterprise knowledge management
-                            in one unified platform, enabling teams to deploy production-ready AI with confidence.
+                            Clouisle 将 AI Agent、工作流自动化与企业知识管理整合于一个统一平台，助力团队自信地部署生产级 AI 应用。
                         </p>
 
                         <div className="space-y-4 mb-8">
                             <Feature
-                                title="AI Agent Management"
-                                description="Configure agents with multiple models while integrating knowledge bases, orchestrating tools, managing access permissions, and controlling the complete conversation lifecycle."/>
+                                title="AI Agent 管理"
+                                description="支持多模型 Agent 配置，集成知识库、编排工具、管理访问权限，全面掌控对话生命周期。"/>
                             <Feature
-                                title="Visual Workflow Orchestration"
-                                description="With over 15 node types and multiple trigger options, you can monitor execution in real-time, debug workflows on the fly, and deploy automation quickly."/>
+                                title="可视化工作流编排"
+                                description="提供 15+ 节点类型与多种触发方式，支持实时监控执行状态、在线调试工作流，快速部署自动化流程。"/>
                             <Feature
-                                title="Enterprise Knowledge Management System"
-                                description="Supports importing multiple file formats including PDF, DOCX, and XLSX, with intelligent chunking, vector indexing, and asynchronous processing capabilities."/>
+                                title="企业知识管理系统"
+                                description="支持导入 PDF、DOCX、XLSX 等多种文件格式，具备智能分块、向量索引与异步处理能力。"/>
                         </div>
 
                         <Link
@@ -57,7 +56,7 @@ export function Clouisle() {
                             rel="noopener noreferrer"
                             href="https://clouisle.asia"
                             className="text-foreground font-medium hover:underline inline-flex items-center">
-                            Learn more about Clouisle
+                            了解更多关于 Clouisle
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                  xmlns="http://www.w3.org/2000/svg" className="ml-1">
                                 <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"

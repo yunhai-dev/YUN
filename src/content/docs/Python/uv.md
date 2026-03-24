@@ -1,5 +1,7 @@
 ---
-title: UV 使用指南
+title: "uv 极速 Python 包管理器指南"
+description: "uv 安装、虚拟环境管理、依赖安装、项目初始化等用法，Rust 编写的极速 Python 工具"
+keywords: ["uv", "Python包管理", "虚拟环境", "Python工程化", "pip替代", "Rust工具"]
 ---
 
 ## 安装 UV

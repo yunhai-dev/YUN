@@ -56,40 +56,36 @@ export function ThemeToggle() {
     // 避免服务端渲染不匹配
     if (!mounted) {
         return (
-            <Button
-                variant="ghost"
-                size="icon"
+            <button
                 aria-label="Toggle Theme"
-                className="text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted flex items-center justify-center"
             >
                 <Sun className="h-[1.2rem] w-[1.2rem]"/>
-            </Button>
+            </button>
         );
     }
 
     let icon, tip;
     if (theme === "dark") {
         icon = <Sun className="h-[1.2rem] w-[1.2rem]"/>;
-        tip = "toggle to light theme";
+        tip = "切换到亮色模式";
     } else if (theme === "light") {
         icon = <Moon className="h-[1.2rem] w-[1.2rem]"/>;
-        tip = "toggle to auto theme";
+        tip = "切换到自动模式";
     } else {
         icon = <SunMoon className="w-[1.2rem] h-[1.2rem]" />;
-        tip = "toggle to dark theme (auto mode)";
+        tip = "切换到暗色模式（当前自动）";
     }
 
     return (
         <EaseToolTip tip={tip}>
-            <Button
-                variant="ghost"
-                size="icon"
+            <button
                 aria-label="Toggle Theme"
                 onClick={toggleTheme}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted flex items-center justify-center"
             >
                 {icon}
-            </Button>
+            </button>
         </EaseToolTip>
     );
 }

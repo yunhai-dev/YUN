@@ -4,9 +4,9 @@ import {Home, Search, FileText, Wrench} from "lucide-react";
 
 export default function NotFound() {
     const popularLinks = [
-        {href: "/blog", label: "Blog Posts", icon: FileText},
-        {href: "/docs", label: "Documentation", icon: FileText},
-        {href: "/tools", label: "Tools", icon: Wrench},
+        {href: "/blog", label: "博客文章", icon: FileText},
+        {href: "/docs", label: "文档中心", icon: FileText},
+        {href: "/tools", label: "在线工具", icon: Wrench},
     ];
 
     return (
@@ -21,9 +21,9 @@ export default function NotFound() {
                         </div>
                     </div>
                     
-                    <h2 className="text-2xl font-semibold mb-4">Page Not Found</h2>
+                    <h2 className="text-2xl font-semibold mb-4">页面未找到</h2>
                     <p className="text-muted-foreground mb-8">
-                        Sorry, the page you are looking for does not exist, has been removed, or the link is broken.
+                        抱歉，您访问的页面不存在、已被删除或链接已失效。
                     </p>
                     
                     {/* Main Actions */}
@@ -31,20 +31,20 @@ export default function NotFound() {
                         <Button asChild>
                             <Link href="/" className="flex items-center gap-2">
                                 <Home className="w-4 h-4" />
-                                Back to Home
+                                返回首页
                             </Link>
                         </Button>
                         <Button variant="outline" asChild>
                             <Link href="/docs" className="flex items-center gap-2">
                                 <Search className="w-4 h-4" />
-                                Browse Docs
+                                浏览文档
                             </Link>
                         </Button>
                     </div>
                     
                     {/* Popular Links */}
                     <div className="border-t border-border pt-8">
-                        <p className="text-sm text-muted-foreground mb-4">Or visit these popular pages:</p>
+                        <p className="text-sm text-muted-foreground mb-4">或访问以下常用页面：</p>
                         <div className="flex flex-wrap justify-center gap-3">
                             {popularLinks.map((link) => (
                                 <Link

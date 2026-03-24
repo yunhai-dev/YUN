@@ -98,7 +98,7 @@ export function MorePostsList({recentPosts}: MorePostsListProps) {
 
     return (
         <div className="mb-8">
-            <h2 className="text-sm text-muted-foreground font-medium mb-2">More Posts</h2>
+            <h2 className="text-sm text-muted-foreground font-medium mb-2">更多文章</h2>
             <div className="w-full h-[2px] bg-border mb-4"></div>
             <div className="mb-6">
                 {currentPosts.map((post, index) => (

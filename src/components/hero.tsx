@@ -132,11 +132,11 @@ export function Hero() {
                 <div className="z-10">
                     <TypeAnimation
                         sequence={[
-                            "Hi, I'm Yunhai",
+                            "你好，我是云海",
                             1000,
-                            'Tech for life',
+                            '技术改变生活',
                             1000,
-                            'Keep exploring',
+                            '持续探索前行',
                             1000
                         ]}
                         wrapper="h1"
@@ -145,16 +145,16 @@ export function Hero() {
                         className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6"
                     />
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                        I hope the content here can help you
+                        希望这里的内容对你有所帮助
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Button size="lg" asChild className="px-8 py-6 text-base">
-                            <Link href="/docs">Start reading</Link>
+                            <Link href="/docs">开始阅读</Link>
                         </Button>
 
                         <Button size="lg" variant="secondary" asChild className="px-8 py-6 text-base">
                             <Link href="/about" className="flex items-center gap-2">
-                                <span>Introduce me</span>
+                                <span>了解我</span>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5"
@@ -179,13 +179,13 @@ export function Hero() {
                 className="text-center mt-24"
             >
                 <p className="text-sm text-muted-foreground">
-                    There is no need to rush, no need to shine, no need to be anyone else just be yourself
+                    无需急于求成，无需光芒四射，无需成为别人，做自己就好
                 </p>
                 <p className="text-sm text-muted-foreground my-8">
-                    None of them are me, and none of them are me.
+                    路漫漫其修远兮，吾将上下而求索
                 </p>
                 <div className="flex flex-wrap justify-center gap-3 px-4">
-                    {['Document', 'Record', 'Learn', 'Explore', 'Life', 'Love'].map((value, index) => (
+                    {['记录', '分享', '学习', '探索', '生活', '热爱'].map((value, index) => (
                         <motion.span
                             key={index}
                             initial={{ opacity: 0, y: 20 }}

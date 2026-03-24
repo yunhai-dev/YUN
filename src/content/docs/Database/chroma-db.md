@@ -1,5 +1,7 @@
 ---
-title:  ChromaDB 向量数据库
+title: "ChromaDB 向量数据库入门"
+description: "ChromaDB 开源向量数据库使用指南，支持语义搜索、RAG 应用、LLM 知识库构建"
+keywords: ["ChromaDB", "向量数据库", "RAG", "语义搜索", "LLM", "嵌入向量", "AI应用"]
 ---
 
 在人工智能和机器学习领域，向量数据库已成为处理高维嵌入数据的重要工具。ChromaDB 是一个开源的 AI 原生向量数据库，专为构建 LLM（大型语言模型）应用而设计。它让知识、事实和技能可以轻松“插拔”到 LLM 中，支持快速存储、检索和相似性搜索。 无论你是开发语义搜索、推荐系统还是 RAG（Retrieval-Augmented Generation）应用，ChromaDB 都能提供高效、易用的解决方案。

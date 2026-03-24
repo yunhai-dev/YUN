@@ -14,51 +14,46 @@ import EaseToolTip from "@/components/EaseToolTip";
 import {useHandControl} from '@/context/HandControlContext';
 
 const navLinks = [
-    {href: "/blog/", text: "Blog"},
-    {href: "/docs/", text: "Document"},
+    {href: "/blog/", text: "博客"},
+    {href: "/docs/", text: "文档"},
     {
         href: null,
-        text: "Explore",
+        text: "探索",
         children: [
             {
-                title: "Tools",
+                title: "工具",
                 href: "/tools/",
-                description: "Powerful tools for efficient development"
+                description: "高效开发的实用工具集"
             },
-            // {
-            //     title: "Share",
-            //     href: "/share/",
-            //     description: "Share easily, collaborate happily"
-            // },
             {
                 title: "API",
                 href: "/api/",
-                description: "Explore our API, integrate with ease"
+                description: "探索接口，轻松集成"
             },
             {
-                title: "Music",
+                title: "音乐",
                 href: "/media/",
-                description: "Discover great music and enjoy it"
+                description: "发现好音乐，尽情享受"
             },
             {
-                title: "Anniversary",
+                title: "纪念日",
                 href: "/anniversary/",
-                description: "Special moment"
+                description: "特别的时刻"
             },
             {
-                title: "Test",
+                title: "测试",
                 href: "/test/",
-                description: "Testing can be fun too"
+                description: "测试也可以很有趣"
             },
             {
-                title: "Chat",
+                title: "对话",
                 href: "/chat/",
-                description: "Chat playground"
+                description: "AI 对话playground"
             }
         ]
     },
-    {href: "/contact/", text: "Contact"},
-    {href: "/about/", text: "About"},
+    {href: "/contact/", text: "联系"},
+    {href: "/about/", text: "关于"},
 ];
 
 

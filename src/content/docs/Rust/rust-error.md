@@ -1,5 +1,7 @@
 ---
-title: Rust 错误处理
+title: "Rust 错误处理完全指南"
+description: "Rust Result/Option 类型、anyhow、thiserror 库、错误传播与自定义错误类型实战"
+keywords: ["Rust", "错误处理", "Result", "anyhow", "thiserror", "Option", "Rust进阶"]
 ---
 
 ## `anyhow`：应用级错误处理利器
