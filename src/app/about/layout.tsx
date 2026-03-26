@@ -51,7 +51,7 @@ const profileSchema = {
             'https://gitee.com/yun2hai'
         ],
         'hasOccupation': [
-            { '@type': 'Occupation', 'name': '爬虫工程师' },
+            { '@type': 'Occupation', 'name': '数据工程师' },
             { '@type': 'Occupation', 'name': '后端开发工程师' },
             { '@type': 'Occupation', 'name': '前端开发工程师' },
             { '@type': 'Occupation', 'name': 'AI 应用开发者' },

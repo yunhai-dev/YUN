@@ -56,7 +56,7 @@ export default function About() {
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-red-500 mr-3 rounded-full"/>
-                                爬虫工程师
+                                数据工程师
                             </h3>
                             <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 负责通过 JavaScript 逆向分析网站获取公开数据。处理过多种复杂场景，包括 WebSocket 加密通信协议、Cloudflare 防护等反爬机制。
@@ -76,7 +76,7 @@ export default function About() {
                                 精通 Python 后端开发，擅长 Django 和 FastAPI 框架。具备构建可扩展分布式系统的经验，熟悉 OAuth2/OIDC 单点登录（SSO）集成（Google、GitHub 等）及 RESTful API 设计。
                             </p>
                             <p className="text-muted-foreground text-lg relative z-10">
-                                熟练掌握消息队列系统（Celery、Redis、Kafka）、微服务架构、数据库优化（PostgreSQL、MySQL），以及 Docker/Kubernetes 容器化部署。
+                                熟练掌握消息队列系统（Celery、Redis、Kafka）、微服务架构、数据库（PostgreSQL、MySQL），以及 Docker/Kubernetes 容器化部署。
                             </p>
                         </div>
 
