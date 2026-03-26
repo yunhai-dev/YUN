@@ -87,7 +87,7 @@ export function Hero() {
 
         updateParticleColor();
         updateParticleCount();
-        
+
         const timer = setTimeout(() => setShowParticles(true), 100);
 
         const observer = new MutationObserver(updateParticleColor);
@@ -134,9 +134,9 @@ export function Hero() {
                         sequence={[
                             "你好，我是云海",
                             1000,
-                            '技术改变生活',
+                            '科技改变生活',
                             1000,
-                            '持续探索前行',
+                            '技术服务于人',
                             1000
                         ]}
                         wrapper="h1"
@@ -145,7 +145,7 @@ export function Hero() {
                         className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6"
                     />
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                        希望这里的内容对你有所帮助
+                      有所为，有所爱，有所期待
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Button size="lg" asChild className="px-8 py-6 text-base">
@@ -178,9 +178,6 @@ export function Hero() {
                 transition={{duration: 0.8, delay: 0.3}}
                 className="text-center mt-24"
             >
-                <p className="text-sm text-muted-foreground">
-                    无需急于求成，无需光芒四射，无需成为别人，做自己就好
-                </p>
                 <p className="text-sm text-muted-foreground my-8">
                     路漫漫其修远兮，吾将上下而求索
                 </p>

@@ -21,12 +21,12 @@ export function TechStack() {
                     {[
                         { name: "Python", level: 90 },
                         { name: "Django", level: 85 },
+                        { name: "JavaScript / TypeScript", level: 85 },
                         { name: "Git", level: 80 },
-                        { name: "JavaScript / TypeScript", level: 75 },
-                        { name: "Docker", level: 65 },
-                        { name: "Rust", level: 40 },
-                        { name: "Dart", level: 40},
-                        { name: "Java", level: 25},
+                        { name: "Docker", level: 80 },
+                        { name: "Rust", level: 35 },
+                        { name: "Dart", level: 30},
+                        { name: "Java", level: 15},
                     ].map((tech, index) => (
                         <motion.div
                             key={tech.name}
