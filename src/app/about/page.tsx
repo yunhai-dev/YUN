@@ -76,7 +76,7 @@ export default function About() {
                                 精通 Python 后端开发，擅长 Django 和 FastAPI 框架。具备构建可扩展分布式系统的经验，熟悉 OAuth2/OIDC 单点登录（SSO）集成（Google、GitHub 等）及 RESTful API 设计。
                             </p>
                             <p className="text-muted-foreground text-lg relative z-10">
-                                熟练掌握消息队列系统（Celery、Redis、Kafka）、微服务架构、数据库优化（PostgreSQL、MySQL），以及 Docker/Kubernetes 容器化部署。
+                                熟练掌握消息队列系统（Celery、Redis、Kafka）、微服务架构、数据库（PostgreSQL、MySQL），以及 Docker/Kubernetes 容器化部署。
                             </p>
                         </div>
 
