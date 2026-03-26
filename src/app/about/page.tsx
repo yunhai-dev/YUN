@@ -56,7 +56,7 @@ export default function About() {
                             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                             <h3 className="flex items-center text-xl font-semibold mb-4 relative z-10">
                                 <div className="size-3 bg-red-500 mr-3 rounded-full"/>
-                                爬虫工程师
+                                数据工程师
                             </h3>
                             <p className="text-muted-foreground text-lg mb-4 relative z-10">
                                 负责通过 JavaScript 逆向分析网站获取公开数据。处理过多种复杂场景，包括 WebSocket 加密通信协议、Cloudflare 防护等反爬机制。
