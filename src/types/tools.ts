@@ -4,5 +4,5 @@ export interface Tool {
     description: string;
     imageUrl?: string;
     href: string;
-    category?: string; // 添加分类属性
+    category: string; // 添加分类属性
 }

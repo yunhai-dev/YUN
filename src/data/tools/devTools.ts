@@ -131,7 +131,7 @@ export const devTools: Tool[] = [
         id: 'sealos',
         name: 'Sealos',
         description: '一站式云开发平台，提供即时协作开发、无缝部署和环境隔离能力，助您高效管理开发工作流程，轻松实现团队协作。',
-        href: 'https://sealos.run/?s=%E9%A6%96%E9%A1%B5',
+        href: 'https://sealos.run',
         category: '开发工具'
     },
     {
@@ -281,11 +281,4 @@ export const devTools: Tool[] = [
         href: 'https://getcssscan.com/css-box-shadow-examples',
         category: '开发工具',
     },
-    {
-        id: 'sealos',
-        name: 'Sealos',
-        description: '一站式云开发平台，提供即时协作开发、无缝部署和环境隔离能力，助您高效管理开发工作流程，轻松实现团队协作。',
-        href: 'https://sealos.run/',
-        category: '开发工具',
-    }
 ];

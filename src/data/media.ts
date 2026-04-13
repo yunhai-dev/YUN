@@ -1239,10 +1239,10 @@ export const mediaItems: MediaItem[] = [
   {
     id: "cmdxz-zyxtsqs",
     title: "吹梦到西洲",
-    imageUrl: getMediaUrl("吹梦到西洲 昭爻tsuki&千世.jpg"),
-    author: "昭爻tsuki&千世",
-    lyricsUrl: getMediaUrl("吹梦到西洲 昭爻tsuki&千世.lrc"),
-    musicUrl: getMediaUrl("吹梦到西洲 昭爻tsuki&千世.mp3"),
+    imageUrl: getMediaUrl("吹梦到西洲 黄诗扶&妖扬.jpg"),
+    author: "黄诗扶&妖扬",
+    lyricsUrl: getMediaUrl("吹梦到西洲 黄诗扶&妖扬.lrc"),
+    musicUrl: getMediaUrl("吹梦到西洲 黄诗扶&妖扬.mp3"),
   },
   {
     id: "mtxcbnj-yc",
@@ -1356,6 +1356,38 @@ export const mediaItems: MediaItem[] = [
     lyricsUrl: getMediaUrl("岸边客 王玉玺.lrc"),
     musicUrl: getMediaUrl("岸边客 王玉玺.mp3"),
   },
+  {
+    id: "cmdxz-yun",
+    title: "吹梦到西洲",
+    imageUrl: getMediaUrl("吹梦到西洲 YUN&懒懒.jpg"),
+    author: "YUN&懒懒",
+    lyricsUrl: getMediaUrl("吹梦到西洲 YUN&懒懒.lrc"),
+    musicUrl: getMediaUrl("吹梦到西洲 YUN&懒懒.mp4"),
+  },
+  {
+    id: "tstj-wl",
+    title: "同手同脚",
+    imageUrl: getMediaUrl("同手同脚 温岚.jpg"),
+    author: "温岚",
+    lyricsUrl: getMediaUrl("同手同脚 温岚.lrc"),
+    musicUrl: getMediaUrl("同手同脚 温岚.mp3"),
+  },
+  {
+    id: "ygrxzygr-abl",
+    title: "一个人想着一个人(说唱版)",
+    imageUrl: getMediaUrl("一个人想着一个人(说唱版) 艾比利.jpg"),
+    author: "艾比利",
+    lyricsUrl: getMediaUrl("一个人想着一个人(说唱版) 艾比利.lrc"),
+    musicUrl: getMediaUrl("一个人想着一个人(说唱版) 艾比利.mp3"),
+  },
+  {
+    id: "qrj-yl",
+    title: "情人劫",
+    imageUrl: getMediaUrl("情人劫 伊格赛听&叶里.jpg"),
+    author: "伊格赛听&叶里",
+    lyricsUrl: getMediaUrl("情人劫 伊格赛听&叶里.lrc"),
+    musicUrl: getMediaUrl("情人劫 伊格赛听&叶里.mp3"),
+  }
 ];
 
 export function getAllMediaItems(): MediaItem[] {

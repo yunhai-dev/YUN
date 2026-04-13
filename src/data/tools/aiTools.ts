@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const aiTools: Tool[] = [
     {
+        id: 'CraftAgents',
+        name: 'Craft Agents',
+        description: 'Agent 能力升级为“可视化、多会话、可持续工作的桌面操作系统级工作应用',
+        href: 'https://agents.craft.do/',
+        category: 'AI 衍生工具'
+    },
+    {
         id: 'producer',
         name: 'Producer',
         description: 'AI 作词作曲工具，帮助音乐创作者快速生成高质量的音乐作品。',
