@@ -20,12 +20,14 @@ export const llmProviderTools: Tool[] = [
         name: 'Grok',
         description: 'Grok 是由 xAI 设计的一款免费 AI 助手，旨在最大化事实与客观性。Grok 提供实时搜索、图像生成、趋势分析等多种功能。',
         href: 'https://grok.com/',
+        category: 'AI 模型',
     },
     {
         id: 'deepseek',
         name: 'DeepSeek',
         description: '深度求索（DeepSeek），成立于2023年，专注于研究世界领先的通用人工智能底层模型与技术，挑战人工智能前沿性难题。',
         href: 'https://deepseek.com/',
+        category: 'AI 模型',
     },
     {
         id: 'minimax',

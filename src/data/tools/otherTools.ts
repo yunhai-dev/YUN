@@ -37,39 +37,18 @@ export const otherTools: Tool[] = [
         category: '监控系统'
     },
     {
-        id: 'komari',
-        name: 'Komari',
-        description: '轻量级自托管服务器监控工具，资源占用低，提供直观的 Web 界面查看服务器状态。',
-        href: 'https://github.com/komari-monitor/komari',
-        category: '监控系统'
-    },
-    {
-        id: 'nexterm',
-        name: 'Nexterm',
-        description: '开源服务器管理软件，支持 SSH、VNC、RDP 远程连接，SFTP 文件管理，Docker 部署及 Proxmox 容器管理。',
-        href: 'https://github.com/gnmyt/Nexterm',
-        category: '服务器管理'
-    },
-    {
-        id: 'watchtower',
-        name: 'Watchtower',
-        description: 'Docker 容器镜像自动更新工具，监控并自动拉取新镜像、优雅重启容器，适用于家庭实验室和开发环境。',
-        href: 'https://github.com/containrrr/watchtower',
-        category: 'Docker 工具'
-    },
-    {
         id: 'gotify',
         name: 'Gotify',
         description: '自托管消息推送服务器，通过 REST API 发送消息、WebSocket 实时接收，配套 Web UI、CLI 和 Android 应用。',
         href: 'https://github.com/gotify/server',
-        category: '消息推送'
+        category: '工具集'
     },
     {
         id: 'docling',
         name: 'Docling',
         description: '多格式文档解析工具，支持 PDF、DOCX、PPTX、图片等，具备 OCR、表格识别，可集成 LangChain、LlamaIndex 等 AI 框架。',
         href: 'https://github.com/docling-project/docling',
-        category: '文档工具'
+        category: '工具集'
     },
     {
         id: 'it-tools',
@@ -308,5 +287,5 @@ export const otherTools: Tool[] = [
         description: '通用文档格式转换器，支持 Markdown、LaTeX、Word、HTML、PDF 等数十种格式相互转换，文档处理的瑞士军刀。',
         href: 'https://github.com/jgm/pandoc',
         category: '文档工具',
-    }
+    },
 ];

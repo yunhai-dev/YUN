@@ -20,7 +20,7 @@ import {Suggestion, Suggestions} from "@/components/ai-elements/suggestion";
 import {useChat} from "@/hooks/use-chat";
 import {chatTools} from "../tools";
 
-const DEFAULT_MODEL = "deepseek-ai/deepseek-v3.1";
+const DEFAULT_MODEL = "deepseek-chat";
 const SUGGESTIONS: string[] = [];
 
 // 优化消息渲染组件
@@ -60,7 +60,7 @@ const ChatMessage = memo(({message, isLoading}: {
                             part.state === 'result' ? 'output-available' :
                                 'output-error';
 
-                const outputContent = part.output 
+                const outputContent = part.output
                     ? (typeof part.output === "string" ? part.output : JSON.stringify(part.output, null, 2))
                     : undefined;
 
@@ -102,7 +102,7 @@ const ChatClient = () => {
         stop,
     } = useChat({
         apiKey,
-        baseUrl: baseUrl || "https://ai.megallm.io",
+        baseUrl: baseUrl || "https://ai.yhnotes.com",
         model: resolvedModel,
         tools: chatTools,
         initialMessages: [
@@ -132,9 +132,9 @@ const ChatClient = () => {
     // Persist credentials and custom model in localStorage
     useEffect(() => {
         if (typeof window === "undefined") return;
-        const savedApiKey = localStorage.getItem("chat-api-key") || "sk-mega-79bcf2206ac5f638ff49d734b8d1e2532e2434658ff4bbf9584fda54172c4ad5";
-        const savedBaseUrl = localStorage.getItem("chat-base-url") || "https://ai.megallm.io";
-        const savedModel = localStorage.getItem("chat-model-id") || "openai-gpt-oss-20b";
+        const savedApiKey = localStorage.getItem("chat-api-key") || "";
+        const savedBaseUrl = localStorage.getItem("chat-base-url") || "https://api.deepseek.com";
+        const savedModel = localStorage.getItem("chat-model-id") || "deepseek-chat";
         const savedPreset = localStorage.getItem("chat-model-preset") || DEFAULT_MODEL;
         setApiKey(savedApiKey);
         setBaseUrl(savedBaseUrl);
@@ -230,7 +230,7 @@ const ChatClient = () => {
                 </Suggestions>
                 <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 pb-2">
                     <div className={`flex items-start gap-2 w-full border border-border/50 bg-muted/30 hover:bg-muted/50 transition-all px-3 py-2 ${isMultiline ? 'rounded-2xl' : 'rounded-[26px]'}`}>
-                        <button 
+                        <button
                             type="button"
                             className="shrink-0 rounded-full size-10 flex items-center justify-center hover:bg-background/50 text-muted-foreground transition-colors mt-0.5"
                             aria-label="添加附件"
@@ -268,7 +268,7 @@ const ChatClient = () => {
                             style={{ maxHeight: '200px' }}
                         />
                         <div className={`flex items-center gap-1 shrink-0 ${isMultiline ? 'self-end mb-0.5' : ''}`}>
-                            <button 
+                            <button
                                 type="button"
                                 className="shrink-0 rounded-full size-10 flex items-center justify-center hover:bg-background/50 text-muted-foreground transition-colors"
                                 aria-label="语音输入"
@@ -276,17 +276,17 @@ const ChatClient = () => {
                                 <MicIcon className="size-5" />
                             </button>
                             {isLoading ? (
-                                <button 
+                                <button
                                     type="button"
-                                    onClick={stop} 
+                                    onClick={stop}
                                     className="shrink-0 rounded-full size-10 flex items-center justify-center bg-foreground text-background transition-colors"
                                 >
                                     <SquareIcon className="size-4"/>
                                 </button>
                             ) : (
-                                <button 
+                                <button
                                     type="button"
-                                    disabled={!input.trim()} 
+                                    disabled={!input.trim()}
                                     onClick={() => {
                                         if (input.trim()) {
                                             handleSubmit({ text: input, files: [] });

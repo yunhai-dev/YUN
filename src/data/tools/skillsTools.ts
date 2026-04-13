@@ -2,6 +2,13 @@ import {Tool} from "@/types/tools";
 
 export const skillsTools: Tool[] = [
     {
+        id: 'impeccable',
+        name: 'Impeccable',
+        description: '通过提供专业设计指令和反模式检测，纠正 AI 在前端开发中的审美与布局偏差。',
+        href: 'https://github.com/pbakaus/impeccable',
+        category: 'Agent Skills',
+    },
+    {
         id: 'nanobanana-ppt-skills',
         name: 'NanoBanana PPT Skills',
         description: '基于 AI 自动生成高质量 PPT 图片和视频的强大工具，支持智能转场和交互式播放',
