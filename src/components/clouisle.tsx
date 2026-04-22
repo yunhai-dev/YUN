@@ -5,6 +5,17 @@ import {motion} from "framer-motion";
 import Image from "next/image";
 import {STORAGE_HOST} from "@/data/baseUrl";
 
+export const clouisleProject = {
+    id: 'clouisle',
+    name: 'Clouisle',
+    eyebrow: '企业级 AI 平台',
+    description: '将 AI Agent、工作流自动化与企业知识管理整合于统一平台。',
+    detail: '支持多模型 Agent、可视化工作流与企业知识库，面向生产级团队协作。',
+    href: 'https://clouisle.asia',
+    image: `${STORAGE_HOST}/admin-panel.webp`,
+    accent: '#38bdf8',
+};
+
 export function Clouisle() {
     return (
         <section className="py-24 px-4">

@@ -1,7 +1,7 @@
 ---
-title: "Rust 语言基础入门"
-description: "Rust 所有权、借用、生命周期、泛型、trait、并发等核心概念与语法速查"
-keywords: ["Rust", "Rust基础", "所有权", "借用", "生命周期", "系统编程", "内存安全"]
+title: "Rust 基础语法与核心概念"
+description: "整理 Rust 的所有权、借用、生命周期、泛型、Trait 与并发等核心内容"
+keywords: ["Rust", "所有权", "借用", "生命周期", "Trait", "泛型", "并发"]
 ---
 
 # Rust基础

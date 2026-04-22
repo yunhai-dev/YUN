@@ -43,3 +43,9 @@ next-env.d.ts
 # 自定义
 .idea
 .vscode
+/src/content/.obsidian/
+/public/atom.xml
+/public/index.json
+/public/rss.xml
+/src/content/.claude/
+/src/content/.claudian/

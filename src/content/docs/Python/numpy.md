@@ -1,7 +1,7 @@
 ---
-title: "NumPy 科学计算使用指南"
-description: "NumPy 数组操作、矩阵运算、广播机制、线性代数等科学计算核心 API 速查"
-keywords: ["NumPy", "科学计算", "Python", "数组", "矩阵运算", "数据分析", "机器学习"]
+title: "NumPy 数组与计算指南"
+description: "整理 NumPy 的数组操作、广播机制、矩阵运算与线性代数等常用计算内容"
+keywords: ["NumPy", "Python", "数组", "广播机制", "矩阵运算", "线性代数", "科学计算"]
 ---
 
 ## NumPy

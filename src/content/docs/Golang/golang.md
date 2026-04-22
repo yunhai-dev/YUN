@@ -1,7 +1,7 @@
 ---
 title: "Go 语言核心语法指南"
-description: "Go 语言数据类型、函数、并发、接口、错误处理等核心语法与实战速查"
-keywords: ["Golang", "Go语言", "并发编程", "goroutine", "接口", "后端开发"]
+description: "整理 Go 语言的数据类型、函数、接口、并发与错误处理等核心语法内容"
+keywords: ["Go 语言", "Go", "数据类型", "函数", "接口", "goroutine", "并发"]
 ---
 
 ## 数据类型

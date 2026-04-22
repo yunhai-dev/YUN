@@ -37,6 +37,7 @@ import {
 
 import {markdownToHtml} from "@/lib/markdown";
 import {downloadMarkdownAsDocx} from "@/lib/markdown-to-docx";
+import {siteName} from "@/config/site";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {useToast} from "@/hooks/use-toast";
 import html2canvas from 'html2canvas'
@@ -46,6 +47,24 @@ import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/compon
 import {useAIGenerate} from "@/hooks/use-ai-generate";
 import {Loader} from "@/components/ai-elements/loader";
 import {MessageResponse} from "@/components/ai-elements/message";
+
+const getMarkdownExportTitle = (markdown: string) => {
+    const lines = markdown.split('\n');
+
+    for (const level of [1, 2, 3]) {
+        const headingPattern = new RegExp(`^#{${level}}\\s+(.+?)\\s*$`);
+
+        for (const line of lines) {
+            const trimmedLine = line.trim();
+            const match = trimmedLine.match(headingPattern);
+            if (match?.[1]) {
+                return match[1].trim().replace(/[<>:"/\\|?*]/g, '_');
+            }
+        }
+    }
+
+    return siteName;
+};
 
 const MarkdownEditorPage = () => {
     const [markdownText, setMarkdownText] = useState<string>('');
@@ -394,7 +413,7 @@ ${selection}
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'document.md';
+            a.download = `${getMarkdownExportTitle(markdownText)}.md`;
             a.click();
             URL.revokeObjectURL(url);
         } finally {
@@ -476,7 +495,7 @@ ${selection}
                 const image = canvas.toDataURL('image/png');
                 const a = document.createElement('a');
                 a.href = image;
-                a.download = 'markdown-preview.png';
+                a.download = `${getMarkdownExportTitle(markdownText)}.png`;
                 a.click();
                 document.body.removeChild(tempContainer);
             }).catch(error => {
@@ -494,7 +513,7 @@ ${selection}
     async function exportAsDocx() {
         try {
             setDocxLoading(true);
-            await downloadMarkdownAsDocx(markdownText, 'document.docx');
+            await downloadMarkdownAsDocx(markdownText, `${getMarkdownExportTitle(markdownText)}.docx`);
         } finally {
             setDocxLoading(false);
         }

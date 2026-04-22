@@ -1,7 +1,7 @@
 ---
-title: "Docker 容器化部署指南"
-description: "Docker 从入门到实践：容器原理、镜像构建、Compose 编排、常用命令速查"
-keywords: ["Docker", "容器化", "Docker Compose", "镜像构建", "部署", "DevOps"]
+title: "Docker 容器开发与部署指南"
+description: "整理 Docker 的基础概念、镜像构建、容器管理、Compose 编排与项目部署等常用内容"
+keywords: ["Docker", "容器", "镜像构建", "容器管理", "Docker Compose", "部署", "运维"]
 ---
 
 > Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux

@@ -1,7 +1,7 @@
 ---
-title: "JavaScript 核心语法速查"
-description: "JavaScript 变量、函数、数组、对象、异步、DOM 操作等核心语法与实战示例"
-keywords: ["JavaScript", "JS", "前端开发", "ES6", "异步编程", "DOM", "Web开发"]
+title: "JavaScript 核心语法指南"
+description: "整理 JavaScript 的变量、函数、数组、对象、DOM 操作与异步编程等核心内容"
+keywords: ["JavaScript", "ES6", "函数", "DOM", "异步编程", "Promise", "基础语法"]
 ---
 
 > 以下代码全在script标签中

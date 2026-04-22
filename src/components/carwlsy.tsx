@@ -5,6 +5,17 @@ import {motion} from "framer-motion";
 import Image from "next/image";
 import {STORAGE_HOST} from "@/data/baseUrl";
 
+export const carwlsyProject = {
+    id: 'carwlsy',
+    name: 'Carwlsy',
+    eyebrow: '分布式数据采集平台',
+    description: '通过内置 SDK 实现数据集成与告警，支持分布式调度与部署。',
+    detail: '支持 Docker 与本地部署，集成 Web IDE，强化分布式采集与任务投递。',
+    href: 'https://github.com/yunhai-dev/crawlsy',
+    image: `${STORAGE_HOST}/carwlsy.png`,
+    accent: '#f59e0b',
+};
+
 export function Carwlsy() {
     return (
         <section className="py-24 px-4">

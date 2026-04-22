@@ -1,7 +1,7 @@
 ---
-title: "jQuery 使用指南"
-description: "jQuery 选择器、DOM 操作、事件绑定、AJAX 请求等常用 API 速查手册"
-keywords: ["jQuery", "JavaScript库", "前端开发", "DOM操作", "AJAX", "选择器"]
+title: "jQuery 常用 API 速查"
+description: "整理 jQuery 的选择器、DOM 操作、事件绑定与 AJAX 请求等常用 API"
+keywords: ["jQuery", "选择器", "DOM 操作", "事件绑定", "AJAX", "JavaScript 库", "速查"]
 ---
 
 ## 选择器

@@ -1,41 +1,38 @@
 import {Tool} from "@/types/tools";
-import {localTools} from "@/data/tools/localTools";
+import { aiLLMs } from "@/data/tools/aiLLMs";
+import { aiApps } from "@/data/tools/aiApps";
+import { aiExt } from "@/data/tools/aiExt";
 import { devTools } from "@/data/tools/devTools";
-import { frontendTools } from "@/data/tools/frontendTools";
-import {mcpTools} from "@/data/tools/mcpTools";
-import {aiCommunityTools} from "@/data/tools/aiCommunityTools";
-import {llmProviderTools} from "@/data/tools/llmProviderTools";
-import {aiTools} from "@/data/tools/aiTools";
-import {designTools} from "@/data/tools/designTools";
-import {serverTools} from "@/data/tools/serverTools";
-import {otherTools} from "@/data/tools/otherTools";
-import {netTools} from "@/data/tools/netTools";
-import {skillsTools} from "@/data/tools/skillsTools";
-
+import { systemTools } from "@/data/tools/systemTools";
+import { otherTools } from "@/data/tools/otherTools";
 
 const allToolDataMap = new Map<string, Tool>();
 
 [
-    ...localTools,
+    ...aiLLMs,
+    ...aiApps,
+    ...aiExt,
     ...devTools,
-    ...frontendTools,
-    ...mcpTools,
-    ...aiCommunityTools,
-    ...llmProviderTools,
-    ...aiTools,
-    ...designTools,
-    ...serverTools,
-    ...otherTools,
-    ...netTools,
-    ...skillsTools
+    ...systemTools,
+    ...otherTools
 ].forEach(tool => {
     if (!allToolDataMap.has(tool.id)) {
-        allToolDataMap.set(tool.id, tool); // 添加唯一工具到 Map
+        allToolDataMap.set(tool.id, tool);
     }
 });
 
 const allToolsArray = Array.from(allToolDataMap.values());
 
+function sortTools(tools: Tool[]): Tool[] {
+    return tools.sort((a, b) => {
+        const aIsLocal = a.href.startsWith('/');
+        const bIsLocal = b.href.startsWith('/');
+        if (aIsLocal && !bIsLocal) return -1;
+        if (!aIsLocal && bIsLocal) return 1;
+        return 0;
+    });
+}
+
 export function getAllTools(): Tool[] {
-    return allToolsArray; // 返回包含所有唯一工具的数组
+    return sortTools(allToolsArray);
 }

@@ -1,7 +1,7 @@
 ---
-title: "Django REST Framework 前后端分离"
-description: "DRF 序列化、视图集、权限认证、分页等核心用法，构建高效 RESTful API"
-keywords: ["DRF", "Django REST Framework", "RESTful API", "前后端分离", "序列化", "Python"]
+title: "Django REST Framework 基础指南"
+description: "整理 DRF 的序列化、视图集、权限认证、分页与路由等常用开发内容"
+keywords: ["Django REST Framework", "DRF", "序列化", "视图集", "权限认证", "分页", "REST API"]
 ---
 
 

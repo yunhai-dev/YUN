@@ -1,7 +1,7 @@
 ---
-title: "Redis 缓存数据库指南"
-description: "Redis 安装部署、数据类型、缓存策略、持久化配置等核心用法速查"
-keywords: ["Redis", "缓存", "NoSQL", "键值数据库", "消息队列", "持久化", "Backend"]
+title: "Redis 使用与配置指南"
+description: "整理 Redis 的安装部署、数据类型、缓存策略与持久化等常用内容"
+keywords: ["Redis", "缓存", "NoSQL", "数据类型", "持久化", "缓存策略", "安装部署"]
 ---
 
 ## CentOS 7 安装Redis

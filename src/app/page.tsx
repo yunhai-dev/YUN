@@ -1,13 +1,14 @@
-import {CallToAction} from "@/components/call-to-action";
-import {FeaturesSection} from "@/components/features-section";
-import {Hero} from "@/components/hero";
-import {Carwlsy} from "@/components/carwlsy";
-import {D0Tools} from "@/components/d0-tools";
-import {TechStack} from "@/components/tech-stack";
-import {Announcement} from "@/components/announcement";
-import {YunDownload} from "@/components/yundownload";
-import {Clouisle} from "@/components/clouisle";
+import {Button} from "@/components/ui/button";
 import {FAQStructuredData} from "@/components/structured-data";
+import {Link} from "next-view-transitions";
+import {ArrowUpRight} from "lucide-react";
+import LaserFlow from "@/components/LaserFlow";
+import {HomeProjectWheelSection} from "@/components/home-project-wheel-section";
+import {HomeSkillsContainerSection} from "@/components/home-skills-container-section";
+import {HomeWorkflowSection} from "@/components/home-workflow-section";
+import {HomeRecentPostsSection} from "@/components/home-recent-posts-section";
+import {HomeViewportOrchestrator} from "@/components/home-viewport-orchestrator";
+import {getAllBlogPosts} from "@/data/blog-posts";
 
 const homeFAQs = [
     {
@@ -32,19 +33,143 @@ const homeFAQs = [
     },
 ];
 
-export default function Home() {
+const destinations = [
+    {
+        title: '博客',
+        description: '阅读关于 AI、Python、React 与工程体系的文章。',
+        href: '/blog/',
+        label: 'Articles',
+    },
+    {
+        title: '文档',
+        description: '查阅技术笔记、知识整理和项目沉淀。',
+        href: '/docs/',
+        label: 'Docs',
+    },
+    {
+        title: '工具',
+        description: '打开在线工具，把常见开发操作留在浏览器里完成。',
+        href: '/tools/',
+        label: 'Tools',
+    },
+    {
+        title: '关于',
+        description: '了解 YunHai 的能力范围、项目方向与合作方式。',
+        href: '/about/',
+        label: 'About',
+    },
+];
+
+const showcaseImages = [
+    {
+        src: 'https://rustfs-endpoint.yhnotes.com/content/admin-panel.webp',
+        alt: 'Admin panel showcase',
+        className: 'home-showcase-primary',
+    },
+];
+
+export default async function Home() {
+    const recentPosts = (await getAllBlogPosts()).slice(0, 5);
+
     return (
-        <main className="main">
+        <>
             <FAQStructuredData faqs={homeFAQs} />
-            <Announcement/>
-            <Hero/>
-            <FeaturesSection/>
-            <TechStack/>
-            <Clouisle/>
-            <D0Tools/>
-            <Carwlsy/>
-            <YunDownload/>
-            <CallToAction/>
-        </main>
+            <main className="home-shell home-page-transition">
+                <HomeViewportOrchestrator />
+                <section className="home-hero-section" data-home-section>
+                    <div className="home-hero-glow home-hero-glow-left" />
+                    <div className="home-hero-glow home-hero-glow-right" />
+                    <div className="home-container home-hero-content">
+                        <div className="home-hero-copy">
+                            <span className="home-eyebrow home-reveal home-reveal-delay-1">YunHai / Clouisle</span>
+                            <h1 className="home-display-title home-reveal home-reveal-delay-2">
+                                云屿
+                            </h1>
+                            <p className="home-hero-description home-reveal home-reveal-delay-3">
+                                AI Agent、工作流编排与企业级知识检索整合到同一平台，帮助团队安全落地生产级 AI。
+                            </p>
+                        </div>
+                    </div>
+                    <div className="home-container-wide home-hero-showcase home-reveal home-reveal-delay-4">
+                        <div className="home-showcase-stack">
+                            {showcaseImages.map((image) => (
+                                <div key={image.src} className="home-showcase-media">
+                                    <div className="home-showcase-laser">
+                                        <LaserFlow
+                                            color="#FF79C6"
+                                            wispDensity={1}
+                                            flowSpeed={0.35}
+                                            verticalSizing={2}
+                                            horizontalSizing={1.2}
+                                            fogIntensity={0.45}
+                                            fogScale={0.3}
+                                            wispSpeed={15}
+                                            wispIntensity={5}
+                                            flowStrength={0.25}
+                                            decay={1.1}
+                                            horizontalBeamOffset={0}
+                                            verticalBeamOffset={-0.5}
+                                        />
+                                    </div>
+                                    <img
+                                        src={image.src}
+                                        alt={image.alt}
+                                        className={image.className}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <HomeProjectWheelSection />
+                <HomeSkillsContainerSection />
+                <HomeWorkflowSection />
+                <HomeRecentPostsSection posts={recentPosts} />
+
+                <section className="home-destinations-section" data-home-section>
+                    <div className="home-container">
+                        <div className="home-section-heading home-section-heading-row">
+                            <div>
+                                <span className="home-section-label">Destinations</span>
+                                <h2>从这里进入最重要的四个方向</h2>
+                            </div>
+                            <p className="home-section-note">内容、知识库、工具与个人信息不再分散陈列，而是作为统一入口呈现。</p>
+                        </div>
+                        <div className="home-destination-grid">
+                            {destinations.map((item) => (
+                                <Link key={item.href} href={item.href} className="home-destination-card">
+                                    <span className="home-destination-label">{item.label}</span>
+                                    <div className="home-destination-body">
+                                        <div>
+                                            <h3>{item.title}</h3>
+                                            <p>{item.description}</p>
+                                        </div>
+                                        <ArrowUpRight className="home-destination-icon" />
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="home-cta-section" data-home-section>
+                    <div className="home-container">
+                        <div className="home-cta-card">
+                            <span className="home-section-label">Next step</span>
+                            <h2>欢迎从这里开始了解我。</h2>
+                            <div className="home-hero-actions">
+                                <Button size="lg" asChild className="home-button-primary">
+                                    <Link href="/contact/">联系我</Link>
+                                </Button>
+                                <Button size="lg" variant="outline" asChild className="home-button-secondary">
+                                    <Link href="/blog/">查看博客</Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </>
     );
 }

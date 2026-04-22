@@ -1,7 +1,7 @@
 ---
-title: "Vue 技巧与生态库"
-description: "Vue 实用技巧、常用库推荐、组合式 API 模式与工程化最佳实践"
-keywords: ["Vue", "Vue技巧", "组合式API", "Vue生态", "前端开发", "Pinia", "Vite"]
+title: "Vue 实用技巧与生态笔记"
+description: "整理 Vue 的实用技巧、组合式 API 模式以及 Pinia、Vite 等生态工具实践"
+keywords: ["Vue 3", "组合式 API", "Pinia", "Vite", "生态工具", "实用技巧", "工程化"]
 ---
 
 # Vue 技巧与库

@@ -1,7 +1,7 @@
 ---
-title: "Vue 框架开发指南"
-description: "Vue 3 核心概念、组件通信、响应式系统、路由与状态管理完整速查"
-keywords: ["Vue", "Vue3", "前端框架", "组件化", "响应式", "Vue Router", "前端开发"]
+title: "Vue 3 开发指南"
+description: "整理 Vue 3 的模板语法、组件通信、响应式、路由与状态管理等常用开发内容"
+keywords: ["Vue 3", "Vue", "响应式", "组件通信", "Vue Router", "Pinia", "前端框架"]
 ---
 
 # Vue

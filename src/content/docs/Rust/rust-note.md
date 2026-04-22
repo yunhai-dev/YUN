@@ -1,7 +1,7 @@
 ---
-title: "Rust 实用技巧与生态库"
-description: "Rust 开发实用技巧、常用 crate 推荐、文件操作、并发、序列化等进阶实战"
-keywords: ["Rust", "Rust技巧", "crate", "Rust生态", "并发", "Tokio", "Rust进阶"]
+title: "Rust 实用技巧与生态笔记"
+description: "整理 Rust 开发中的文件操作、网络请求、序列化与常用 crate 实践内容"
+keywords: ["Rust", "实用技巧", "crate", "Serde", "reqwest", "文件操作", "生态"]
 ---
 
 ## File 文件操作

@@ -1,7 +1,7 @@
 ---
-title: "Prompt Engineering 提示词工程"
-description: "掌握 AI 提示词工程核心技巧，让大模型成为你高效工作的助手"
-keywords: ["Prompt Engineering", "提示词工程", "AI提示词", "LLM", "大模型", "Chain of Thought"]
+title: "提示词工程入门指南"
+description: "整理提示词工程的基本概念、常用技巧与 LLM 提示词设计方法"
+keywords: ["提示词工程", "Prompt Engineering", "LLM", "提示词设计", "思维链", "few-shot", "大模型"]
 ---
 
 > 掌握AI提示词框架，让AI成为你高效工作的助手
