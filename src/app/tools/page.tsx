@@ -15,6 +15,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import {Tooltip, TooltipTrigger, TooltipContent, TooltipProvider} from "@/components/ui/tooltip"
 
 // ToolCard 组件保持不变...
 interface ToolCardProps {
@@ -22,21 +23,33 @@ interface ToolCardProps {
 }
 
 function ToolCard({tool}: ToolCardProps) {
-    const {name, description, href, category} = tool; // 移除 imageUrl
+    const {name, description, href, category} = tool;
     const isExternal = href.startsWith('http');
 
     const cardContent = (
         <div
             className="block rounded-lg border border-border hover:border-violet-500/50 bg-card overflow-hidden p-1 h-full glow-card group/card transition-colors">
-            {/* 荧光背景层 */}
             <div
                 className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none"/>
 
-            {/* 内容区域 */}
             <div className="p-4 relative z-10">
                 {category && <div className="text-sm text-muted-foreground mb-2">{category}</div>}
-                <h3 className="text-xl font-semibold mb-2">{name}</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <h3 className="text-xl font-semibold mb-2 truncate">{name}</h3>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs">
+                        <p>{name}</p>
+                    </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs">
+                        <p>{description}</p>
+                    </TooltipContent>
+                </Tooltip>
             </div>
         </div>
     );
@@ -126,6 +139,11 @@ const ToolsPage = () => {
     const endIndex = startIndex + itemsPerPage;
     const currentTools = filteredTools.slice(startIndex, endIndex);
 
+    // 翻页时平滑滚动到顶部
+    useEffect(() => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }, [currentPage]);
+
     // 生成页码数组
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
@@ -164,41 +182,38 @@ const ToolsPage = () => {
 
     return (
         <main className="min-h-screen flex flex-col">
+            <TooltipProvider>
             <div className="main pt-32 pb-16">
                 <div className="flex gap-6">
-                    {/* 左侧分类栏 - 悬浮样式 */}
+                    {/* 左侧分类栏 - Tag 样式 */}
                     <aside className="w-48 flex-shrink-0 hidden lg:block">
                         <div className="sticky top-32 rounded-lg border border-border bg-card/50 backdrop-blur-sm p-3">
                             <h2 className="text-sm font-semibold mb-3 px-2 text-muted-foreground">功能分类</h2>
-                            <nav className="space-y-0.5">
+                            <nav className="grid grid-cols-2 gap-1.5">
                                 {categories.map((category) => {
                                     const count = category === '全部'
                                         ? allTools.length
                                         : allTools.filter(t => t.category === category).length;
 
                                     return (
-                                        <button
-                                            key={category}
-                                            onClick={() => handleCategoryChange(category)}
-                                            className={cn(
-                                                "w-full text-left px-3 py-1.5 rounded-md transition-all text-sm group",
-                                                selectedCategory === category
-                                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                                    : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
-                                            )}
-                                        >
-                                            <span className="flex items-center justify-between gap-2">
-                                                <span className="truncate">{category}</span>
-                                                <span className={cn(
-                                                    "text-xs tabular-nums flex-shrink-0",
-                                                    selectedCategory === category
-                                                        ? "opacity-80"
-                                                        : "opacity-50 group-hover:opacity-70"
-                                                )}>
-                                                    {count}
-                                                </span>
-                                            </span>
-                                        </button>
+                                        <Tooltip key={category}>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    onClick={() => handleCategoryChange(category)}
+                                                    className={cn(
+                                                        "px-2 py-1.5 rounded-md transition-all text-xs whitespace-nowrap text-left truncate",
+                                                        selectedCategory === category
+                                                            ? "bg-primary text-primary-foreground shadow-sm"
+                                                            : "bg-accent/50 text-muted-foreground hover:bg-accent hover:text-foreground"
+                                                    )}
+                                                >
+                                                    {category}
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="right" className="max-w-xs">
+                                                <p>{category} ({count})</p>
+                                            </TooltipContent>
+                                        </Tooltip>
                                     );
                                 })}
                             </nav>
@@ -278,6 +293,7 @@ const ToolsPage = () => {
                     </div>
                 </div>
             </div>
+            </TooltipProvider>
         </main>
     );
 };

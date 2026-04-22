@@ -1,7 +1,7 @@
 ---
-title: "MySQL 数据库使用指南"
-description: "MySQL 安装配置、常用 SQL 命令、索引优化、事务管理等实战速查手册"
-keywords: ["MySQL", "数据库", "SQL", "关系型数据库", "索引优化", "事务", "Backend"]
+title: "MySQL 常用操作指南"
+description: "整理 MySQL 的安装配置、常用 SQL、索引优化与事务管理等基础内容"
+keywords: ["MySQL", "SQL", "关系型数据库", "索引优化", "事务", "安装配置", "数据库"]
 ---
 
 ## Windows安装MySQL

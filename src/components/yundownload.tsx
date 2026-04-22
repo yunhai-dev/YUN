@@ -5,6 +5,17 @@ import {motion} from "framer-motion";
 import dynamic from 'next/dynamic';
 import type {TerminalCommand} from "@/components/terminal-player";
 
+export const yundownloadProject = {
+    id: 'yundownload',
+    name: 'Yundownload',
+    eyebrow: '高速下载工具',
+    description: '支持 HTTP、FTP、SFTP、M3U8 等多种协议的高速下载工具。',
+    detail: '内置动态并发控制与统一 API，兼顾下载性能、稳定性和集成能力。',
+    href: 'https://github.com/yunhai-dev/yundownload',
+    image: 'terminal',
+    accent: '#2dd4bf',
+};
+
 const TerminalPlayer = dynamic(() => import("@/components/terminal-player"), {
     ssr: false,
     loading: () => <div className="w-full h-full bg-[#0d1117] rounded-lg animate-pulse" />

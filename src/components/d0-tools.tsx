@@ -5,6 +5,17 @@ import {motion} from "framer-motion";
 import Image from 'next/image';
 import {STORAGE_HOST} from "@/data/baseUrl";
 
+export const d0ToolsProject = {
+    id: 'd0-tools',
+    name: 'D0 Tools',
+    eyebrow: '数据标注工具',
+    description: '专注于统一的数据标注体验与开放接口。深度集成 YOLO、SAM 等模型，提供更智能的标注体验。',
+    detail: '集中管理数据采集、标注与交付，支持多种标注模式与高级像素级操作。',
+    href: 'https://github.com/yunhai-dev/D0-Tools',
+    image: `${STORAGE_HOST}/data-label.webp`,
+    accent: '#22c55e',
+};
+
 export function D0Tools() {
     return (
         <section className="py-24 px-4">

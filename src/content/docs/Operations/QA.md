@@ -1,7 +1,7 @@
 ---
-title: "运维常见问题解决方案"
-description: "收录 Nginx、Docker、Minio、Linux 等常见运维问题及解决方案"
-keywords: ["运维", "常见问题", "Nginx", "Docker", "Minio", "Linux", "故障排查"]
+title: "OpenResty 代理 MinIO 问题排查"
+description: "记录 OpenResty 反向代理 MinIO Endpoint 时 HEAD 请求被转换为 GET 的排查与解决方法"
+keywords: ["OpenResty", "MinIO", "Nginx", "反向代理", "HEAD 请求", "问题排查"]
 ---
 
 ## OpenResty 代理 Minio Endpoint

@@ -1,7 +1,7 @@
 ---
-title: "Python 基础语法速查"
-description: "Python 变量、数据类型、函数、类、模块、异常处理等核心语法入门与速查"
-keywords: ["Python", "Python基础", "编程语言", "函数", "面向对象", "后端开发"]
+title: "Python 基础与进阶语法笔记"
+description: "整理 Python 的基础语法、函数、面向对象、迭代器、并发与异步编程等核心内容"
+keywords: ["Python", "基础语法", "函数", "面向对象", "迭代器", "并发编程", "异步编程"]
 ---
 
 ## 初始Python

@@ -1,7 +1,7 @@
 ---
-title: "TypeScript 类型系统指南"
-description: "TypeScript 类型定义、接口、泛型、装饰器、工程配置等核心语法速查"
-keywords: ["TypeScript", "TS", "类型系统", "接口", "泛型", "前端开发", "JavaScript"]
+title: "TypeScript 核心类型指南"
+description: "整理 TypeScript 的类型定义、接口、泛型、装饰器与工程配置等常用内容"
+keywords: ["TypeScript", "类型系统", "接口", "泛型", "装饰器", "tsconfig", "JavaScript"]
 ---
 
 # TypeScript

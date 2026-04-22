@@ -1,7 +1,7 @@
 ---
-title: "MinerU 本地化部署指南"
-description: "基于 Docker 构建 MinerU 镜像，支持 Web UI 与 API 服务，适配 CPU/GPU 多种场景"
-keywords: ["MinerU", "PDF解析", "文档解析", "Docker部署", "AI工具", "Python", "GPU推理"]
+title: "MinerU 本地部署记录"
+description: "记录基于 Docker 构建并运行 MinerU 服务的镜像制作、容器启动与配置建议"
+keywords: ["MinerU", "Docker", "本地部署", "PDF 解析", "文档解析", "GPU", "服务启动"]
 ---
 
 基于 **python:3.12-bookworm** 构建 MinerU 镜像，并在本地启动 **Web UI** 或 **API 服务**。

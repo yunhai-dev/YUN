@@ -1,7 +1,7 @@
 ---
-title: "Django 框架开发指南"
-description: "Django 项目创建、模型、视图、路由、ORM、Admin 等核心功能完整速查"
-keywords: ["Django", "Python框架", "Web开发", "ORM", "MVC", "后端开发", "REST"]
+title: "Django 开发指南"
+description: "整理 Django 的项目创建、模型、视图、路由、ORM 与 Admin 等常用开发内容"
+keywords: ["Django", "Python Web", "模型", "视图", "路由", "ORM", "Admin"]
 ---
 
 ## 1. 创建项目

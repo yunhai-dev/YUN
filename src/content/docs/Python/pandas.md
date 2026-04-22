@@ -1,7 +1,7 @@
 ---
-title: "Pandas 数据处理使用指南"
-description: "Pandas DataFrame 操作、数据清洗、分组聚合、时间序列等数据处理核心 API 速查"
-keywords: ["Pandas", "数据处理", "Python", "DataFrame", "数据分析", "数据清洗", "CSV"]
+title: "Pandas 数据处理指南"
+description: "整理 Pandas 的 DataFrame 操作、数据清洗、分组聚合与时间序列等常用处理方法"
+keywords: ["Pandas", "Python", "DataFrame", "数据清洗", "分组聚合", "时间序列", "CSV"]
 ---
 
 ## Pandas

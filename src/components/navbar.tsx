@@ -59,6 +59,7 @@ const navLinks = [
 
 export function Navbar() {
     const pathname = usePathname();
+    const isHome = pathname === '/';
     const [isOpen, setIsOpen] = useState(false);
     const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
     const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
@@ -116,8 +117,11 @@ export function Navbar() {
         <header
             className={cn(
                 isAtTop
-                    ? "top-0 left-0 right-0 border-b"
+                    ? isHome
+                        ? "top-0 left-0 right-0 border-b border-white/5 bg-black/20"
+                        : "top-0 left-0 right-0 border-b"
                     : "top-4 border max-w-7xl mx-auto left-0 right-0 rounded-full",
+                isHome && !isAtTop && "bg-background/70 border-white/10",
                 "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md transition-all duration-500 ease-in-out"
             )}
         >
@@ -125,7 +129,8 @@ export function Navbar() {
             <div
                 className={cn(
                     "container mx-auto px-4 relative flex items-center h-full",
-                    "justify-center md:justify-between"
+                    "justify-center md:justify-between",
+                    isHome && isAtTop && "max-w-[1440px]"
                 )}>
                 {/* Logo Link - Centered on mobile via container justify-center */}
                 <Link href="/" className="flex items-center gap-2">

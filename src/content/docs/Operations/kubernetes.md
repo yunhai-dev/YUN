@@ -1,7 +1,7 @@
 ---
-title: "Kubernetes 基础入门"
-description: "Kubernetes 核心概念、kubectl 常用命令、Pod/Service/Deployment 实战指南"
-keywords: ["Kubernetes", "K8s", "容器编排", "kubectl", "Pod", "Docker", "DevOps"]
+title: "Kubernetes 入门与常用操作"
+description: "整理 Kubernetes 的核心概念、kubectl 常用命令与部署配置等基础内容"
+keywords: ["Kubernetes", "K8s", "kubectl", "Pod", "Deployment", "容器编排", "集群管理"]
 ---
 
 ## kubectl

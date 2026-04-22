@@ -1,7 +1,7 @@
 ---
-title: "Python 实用技巧与库精选"
-description: "Python 开发实用技巧、常用标准库与第三方库推荐，提升开发效率的进阶指南"
-keywords: ["Python", "Python技巧", "实用库", "Python进阶", "开发效率", "代码优化"]
+title: "Python 实用技巧与库笔记"
+description: "整理 Python 开发中的常用技巧、标准库与第三方库实践，便于日常查阅与复用"
+keywords: ["Python", "实用技巧", "标准库", "第三方库", "工程实践", "开发效率", "代码片段"]
 ---
 
 ## Flet

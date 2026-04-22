@@ -1,7 +1,7 @@
 ---
-title: "HTML 基础与实战指南"
-description: "HTML 编码规范、常用标签用法、表单、布局结构等前端基础知识速查"
-keywords: ["HTML", "HTML基础", "前端开发", "Web页面", "表单", "语义化"]
+title: "HTML 基础指南"
+description: "整理 HTML 的基础结构、常用标签、表单与页面布局等前端入门内容"
+keywords: ["HTML", "前端基础", "语义化", "表单", "页面结构", "Web 页面", "入门"]
 ---
 
 ### 1 编码（head）
