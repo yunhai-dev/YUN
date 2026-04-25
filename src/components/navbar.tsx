@@ -118,11 +118,10 @@ export function Navbar() {
             className={cn(
                 isAtTop
                     ? isHome
-                        ? "top-0 left-0 right-0 border-b border-white/5 bg-black/20"
-                        : "top-0 left-0 right-0 border-b"
-                    : "top-4 border max-w-7xl mx-auto left-0 right-0 rounded-full",
-                isHome && !isAtTop && "bg-background/70 border-white/10",
-                "fixed z-50 h-16 py-3 bg-background/50 backdrop-blur-md transition-all duration-500 ease-in-out"
+                        ? "top-0 left-0 right-0 border-b border-border/40 bg-background/45"
+                        : "top-0 left-0 right-0 border-b bg-background/80"
+                    : "top-4 border max-w-7xl mx-auto left-0 right-0 rounded-full bg-background/72 border-border/70 shadow-lg shadow-black/5",
+                "fixed z-50 h-16 py-3 backdrop-blur-md transition-all duration-500 ease-in-out"
             )}
         >
             {/* Container: Relative for positioning button, center on mobile, space-between on desktop */}

@@ -101,11 +101,11 @@ export default async function Home() {
                                             flowSpeed={0.35}
                                             verticalSizing={2}
                                             horizontalSizing={1.2}
-                                            fogIntensity={0.45}
+                                            fogIntensity={0.35}
                                             fogScale={0.3}
                                             wispSpeed={15}
-                                            wispIntensity={5}
-                                            flowStrength={0.25}
+                                            wispIntensity={4.2}
+                                            flowStrength={0.22}
                                             decay={1.1}
                                             horizontalBeamOffset={0}
                                             verticalBeamOffset={-0.5}
