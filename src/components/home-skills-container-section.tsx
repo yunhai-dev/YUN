@@ -34,7 +34,7 @@ const skills: SkillItem[] = [
     {name: "JavaScript", accent: "#facc15", size: "lg", icon: SiJavascript},
     {name: "TypeScript", accent: "#38bdf8", size: "lg", icon: SiTypescript},
     {name: "React", accent: "#61dafb", size: "lg", icon: SiReact},
-    {name: "Next.js", accent: "#ffffff", size: "md", icon: SiNextdotjs},
+    {name: "Next.js", accent: "var(--home-next-accent)", size: "md", icon: SiNextdotjs},
     {name: "Django", accent: "#4ade80", size: "md", icon: SiDjango},
     {name: "FastAPI", accent: "#10b981", size: "md", icon: SiFastapi},
     {name: "PostgreSQL", accent: "#4169e1", size: "md", icon: SiPostgresql},
