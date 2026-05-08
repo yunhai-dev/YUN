@@ -49,3 +49,4 @@ next-env.d.ts
 /public/rss.xml
 /src/content/.claude/
 /src/content/.claudian/
+.claude/

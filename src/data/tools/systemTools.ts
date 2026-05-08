@@ -121,6 +121,13 @@ export const systemTools: Tool[] = [
     category: "网络工具",
   },
   {
+    id: "easytier",
+    name: "EasyTier",
+    description: "一个简单、安全、去中心化的异地组网方案",
+    href: "https://easytier.cn/",
+    category: "网络工具",
+  },
+  {
     id: "wetest",
     name: "微测网",
     description: "提供全球主流云服务商的 CDN IP 优选、节点状态监测等服务",
