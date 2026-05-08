@@ -1387,6 +1387,30 @@ export const mediaItems: MediaItem[] = [
     author: "伊格赛听&叶里",
     lyricsUrl: getMediaUrl("情人劫 伊格赛听&叶里.lrc"),
     musicUrl: getMediaUrl("情人劫 伊格赛听&叶里.mp3"),
+  },
+  {
+    id: "blzj-tbe",
+    title: "剥离之茧",
+    imageUrl: getMediaUrl("剥离之茧 添儿呗.jpg"),
+    author: "添儿呗",
+    lyricsUrl: getMediaUrl("剥离之茧 添儿呗.lrc"),
+    musicUrl: getMediaUrl("剥离之茧 添儿呗.mp3"),
+  },
+  {
+    id: "lggd-ch",
+    title: "拉过勾的",
+    imageUrl: getMediaUrl("拉过勾的 陆虎.jpg"),
+    author: "陆虎",
+    lyricsUrl: getMediaUrl("拉过勾的 陆虎.lrc"),
+    musicUrl: getMediaUrl("拉过勾的 陆虎.mp3"),
+  },
+  {
+    id: "bhs-lky",
+    title: "半壶纱",
+    imageUrl: getMediaUrl("半壶纱 刘珂矣.jpg"),
+    author: "刘珂矣",
+    lyricsUrl: getMediaUrl("半壶纱 刘珂矣.lrc"),
+    musicUrl: getMediaUrl("半壶纱 刘珂矣.mp3"),
   }
 ];
 
