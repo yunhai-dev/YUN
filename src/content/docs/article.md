@@ -58,12 +58,21 @@ keywords: ["技术文章", "学习资源", "资源整理", "Vue", "Python", "通
 - [Python多进程通讯](https://cloud.tencent.com/developer/article/2338277)
 - [mysqlclient Linux安装失败](https://blog.csdn.net/qq_34511096/article/details/137609441)
 - [大文件上传requests-toolbelt](https://www.cnblogs.com/chiyun/p/17653549.html)
+- [FastAPI 中间件实战：请求日志、耗时统计、IP黑名单一站式搞定](https://mp.weixin.qq.com/s/WfG4_M0PqC9tptdRt4Z2pw?scene=1)
+- [Plombery：用 Python 代码轻松构建定时任务调度系统，轻松地管理和监控定时执行的 Python 脚本](https://mp.weixin.qq.com/s/yndq2X6DTuefZ8P1XdaoTg?scene=1)
 
 ## 通讯
 
 - [实现可靠的UDP通讯](https://mp.weixin.qq.com/s/xe32fVUSQU-QIpZPtBszeQ)
 
+## Docker
 
+- [用 Docker 隔离 EasyConnect 并配置内网流量转发](/docs/Operations/easyconnect-docker/)
+- [使用 EasyTier 构建个人 VPN](/docs/Operations/easytier-vpn/)
+
+## Vibe Coding
+- [Claude Code 深入简出](https://datawhalechina.github.io/easy-vibe/zh-cn/stage-3/core-skills/basics/)
+- [学习 Claude Code](https://learn.shareai.run/zh/)
 
 ## 其余
 
