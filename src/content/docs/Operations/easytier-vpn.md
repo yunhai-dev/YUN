@@ -1,248 +1,124 @@
 ---
 title: "使用 EasyTier 构建个人 VPN"
-description: "记录使用 EasyTier 搭建个人异地组网环境，通过 Docker Compose 部署节点，实现多设备互联、远程访问家庭内网和服务。"
+description: "一篇复制即用的 EasyTier 个人 VPN 轮椅教程，覆盖 Docker Compose、systemd、自建公网 peer、家庭内网网段发布和常见排查。"
 keywords: ["EasyTier", "VPN", "异地组网", "Docker", "Docker Compose", "内网穿透", "远程访问", "TUN", "SD-WAN"]
 ---
 
-之前写过一篇 [[docs/Operations/easyconnect-docker.md]]，主要是把公司内网用的 EasyConnect 隔离到 Docker 里，避免它把宿主机网络环境搞乱。
+这篇直接写成轮椅版，不讲太多概念，目标是：**复制命令，改几个变量，然后跑起来**。
 
-这篇换一个场景：**用 EasyTier 搭一个自己的个人 VPN**。
+适合这几种需求：
 
-我的需求其实比较简单：
+- 外面访问家里的 NAS、开发机、路由器后台；
+- 多台机器组成一个自己的虚拟内网；
+- 不想给每个服务单独做公网暴露；
+- 不想手写复杂的 WireGuard / OpenVPN 配置。
 
-- 家里的 NAS、开发机、路由器后台，希望在外面也能访问；
-- 不想每个服务都单独做公网暴露；
-- 不想维护太复杂的 WireGuard / OpenVPN 配置；
-- 多台设备之间最好能自动组网，能 P2P 就 P2P，不行再中继；
-- 后续最好可以用 Docker Compose 管起来，方便迁移和重启。
-
-EasyTier 比较适合这种个人异地组网场景。它不是传统意义上“所有流量都打到一个 VPN 服务器”的模式，而是更偏去中心化的 mesh VPN。多个节点加入同一个网络之后，会自动尝试 NAT 穿透，能直连就直连，不能直连再通过共享节点或自建节点中继。
-
-## 基本概念
-
-先把几个核心参数说清楚，后面配置的时候不容易乱。
-
-| 参数 | 作用 |
-|---|---|
-| `--network-name` | 虚拟网络名称，同一个 VPN 网络内要保持一致 |
-| `--network-secret` | 虚拟网络密钥，同一个 VPN 网络内要保持一致 |
-| `-d` | DHCP 模式，自动分配虚拟 IP |
-| `-i, --ipv4` | 手动指定本节点虚拟 IP 或虚拟网段 |
-| `-p, --peers` | 指定要连接的对端节点或共享节点 |
-| `-l, --listeners` | 指定本节点监听地址 / 端口 / 协议 |
-| `-n, --proxy-networks` | 把本地网段发布到 VPN，适合远程访问家庭内网 |
-| `--hostname` | 设置节点显示名称，方便识别设备 |
-| `-c, --config-file` | 使用配置文件启动 |
-
-最小组网只需要三个东西：
+EasyTier 的核心就三个东西：
 
 ```text
-network-name + network-secret + peer
+网络名 + 网络密钥 + 自己的公网 peer 节点
 ```
 
-也就是说，只要几台设备使用相同的网络名、相同的密钥，并且能连到同一个共享节点或对端节点，它们就可以加入同一个虚拟网络。
+这篇直接按“自建公网 peer”的方式来。流程是：先在云服务器上起一个稳定入口节点，然后家里服务器、笔记本、其他设备都连接到这台云服务器。
 
-## 最小命令行启动
+## 先决定你的部署方式
 
-先不用 Docker，直接看最小启动命令更容易理解。
+我建议按这个顺序选：
 
-Linux / macOS 上可以这样运行：
+| 场景 | 推荐方式 |
+|---|---|
+| 服务器 / NAS 已经有 Docker | Docker Compose |
+| VPS 很干净，不想装 Docker | systemd / systemctl |
+| 只是临时测试 | 命令行直接跑 |
+
+下面流程按这个顺序来：
+
+1. 先在云服务器上搭一个 **自建公网 peer 节点**；
+2. 再把家里服务器、笔记本等普通节点接进来；
+3. 如果要访问家里内网，再在家里节点发布内网网段。
+
+## 需要先准备的几个值
+
+后面的脚本只需要改这几个变量：
+
+| 变量 | 示例 | 说明 |
+|---|---|---|
+| `ET_NETWORK_NAME` | `my-home` | VPN 网络名，所有节点保持一致 |
+| `ET_NETWORK_SECRET` | `change-me-to-a-strong-password` | VPN 密钥，所有节点保持一致 |
+| `ET_HOSTNAME` | `home-server` | 当前设备名称，每台机器建议不同 |
+| `ET_PEER` | `tcp://1.2.3.4:11010` | 你的云服务器 peer 地址 |
+| `ET_PROXY_NETWORKS` | `192.168.31.0/24` | 可选，把当前机器能访问的内网网段发布出去 |
+
+`ET_PEER` 后面会在云服务器节点搭好之后得到，一般就是：
+
+```bash
+export ET_PEER="tcp://<云服务器公网IP>:11010"
+```
+
+如果你给云服务器配了域名，也可以写成：
+
+```bash
+export ET_PEER="tcp://vpn.example.com:11010"
+```
+
+## 最快测试命令
+
+如果你已经下载好了 `easytier-core`，可以先用两条命令理解一下流程。
+
+云服务器上先启动监听节点：
 
 ```bash
 sudo ./easytier-core \
   -d \
   --network-name my-home \
-  --network-secret your-strong-password \
-  -p tcp://<共享节点IP或域名>:1010
+  --network-secret change-me-to-a-strong-password \
+  --hostname cloud-node \
+  -l 11010
 ```
 
-Windows PowerShell 中类似：
-
-```powershell
-.\easytier-core.exe -d --network-name my-home --network-secret your-strong-password -p tcp://<共享节点IP或域名>:1010
-```
-
-其中：
-
-- `-d` 表示自动分配虚拟 IP；
-- `--network-name my-home` 是你的个人 VPN 网络名；
-- `--network-secret your-strong-password` 是加入这个网络的密钥；
-- `-p tcp://<共享节点IP或域名>:1010` 表示连接到一个共享节点。
-
-两台机器都运行同样的 `network-name`、`network-secret` 和 `peer` 之后，理论上就会进入同一个虚拟网络。
-
-如果没有手动指定虚拟网段，EasyTier 默认会分配 `10.126.126.0/24` 这个网段里的地址。
-
-## 查看组网状态
-
-EasyTier 启动后，可以用 `easytier-cli` 查看状态。
-
-查看当前节点信息：
+然后其他机器连接它：
 
 ```bash
-easytier-cli node
+sudo ./easytier-core \
+  -d \
+  --network-name my-home \
+  --network-secret change-me-to-a-strong-password \
+  --hostname home-server \
+  -p tcp://<云服务器公网IP>:11010
 ```
 
-查看当前网络里的其他节点：
+默认情况下，EasyTier 会自动分配 `10.126.126.0/24` 里的虚拟 IP。
 
-```bash
-easytier-cli peer
-```
+## 第一步：搭建自建公网 peer 节点
 
-查看路由：
+先在云服务器上搭一个固定入口。后面的所有节点都连接它。
 
-```bash
-easytier-cli route
-```
-
-连通性可以直接用 `ping` 测试，例如：
-
-```bash
-ping 10.126.126.1
-ping 10.126.126.2
-```
-
-如果虚拟 IP 能 ping 通，说明基础组网已经没问题。
-
-如果 ping 不通，优先看这几个地方：
-
-- EasyTier 是否还在运行；
-- 两边的 `network-name` 和 `network-secret` 是否一致；
-- 是否连接到了同一个共享节点或对端节点；
-- 系统防火墙是否禁止了入站 ICMP；
-- 云服务器安全组是否放行了对应端口。
-
-## 部署方式选择
-
-命令行跑通之后，长期运行一般有两种方式：
-
-1. **Docker Compose**：适合服务器、NAS、容器化环境，迁移和更新方便；
-2. **systemd / systemctl**：适合直接跑二进制文件的 Linux 主机，不依赖 Docker。
-
-如果机器上本来就有 Docker，我会优先用 Docker Compose。如果是比较干净的 VPS，或者不想为了一个 EasyTier 单独装 Docker，那注册成 systemd 服务也挺合适。
-
-## 使用 Docker Compose 部署
-
-尤其是把 EasyTier 放在家里的服务器、NAS 或云服务器上时，Compose 会更方便维护。
-
-新建目录：
-
-```bash
-mkdir -p ~/docker/app/easytier
-cd ~/docker/app/easytier
-```
-
-创建 `docker-compose.yml`：
-
-```yaml
-services:
-  easytier:
-    image: easytier/easytier:latest
-    hostname: easytier-home
-    container_name: easytier
-    restart: unless-stopped
-    network_mode: host
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    environment:
-      - TZ=Asia/Shanghai
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    volumes:
-      - /etc/machine-id:/etc/machine-id:ro
-    command: >
-      -d
-      --network-name my-home
-      --network-secret your-strong-password
-      --hostname home-server
-      -p tcp://<共享节点IP或域名>:1010
-```
-
-启动：
-
-```bash
-docker compose up -d
-```
-
-查看日志：
-
-```bash
-docker compose logs -f
-```
-
-停止：
-
-```bash
-docker compose stop
-```
-
-更新配置后重启：
-
-```bash
-docker compose restart easytier
-```
-
-这里几个配置比较关键。
-
-### network_mode: host
-
-```yaml
-network_mode: host
-```
-
-EasyTier 需要创建虚拟网卡、监听端口、处理节点间连接，直接使用 host 网络最省事。
-
-如果用普通 bridge 网络，还要额外映射端口，排查起来麻烦。个人使用场景下，我会优先选 `network_mode: host`。
-
-### NET_ADMIN 和 NET_RAW
-
-```yaml
-cap_add:
-  - NET_ADMIN
-  - NET_RAW
-```
-
-`NET_ADMIN` 用于网络管理，`NET_RAW` 用于原始包能力。EasyTier 做 TUN 设备和网络转发时需要这些权限。
-
-### 挂载 TUN 设备
-
-```yaml
-devices:
-  - /dev/net/tun:/dev/net/tun
-```
-
-这是 VPN / TUN 类程序常见配置。没有这个设备，容器里通常无法创建虚拟网卡。
-
-### 挂载 machine-id
-
-```yaml
-volumes:
-  - /etc/machine-id:/etc/machine-id:ro
-```
-
-这个配置用于让节点身份更稳定。容器重建后，节点不会因为机器 ID 变化而被识别成一个全新的设备。
-
-## 使用配置文件启动
-
-如果参数比较多，全部写在 `command` 里会越来越长。更推荐把配置拆到 `easytier.toml` 里。
-
-目录结构：
+云服务器需要放行：
 
 ```text
-~/docker/app/easytier
-├── docker-compose.yml
-└── conf
-    └── easytier.toml
+TCP 11010
+UDP 11010
 ```
 
-`docker-compose.yml`：
+如果你不想折腾，至少先放行 `TCP 11010`，后面节点的 `ET_PEER` 就用 `tcp://<云服务器公网IP>:11010`。
 
-```yaml
+### Docker Compose 版本
+
+在云服务器上运行下面这段：
+
+```bash
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+export ET_HOSTNAME="cloud-node"
+
+mkdir -p ~/docker/app/easytier/conf
+cd ~/docker/app/easytier
+
+cat > docker-compose.yml <<'EOF'
 services:
   easytier:
     image: easytier/easytier:latest
-    hostname: easytier-home
+    hostname: easytier
     container_name: easytier
     restart: unless-stopped
     network_mode: host
@@ -258,121 +134,60 @@ services:
       - ./conf:/config
     command: >
       -c /config/easytier.toml
-```
+EOF
 
-`conf/easytier.toml` 可以先保持最小配置：
-
-```toml
-network_name = "my-home"
-network_secret = "your-strong-password"
-hostname = "home-server"
+cat > conf/easytier.toml <<EOF
+network_name = "${ET_NETWORK_NAME}"
+network_secret = "${ET_NETWORK_SECRET}"
+hostname = "${ET_HOSTNAME}"
 dhcp = true
-peers = [
-  "tcp://<共享节点IP或域名>:1010"
+listeners = [
+  "tcp://0.0.0.0:11010",
+  "udp://0.0.0.0:11010"
 ]
+EOF
+
+docker compose up -d
+docker compose logs -f
 ```
 
-修改配置后重启：
+后面其他节点统一使用这个 peer：
 
 ```bash
-docker compose restart easytier
+export ET_PEER="tcp://<云服务器公网IP>:11010"
 ```
 
-我个人更喜欢配置文件方式，因为后面加 `proxy_networks`、多个 peers、监听端口时，不需要把一长串参数都塞到 Compose 的 `command` 里。
+### systemd 版本
 
-## 注册为 systemd 服务
+如果云服务器不想装 Docker，就用 systemd。
 
-如果不想用 Docker，也可以直接把 EasyTier 注册成系统服务，让它跟着 Linux 开机自启。
-
-官方提供了 `easytier-cli service` 这一组命令，本质上就是帮你把 `easytier-core` 注册成系统服务。Linux 上注册之后，可以继续用 EasyTier 自带命令管理，也可以用 `systemctl` 查看和控制。
-
-前提是 `easytier-core` 和 `easytier-cli` 在同一个目录下，例如：
-
-```bash
-/opt/easytier
-├── easytier-cli
-└── easytier-core
-```
-
-进入目录：
-
-```bash
-cd /opt/easytier
-```
-
-### 直接用参数注册
-
-最简单的方式是把启动参数直接跟在 `service install` 后面：
-
-```bash
-sudo ./easytier-cli service install \
-  -d \
-  --network-name my-home \
-  --network-secret your-strong-password \
-  --hostname home-server \
-  -p tcp://<共享节点IP或域名>:1010
-```
-
-注册后启动服务：
-
-```bash
-sudo ./easytier-cli service start
-```
-
-查看状态：
-
-```bash
-sudo ./easytier-cli service status
-```
-
-停止服务：
-
-```bash
-sudo ./easytier-cli service stop
-```
-
-卸载服务：
-
-```bash
-sudo ./easytier-cli service uninstall
-```
-
-默认情况下，注册服务后会启用开机自启。也就是说机器重启后，EasyTier 会自动拉起来。
-
-### 使用配置文件注册
-
-如果参数比较多，我更建议用配置文件，然后服务只负责加载这个配置文件。
-
-例如配置文件放在：
+前提：`easytier-core` 和 `easytier-cli` 已经放在：
 
 ```text
-/etc/easytier/easytier.toml
+/opt/easytier/easytier-core
+/opt/easytier/easytier-cli
 ```
 
-内容可以类似这样：
+复制运行：
 
-```toml
-network_name = "my-home"
-network_secret = "your-strong-password"
-hostname = "home-server"
+```bash
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+export ET_HOSTNAME="cloud-node"
+
+sudo mkdir -p /etc/easytier
+sudo tee /etc/easytier/easytier.toml > /dev/null <<EOF
+network_name = "${ET_NETWORK_NAME}"
+network_secret = "${ET_NETWORK_SECRET}"
+hostname = "${ET_HOSTNAME}"
 dhcp = true
-peers = [
-  "tcp://<共享节点IP或域名>:1010"
+listeners = [
+  "tcp://0.0.0.0:11010",
+  "udp://0.0.0.0:11010"
 ]
-```
+EOF
 
-注册服务：
-
-```bash
-sudo ./easytier-cli service install \
-  -c /etc/easytier/easytier.toml
-```
-
-之后服务启动时就会用这份配置。
-
-如果你想显式指定 `easytier-core` 路径、工作目录、服务名称描述，可以使用更完整的写法：
-
-```bash
+cd /opt/easytier
 sudo ./easytier-cli service install \
   --description "EasyTier personal VPN" \
   --display-name "EasyTier" \
@@ -380,29 +195,246 @@ sudo ./easytier-cli service install \
   --service-work-dir /opt/easytier \
   -- \
   -c /etc/easytier/easytier.toml
+
+sudo ./easytier-cli service start
+sudo ./easytier-cli service status
 ```
 
-这里的 `--` 很关键。它前面是服务安装选项，后面才是传给 `easytier-core` 的启动参数。
+## 第二步：接入普通节点
 
-也就是说：
+普通节点就是家里的服务器、笔记本、其他 VPS 等。它们都连接第一步的云服务器 peer。
 
-```text
-service install 的参数 -- easytier-core 的参数
-```
+### Docker Compose 一键运行
 
-如果你只写简单参数，不需要区分服务安装选项，也可以不用 `--`。但一旦混合 `--description`、`--display-name`、`--core-path` 这类服务选项，我建议都显式加上 `--`，不容易混。
+这是我最推荐的方式。直接复制下面这段，在普通节点上运行。
 
-### 使用 systemctl 管理
+#### 普通节点
 
-注册成系统服务之后，除了 EasyTier 自带的命令，也可以用 `systemctl` 管理。
+这个版本适合笔记本、家里服务器、普通 VPS 加入 VPN，不发布家庭内网。
 
-先查看服务名：
+只需要改开头的四个变量：
 
 ```bash
-systemctl list-units --type=service | grep -i easytier
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+export ET_HOSTNAME="home-server"
+export ET_PEER="tcp://<云服务器公网IP>:11010"
+
+mkdir -p ~/docker/app/easytier/conf
+cd ~/docker/app/easytier
+
+cat > docker-compose.yml <<'EOF'
+services:
+  easytier:
+    image: easytier/easytier:latest
+    hostname: easytier
+    container_name: easytier
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - TZ=Asia/Shanghai
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - /etc/machine-id:/etc/machine-id:ro
+      - ./conf:/config
+    command: >
+      -c /config/easytier.toml
+EOF
+
+cat > conf/easytier.toml <<EOF
+network_name = "${ET_NETWORK_NAME}"
+network_secret = "${ET_NETWORK_SECRET}"
+hostname = "${ET_HOSTNAME}"
+dhcp = true
+peers = [
+  "${ET_PEER}"
+]
+EOF
+
+docker compose up -d
+docker compose logs -f
 ```
 
-假设服务名是 `easytier.service`，那么常用命令就是：
+看到日志正常启动后，按 `Ctrl + C` 退出日志即可，容器会继续在后台运行。
+
+常用命令：
+
+```bash
+# 查看状态
+docker compose ps
+
+# 查看日志
+docker compose logs -f
+
+# 重启
+docker compose restart easytier
+
+# 停止
+docker compose stop
+
+# 删除容器，不删除配置
+docker compose down
+```
+
+#### 发布家庭内网的节点
+
+如果这台机器在家里，并且你希望人在外面也能访问家里的整个网段，比如：
+
+```text
+192.168.31.0/24
+```
+
+那就用这个版本。多改一个 `ET_PROXY_NETWORKS`：
+
+```bash
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+export ET_HOSTNAME="home-server"
+export ET_PEER="tcp://<云服务器公网IP>:11010"
+export ET_PROXY_NETWORKS="192.168.31.0/24"
+
+mkdir -p ~/docker/app/easytier/conf
+cd ~/docker/app/easytier
+
+cat > docker-compose.yml <<'EOF'
+services:
+  easytier:
+    image: easytier/easytier:latest
+    hostname: easytier
+    container_name: easytier
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - TZ=Asia/Shanghai
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - /etc/machine-id:/etc/machine-id:ro
+      - ./conf:/config
+    command: >
+      -c /config/easytier.toml
+EOF
+
+cat > conf/easytier.toml <<EOF
+network_name = "${ET_NETWORK_NAME}"
+network_secret = "${ET_NETWORK_SECRET}"
+hostname = "${ET_HOSTNAME}"
+dhcp = true
+peers = [
+  "${ET_PEER}"
+]
+proxy_networks = [
+  "${ET_PROXY_NETWORKS}"
+]
+EOF
+
+docker compose up -d
+docker compose logs -f
+```
+
+这个节点启动后，其他 VPN 节点就可以通过它访问 `192.168.31.0/24`。
+
+例如：
+
+```text
+192.168.31.1      # 路由器后台
+192.168.31.10     # NAS
+192.168.31.20     # 开发机
+```
+
+注意，这台发布网段的机器自己必须能访问这些内网地址，否则其他节点也访问不了。
+
+### systemd 一键注册
+
+如果普通节点不想用 Docker，就用这个方案。适合干净的 Linux 主机。
+
+前提：`easytier-core` 和 `easytier-cli` 已经放在同一个目录，比如：
+
+```text
+/opt/easytier/easytier-core
+/opt/easytier/easytier-cli
+```
+
+#### 普通节点
+
+复制运行：
+
+```bash
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+export ET_HOSTNAME="home-server"
+export ET_PEER="tcp://<云服务器公网IP>:11010"
+
+sudo mkdir -p /etc/easytier
+sudo tee /etc/easytier/easytier.toml > /dev/null <<EOF
+network_name = "${ET_NETWORK_NAME}"
+network_secret = "${ET_NETWORK_SECRET}"
+hostname = "${ET_HOSTNAME}"
+dhcp = true
+peers = [
+  "${ET_PEER}"
+]
+EOF
+
+cd /opt/easytier
+sudo ./easytier-cli service install \
+  --description "EasyTier personal VPN" \
+  --display-name "EasyTier" \
+  --core-path /opt/easytier/easytier-core \
+  --service-work-dir /opt/easytier \
+  -- \
+  -c /etc/easytier/easytier.toml
+
+sudo ./easytier-cli service start
+sudo ./easytier-cli service status
+```
+
+#### 发布家庭内网的节点
+
+如果这台 Linux 主机在家里，还要把家庭网段发布出去，用这个版本：
+
+```bash
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+export ET_HOSTNAME="home-server"
+export ET_PEER="tcp://<云服务器公网IP>:11010"
+export ET_PROXY_NETWORKS="192.168.31.0/24"
+
+sudo mkdir -p /etc/easytier
+sudo tee /etc/easytier/easytier.toml > /dev/null <<EOF
+network_name = "${ET_NETWORK_NAME}"
+network_secret = "${ET_NETWORK_SECRET}"
+hostname = "${ET_HOSTNAME}"
+dhcp = true
+peers = [
+  "${ET_PEER}"
+]
+proxy_networks = [
+  "${ET_PROXY_NETWORKS}"
+]
+EOF
+
+cd /opt/easytier
+sudo ./easytier-cli service install \
+  --description "EasyTier personal VPN" \
+  --display-name "EasyTier" \
+  --core-path /opt/easytier/easytier-core \
+  --service-work-dir /opt/easytier \
+  -- \
+  -c /etc/easytier/easytier.toml
+
+sudo ./easytier-cli service start
+sudo ./easytier-cli service status
+```
+
+常用管理命令：
 
 ```bash
 # 启动
@@ -417,11 +449,136 @@ sudo systemctl restart easytier
 # 查看状态
 sudo systemctl status easytier
 
-# 设置开机自启
+# 查看日志
+journalctl -u easytier -f
+
+# 开机自启
 sudo systemctl enable easytier
 
 # 取消开机自启
 sudo systemctl disable easytier
+```
+
+如果服务名不是 `easytier`，先查一下：
+
+```bash
+systemctl list-units --type=service | grep -i easytier
+```
+
+如果要卸载服务：
+
+```bash
+cd /opt/easytier
+sudo ./easytier-cli service stop
+sudo ./easytier-cli service uninstall
+```
+
+## 多节点怎么配置
+
+多节点其实不用单独学，记住一句话：
+
+```text
+同一个 VPN 里的所有节点，network_name 和 network_secret 必须一样，hostname 不一样。
+```
+
+比如三台机器：
+
+| 设备 | hostname | 用哪个脚本 |
+|---|---|---|
+| 家里服务器 | `home-server` | 发布家庭内网的节点 |
+| 云服务器 | `cloud-node` | 第一步：自建公网 peer 节点 |
+| 笔记本 | `macbook` | 普通节点 |
+
+它们都用：
+
+```bash
+export ET_NETWORK_NAME="my-home"
+export ET_NETWORK_SECRET="change-me-to-a-strong-password"
+```
+
+只把 `ET_HOSTNAME` 改成各自的名字就行。
+
+## 发布家庭内网是什么意思
+
+假设家里网段是：
+
+```text
+192.168.31.0/24
+```
+
+你在家里的服务器上用了“发布家庭内网的节点”那段脚本，并设置：
+
+```bash
+export ET_PROXY_NETWORKS="192.168.31.0/24"
+```
+
+那么人在外面，笔记本连上 EasyTier 后，就可以访问：
+
+```text
+192.168.31.1      # 路由器后台
+192.168.31.10     # NAS
+192.168.31.20     # 开发机
+```
+
+这里有几个注意点：
+
+1. 发布网段的那台机器自己必须能访问 `192.168.31.0/24`；
+2. 目标设备的防火墙要允许访问；
+3. 路由器如果开了 AP 隔离 / 访客网络隔离，可能会访问失败；
+4. 不要随便发布 `0.0.0.0/0`，除非你明确要做全局出口。
+
+## 可选：多个自建 peer 提高可用性
+
+如果只配置一个云服务器 peer，这台云服务器挂了，新节点就不容易发现其他节点。
+
+可以多准备几台自己的公网节点，然后把配置文件里的 `peers` 改成多个：
+
+```toml
+peers = [
+  "tcp://1.1.1.1:11010",
+  "udp://1.1.1.2:11010",
+  "tcp://vpn.example.com:11010"
+]
+```
+
+我一般会让所有节点使用同一份 peer 列表，这样网络结构更稳定，也更容易排查。
+
+## 验证是否成功
+
+### Docker Compose 节点
+
+进入部署目录：
+
+```bash
+cd ~/docker/app/easytier
+```
+
+查看日志：
+
+```bash
+docker compose logs -f
+```
+
+查看容器状态：
+
+```bash
+docker compose ps
+```
+
+进入容器查看 EasyTier 状态：
+
+```bash
+docker exec -it easytier easytier-cli node
+docker exec -it easytier easytier-cli peer
+docker exec -it easytier easytier-cli route
+```
+
+### systemd 节点
+
+查看服务：
+
+```bash
+sudo systemctl status easytier
 ```
 
 查看日志：
@@ -430,243 +587,15 @@ sudo systemctl disable easytier
 journalctl -u easytier -f
 ```
 
-如果服务名不是 `easytier`，就把命令里的 `easytier` 换成实际服务名。
-
-### 修改配置后重启
-
-如果你使用的是配置文件方式，修改：
-
-```text
-/etc/easytier/easytier.toml
-```
-
-之后重启服务即可：
+查看 EasyTier 状态：
 
 ```bash
-sudo systemctl restart easytier
+/opt/easytier/easytier-cli node
+/opt/easytier/easytier-cli peer
+/opt/easytier/easytier-cli route
 ```
 
-或者用 EasyTier 自带命令：
-
-```bash
-sudo ./easytier-cli service stop
-sudo ./easytier-cli service start
-```
-
-我更习惯用 `systemctl restart`，因为和其他 Linux 服务的管理方式一致。
-
-### 不想开机自启
-
-如果只是临时测试，不想注册后自动开机启动，可以在安装服务时加上：
-
-```bash
-sudo ./easytier-cli service install \
-  --disable-autostart \
-  -- \
-  -c /etc/easytier/easytier.toml
-```
-
-后面需要时手动启动：
-
-```bash
-sudo systemctl start easytier
-```
-
-## 多节点加入同一个 VPN
-
-假设我现在有三台设备：
-
-| 设备 | 位置 | hostname |
-|---|---|---|
-| 家里服务器 | 家里内网 | `home-server` |
-| 云服务器 | 公网 | `cloud-node` |
-| 笔记本 | 外出办公 | `macbook` |
-
-它们都使用相同的：
-
-```text
-network_name = "my-home"
-network_secret = "your-strong-password"
-```
-
-区别主要是 `hostname` 不同。
-
-例如家里服务器：
-
-```toml
-network_name = "my-home"
-network_secret = "your-strong-password"
-hostname = "home-server"
-dhcp = true
-peers = [
-  "tcp://<共享节点IP或域名>:1010"
-]
-```
-
-云服务器：
-
-```toml
-network_name = "my-home"
-network_secret = "your-strong-password"
-hostname = "cloud-node"
-dhcp = true
-peers = [
-  "tcp://<共享节点IP或域名>:1010"
-]
-```
-
-笔记本：
-
-```toml
-network_name = "my-home"
-network_secret = "your-strong-password"
-hostname = "macbook"
-dhcp = true
-peers = [
-  "tcp://<共享节点IP或域名>:1010"
-]
-```
-
-启动后，用下面命令查看节点：
-
-```bash
-easytier-cli peer
-```
-
-能看到其他设备，就说明它们已经在同一个虚拟网络里了。
-
-## 暴露家庭内网网段
-
-只让几台设备互 ping，其实意义不大。更常见的需求是：**人在外面，通过 VPN 访问家里的整个内网网段**。
-
-比如家里内网是：
-
-```text
-192.168.31.0/24
-```
-
-我希望笔记本在外面也能访问：
-
-```text
-192.168.31.1      # 路由器后台
-192.168.31.10     # NAS
-192.168.31.20     # 开发机
-```
-
-这时需要在家里服务器这个节点上发布本地网段：
-
-```toml
-proxy_networks = [
-  "192.168.31.0/24"
-]
-```
-
-完整配置类似：
-
-```toml
-network_name = "my-home"
-network_secret = "your-strong-password"
-hostname = "home-server"
-dhcp = true
-peers = [
-  "tcp://<共享节点IP或域名>:1010"
-]
-proxy_networks = [
-  "192.168.31.0/24"
-]
-```
-
-这样其他 EasyTier 节点就可以通过 `home-server` 访问 `192.168.31.0/24` 这个网段。
-
-注意，这里有几个坑：
-
-1. 家里服务器本身必须能访问 `192.168.31.0/24`；
-2. 目标设备的防火墙要允许来自 VPN 的访问；
-3. 如果家里路由器有隔离策略，也可能导致访问失败；
-4. 不要把太大的网段随便发布出去，比如 `0.0.0.0/0`，除非你明确知道自己在做全局出口。
-
-## 使用自建公网节点
-
-如果没有公网 IP，可以直接使用共享节点。但如果你有一台云服务器，我更建议拿它做一个稳定的中转 / 入口节点。
-
-云服务器节点可以直接运行 EasyTier，并监听一个固定端口，例如：
-
-```bash
-sudo ./easytier-core \
-  -d \
-  --network-name my-home \
-  --network-secret your-strong-password \
-  --hostname cloud-node \
-  -l 11010
-```
-
-Docker Compose 中可以这样写：
-
-```yaml
-services:
-  easytier:
-    image: easytier/easytier:latest
-    hostname: easytier-cloud
-    container_name: easytier
-    restart: unless-stopped
-    network_mode: host
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    environment:
-      - TZ=Asia/Shanghai
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    volumes:
-      - /etc/machine-id:/etc/machine-id:ro
-    command: >
-      -d
-      --network-name my-home
-      --network-secret your-strong-password
-      --hostname cloud-node
-      -l 11010
-```
-
-然后其他节点连接它：
-
-```toml
-peers = [
-  "tcp://<云服务器公网IP>:11010"
-]
-```
-
-云服务器安全组需要放行对应端口。为了兼容性，可以同时考虑 TCP / UDP，具体以你的监听协议为准。
-
-这种方式的好处是：
-
-- 不依赖第三方共享节点；
-- 节点地址稳定；
-- 后续所有设备都可以先连云服务器，再自动尝试 P2P；
-- 排查问题更可控。
-
-## 多个 peer 提高可用性
-
-如果只配置一个 peer，这个 peer 挂了，新节点就不容易发现其他节点。
-
-可以配置多个 peer：
-
-```toml
-peers = [
-  "tcp://1.1.1.1:11010",
-  "udp://1.1.1.2:11011",
-  "tcp://vpn.example.com:11010"
-]
-```
-
-命令行参数则是多个 `-p`：
-
-```bash
--p tcp://1.1.1.1:11010 \
--p udp://1.1.1.2:11011 \
--p tcp://vpn.example.com:11010
-```
-
-我一般会让所有节点使用同一份 peer 列表，这样网络结构更稳定，也更容易排查。
+如果能看到其他节点，就说明组网成功。
 
 ## 安全建议
 
@@ -690,10 +619,17 @@ peers = [
 先看日志：
 
 ```bash
+cd ~/docker/app/easytier
 docker compose logs -f
 ```
 
-如果看到 TUN 或权限相关错误，检查：
+如果看到 TUN 或权限相关错误，检查宿主机有没有 `/dev/net/tun`：
+
+```bash
+ls -l /dev/net/tun
+```
+
+再确认 Compose 里有这些配置：
 
 ```yaml
 network_mode: host
@@ -718,28 +654,22 @@ sudo systemctl status easytier
 journalctl -u easytier -f
 ```
 
-常见原因有几个：
+常见原因：
 
-- `easytier-core` 路径不对；
-- 配置文件路径不对；
-- 配置文件语法错误；
-- 没有 root 权限创建 TUN 设备；
-- 端口被其他程序占用。
-
-如果不确定服务名，先查一下：
-
-```bash
-systemctl list-units --type=service | grep -i easytier
-```
+- `/opt/easytier/easytier-core` 路径不对；
+- `/etc/easytier/easytier.toml` 路径不对；
+- 配置文件语法写错；
+- 端口被占用；
+- 没有权限创建 TUN 设备。
 
 ### 节点看不到彼此
 
 检查这几项：
 
-- `network-name` 是否一致；
-- `network-secret` 是否一致；
-- `peers` 是否配置到了同一个入口；
-- 云服务器端口 / 安全组是否放行；
+- 所有节点的 `network_name` 是否一致；
+- 所有节点的 `network_secret` 是否一致；
+- `peers` 是否能连通；
+- 云服务器安全组是否放行 `11010`；
 - 本机防火墙是否拦截 EasyTier。
 
 ### 能看到节点，但是 ping 不通
@@ -753,7 +683,7 @@ systemctl list-units --type=service | grep -i easytier
 
 ### 能访问 VPN 虚拟 IP，但不能访问家庭内网
 
-重点检查发布网段的节点：
+先确认家里的发布节点配置了：
 
 ```toml
 proxy_networks = [
@@ -761,7 +691,7 @@ proxy_networks = [
 ]
 ```
 
-然后确认这台节点本身能访问家庭内网目标设备：
+再确认这台节点自己能访问家庭内网目标设备：
 
 ```bash
 ping 192.168.31.1
@@ -772,16 +702,13 @@ ping 192.168.31.10
 
 ## 总结
 
-EasyTier 很适合拿来做个人 VPN / 异地组网。
+这篇的最短路径就是：
 
-我的推荐路径是：
-
-1. 先用命令行最小参数跑通；
-2. 服务器 / NAS 上优先用 Docker Compose 常驻运行；
-3. 不想用 Docker 的 Linux 主机，可以注册成 systemd 服务，用 `systemctl` 管理；
-4. 多设备使用相同的 `network-name` 和 `network-secret` 加入同一网络；
-5. 有公网服务器的话，用它做稳定 peer；
-6. 需要访问家庭内网时，在家里节点配置 `proxy_networks`；
-7. 最后用 `easytier-cli peer`、`route`、`node` 排查网络状态。
+1. 先在云服务器上搭自建公网 peer，并放行 `11010`；
+2. 把其他节点的 `ET_PEER` 指向这台云服务器；
+3. 普通节点有 Docker 就用 Docker Compose 脚本；
+4. 不想用 Docker 就用 systemd 脚本；
+5. 家里节点需要访问整个内网，就用带 `ET_PROXY_NETWORKS` 的版本；
+6. 最后用 `easytier-cli peer`、`route`、`node` 看状态。
 
 这样搭完之后，人在外面也可以像在家里一样访问 NAS、开发机和内网服务，不需要把每个服务单独暴露到公网。
