@@ -6,6 +6,35 @@ keywords: ["Git", "版本控制", "分支管理", "提交规范", "Git 命令", 
 
 Git 是一种去中心化的版本管理软件
 
+## 常用命令速查表
+
+| 场景 | 命令 | 说明 |
+| --- | --- | --- |
+| 查看状态 | `git status` | 查看工作区、暂存区与当前分支状态 |
+| 初始化仓库 | `git init` | 在当前目录创建新的 Git 仓库 |
+| 克隆仓库 | `git clone [url]` | 从远程地址克隆仓库到本地 |
+| 查看提交历史 | `git log --oneline --graph --decorate` | 以简洁图形方式查看提交记录 |
+| 查看改动 | `git diff` | 查看工作区未暂存的修改 |
+| 暂存文件 | `git add [file]` | 将指定文件加入暂存区 |
+| 暂存全部改动 | `git add .` | 暂存当前目录下的新增、修改与删除 |
+| 提交改动 | `git commit -m "[msg]"` | 提交暂存区内容并填写提交信息 |
+| 提交已跟踪改动 | `git commit -am "[msg]"` | 暂存并提交已被 Git 跟踪的文件修改 |
+| 修改最近提交 | `git commit --amend` | 修改最后一次提交内容或提交信息 |
+| 拉取远程更新 | `git pull` | 拉取远程分支更新并合并到当前分支 |
+| 推送本地提交 | `git push` | 将本地提交推送到远程分支 |
+| 创建分支 | `git branch [branch-name]` | 基于当前提交创建新分支 |
+| 切换分支 | `git switch [branch-name]` | 切换到指定分支 |
+| 创建并切换分支 | `git switch -c [branch-name]` | 创建新分支并立即切换过去 |
+| 合并分支 | `git merge [branch-name]` | 将指定分支合并到当前分支 |
+| 删除本地分支 | `git branch -d [branch-name]` | 删除已合并的本地分支 |
+| 查看远程仓库 | `git remote -v` | 查看远程仓库名称与地址 |
+| 添加远程仓库 | `git remote add origin [url]` | 添加名为 origin 的远程仓库 |
+| 撤销工作区修改 | `git restore [file]` | 丢弃指定文件在工作区的未暂存修改 |
+| 取消暂存 | `git restore --staged [file]` | 将指定文件从暂存区移回工作区 |
+| 回退提交并保留修改 | `git reset HEAD~1` | 撤销最近一次提交，但保留文件修改 |
+| 临时保存修改 | `git stash` | 暂存当前未提交修改，保持工作区干净 |
+| 恢复临时修改 | `git stash pop` | 恢复最近一次 stash 并从 stash 列表移除 |
+
 ## 简记
 
 ### 配置
