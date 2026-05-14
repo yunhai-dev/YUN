@@ -1411,6 +1411,14 @@ export const mediaItems: MediaItem[] = [
     author: "刘珂矣",
     lyricsUrl: getMediaUrl("半壶纱 刘珂矣.lrc"),
     musicUrl: getMediaUrl("半壶纱 刘珂矣.mp3"),
+  },
+  {
+    id: "da-mhf",
+    title: "答案",
+    imageUrl: getMediaUrl("答案 冒海飞&徐丽东.jpg"),
+    author: "冒海飞&徐丽东",
+    lyricsUrl: getMediaUrl("答案 冒海飞&徐丽东.lrc"),
+    musicUrl: getMediaUrl("答案 冒海飞&徐丽东.mp3"),
   }
 ];
 

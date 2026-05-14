@@ -50,3 +50,4 @@ next-env.d.ts
 /src/content/.claude/
 /src/content/.claudian/
 .claude/
+/src/content/数据库变更记录.md
