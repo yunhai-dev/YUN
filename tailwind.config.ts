@@ -20,6 +20,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],
+        mono: ["JetBrainsMono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
