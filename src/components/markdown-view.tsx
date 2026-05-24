@@ -60,8 +60,8 @@ const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
     // 使用 content-visibility 和 containment 优化渲染
     const baseClasses = `prose max-w-none prose-headings:scroll-mt-32
           prose-pre:border prose-pre:rounded-lg
-          prose-code:rounded-md prose-code:px-1 prose-code:py-0.5
-          prose-pre:!p-0 [&_pre]:overflow-x-auto [&_pre]:p-4`;
+          prose-code:font-mono prose-code:rounded-md prose-code:px-1 prose-code:py-0.5
+          prose-pre:!p-0 [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre_code]:font-mono [&_pre_code_*]:font-mono`;
     
     const themeClasses = isDark === null 
         ? '' // 等待主题初始化时不应用任何样式变化

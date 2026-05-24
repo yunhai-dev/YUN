@@ -86,10 +86,10 @@ export const otherTools: Tool[] = [
         category: 'API'
     },
     {
-        id: 'sms-activate',
-        name: 'sms-activate',
+        id: 'hero-sms',
+        name: 'HeroSMS',
         description: '在线接码平台',
-        href: 'https://sms-activate.io/cn',
+        href: 'https://herosms.com/',
         category: 'API'
     },
     {
@@ -153,6 +153,13 @@ export const otherTools: Tool[] = [
         name: '程序员做饭指南',
         description: '教程序员做饭的菜谱集合',
         href: 'https://github.com/Anduin2017/HowToCook/',
+        category: '趣味',
+    },
+    {
+        id: 'codex-pets',
+        name: 'Codex Pets',
+        description: 'Codex 动画像素宠物社区',
+        href: 'https://codex-pets.net/',
         category: '趣味',
     },
     {

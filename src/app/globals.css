@@ -347,9 +347,17 @@
 }
 
 @font-face {
-    font-family: 'MapleMono-NF-CN-Light';
-    src: url('/MapleMono-NF-CN-Light.woff2') format('woff2');
-    font-weight: normal;
+    font-family: 'JetBrainsMono';
+    src: url('/JetBrainsMono-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'JetBrainsMono';
+    src: url('/JetBrainsMono-SemiBold.woff2') format('woff2');
+    font-weight: 600;
     font-style: normal;
     font-display: optional;
 }
@@ -2391,8 +2399,10 @@ pre {
         border-radius: 0;
     }
 
-    * {
-        font-family: MapleMono-NF-CN-Light, serif !important;
+    code,
+    code * {
+        font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+        font-size: 15px !important;
     }
 }
 

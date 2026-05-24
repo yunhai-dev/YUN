@@ -107,6 +107,13 @@ export const systemTools: Tool[] = [
     category: "系统工具",
   },
   {
+    id: "mos",
+    name: "Mos",
+    description: "一个用于在 macOS 上平滑你的鼠标滚动效果或单独设置滚动方向的小工具, 让你的滚轮爽如触控板",
+    href: "https://github.com/caldis/mos",
+    category: "系统工具",
+  },
+  {
     id: "conduit",
     name: "Conduit",
     description: "基于 Rust SSH 协议的内网穿透隧道管理工具",

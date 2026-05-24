@@ -64,9 +64,11 @@ export async function markdownToHtml(markdown: string): Promise<{ content: strin
         // 处理标题
         heading({tokens, depth}) {
             const text = this.parser!.parseInline(tokens);
-            const id = generateHeadingId(text);
-            headings.push({id, title: text.replace(/<[^>]*>/g, ''), level: depth});
-            return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+            const customIdMatch = text.match(/\s*\{#([A-Za-z0-9_-]+)}$/);
+            const title = customIdMatch ? text.slice(0, customIdMatch.index) : text;
+            const id = customIdMatch ? customIdMatch[1] : generateHeadingId(title);
+            headings.push({id, title: title.replace(/<[^>]*>/g, ''), level: depth});
+            return `<h${depth} id="${id}">${title}</h${depth}>\n`;
         },
 
         // 处理段落
