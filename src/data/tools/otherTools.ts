@@ -156,6 +156,13 @@ export const otherTools: Tool[] = [
         category: '趣味',
     },
     {
+        id: 'codex-pets',
+        name: 'Codex Pets',
+        description: 'Codex 动画像素宠物社区',
+        href: 'https://codex-pets.net/',
+        category: '趣味',
+    },
+    {
         id: 'bongo-cat',
         name: 'Bongo Cat',
         description: '可爱的"打击乐猫"桌面宠物',
