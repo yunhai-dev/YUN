@@ -86,10 +86,10 @@ export const otherTools: Tool[] = [
         category: 'API'
     },
     {
-        id: 'sms-activate',
-        name: 'sms-activate',
+        id: 'hero-sms',
+        name: 'HeroSMS',
         description: '在线接码平台',
-        href: 'https://sms-activate.io/cn',
+        href: 'https://herosms.com/',
         category: 'API'
     },
     {
