@@ -19,14 +19,6 @@ export default async function AnniversaryPage() {
       category: "个人",
     },
     {
-      id: "3",
-      title: "戒烟",
-      date: "2026-01-27",
-      dateTime: "2026-01-27T09:00",
-      repeat: false,
-      category: "健康",
-    },
-    {
       id: "4",
       title: "工作",
       date: "2022-10-24",
