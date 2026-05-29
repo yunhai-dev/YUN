@@ -29,7 +29,7 @@ export default async function AnniversaryPage() {
     {
       id: "4",
       title: "工作",
-      date: "2025-10-24",
+      date: "2022-10-24",
       repeat: true,
       category: "生活",
     },
