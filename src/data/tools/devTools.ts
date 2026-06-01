@@ -296,6 +296,20 @@ export const devTools: Tool[] = [
         category: '设计资源',
     },
     {
+        id: 'iconpark',
+        name: 'IconPark',
+        description: '一个开源的图标库，提供超过 1000 个图标',
+        href: 'https://iconpark.oceanengine.com/',
+        category: '设计资源',
+    },
+    {
+        id: 'icon8',
+        name: 'Icon8',
+        description: '包含超过 1 万个图标的大型图标包，让您能够找到视觉风格一致的图标，满足您所有设计需求。',
+        href: 'https://icon8.com/',
+        category: '设计资源',
+    },
+    {
         id: 'iconkitchen',
         name: 'IconKitchen',
         description: '生成简洁的应用图标',

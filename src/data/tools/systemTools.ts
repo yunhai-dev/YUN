@@ -2,6 +2,13 @@ import { Tool } from "@/types/tools";
 
 export const systemTools: Tool[] = [
   {
+    id: "nigate",
+    name: "Nigate",
+    description: "Mac 操作 NTFS 存储设备工具",
+    href: "https://github.com/hoochanlon/Free-NTFS-for-Mac",
+    category: "系统工具",
+  },
+  {
     id: "watchtower",
     name: "Watchtower",
     description: "Docker 容器镜像自动更新工具，监控并自动拉取新镜像、优雅重启容器",
