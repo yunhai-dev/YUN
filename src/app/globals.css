@@ -2473,6 +2473,23 @@ input[type="color"]::-moz-color-swatch {
         content: none;
     }
 
+    .markdown-color-code {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 3px;
+        padding: 1px 5px;
+        white-space: nowrap;
+        word-break: normal;
+    }
+
+    .markdown-color-code span {
+        display: inline-block;
+        width: 0.8em;
+        height: 0.8em;
+        border-radius: 3px;
+        box-shadow: 0 0 0 1px hsl(var(--foreground) / 0.18);
+    }
+
 }
 
 .alert {
