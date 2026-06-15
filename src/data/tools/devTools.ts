@@ -471,13 +471,6 @@ export const devTools: Tool[] = [
         category: '效率工具',
     },
     {
-        id: "bg-remover",
-        name: "AI 背景移除",
-        description: "使用 RMBG-2.0 模型在浏览器本地移除图片背景，支持滑动对比",
-        href: "/tools/bg-remover",
-        category: '效率工具',
-    },
-    {
         id: "comment-system",
         name: "评论系统客户端",
         description: "静态网站评论系统的客户端工具，支持API地址配置、评论管理和多层级回复功能",
