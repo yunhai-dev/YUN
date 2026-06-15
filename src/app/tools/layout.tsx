@@ -2,12 +2,14 @@ import { siteName, image, baseUrl } from '@/config/site';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { getAllTools } from '@/data/tools';
+import { ToolsPwaRegister } from '@/components/tools-pwa-register';
 
 const pageUrl = `${baseUrl}/tools`;
 
 export const metadata: Metadata = {
     title: `在线工具箱 - 开发者实用工具集合`,
     description: `精选开发者实用工具 - 包含 JSON 格式化、Markdown 编辑器、文本对比、URL 编码、P2P 传输等在线工具，免费使用。`,
+    manifest: '/tools/manifest.json',
     keywords: ['在线工具', 'JSON格式化', 'Markdown编辑器', '文本对比', '开发工具', 'YunHai'],
     openGraph: {
         title: `在线工具箱 - 开发者实用工具 | ${siteName}`,
@@ -49,6 +51,7 @@ export default function ToolsLayout({ children }: { children: React.ReactNode })
     };
     return (
         <>
+            <ToolsPwaRegister />
             <Script id="tools-collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
             {children}
         </>

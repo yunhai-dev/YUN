@@ -16,6 +16,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import {Tooltip, TooltipTrigger, TooltipContent, TooltipProvider} from "@/components/ui/tooltip"
+import { ToolsInstallButton } from '@/components/tools-install-button';
 
 // ToolCard 组件保持不变...
 interface ToolCardProps {
@@ -226,9 +227,12 @@ const ToolsPage = () => {
                             <h1 className="text-4xl font-bold">
                                 {selectedCategory === '全部' ? '工具' : selectedCategory}
                             </h1>
-                            <p className="text-sm text-muted-foreground">
-                                共 {filteredTools.length} 个工具
-                            </p>
+                            <div className="flex items-center gap-3">
+                                <p className="text-sm text-muted-foreground">
+                                    共 {filteredTools.length} 个工具
+                                </p>
+                                <ToolsInstallButton />
+                            </div>
                         </div>
 
                         {/* 使用 Grid 布局展示筛选后的工具卡片 */}
