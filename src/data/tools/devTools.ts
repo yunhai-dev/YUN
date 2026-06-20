@@ -476,5 +476,12 @@ export const devTools: Tool[] = [
         description: "静态网站评论系统的客户端工具，支持API地址配置、评论管理和多层级回复功能",
         href: "/tools/comment-system",
         category: '效率工具',
+    },
+    {
+        id: "expense-tracker",
+        name: "固定支出管理",
+        description: "记录每月固定支出（房租、订阅、车险等），日历/列表/汇总视图查看，localStorage 本地存储",
+        href: "/tools/expense-tracker",
+        category: '效率工具',
     }
 ];
