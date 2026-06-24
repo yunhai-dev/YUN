@@ -139,9 +139,9 @@ function shouldOccurInMonth(exp: Expense, ym: string): boolean {
         case 'monthly':
             return true;
         case 'quarterly':
-            return monthOfYm === 1 || monthOfYm === 4 || monthOfYm === 7 || monthOfYm === 10;
+            return ((monthOfYm - monthOfStart) + 12) % 3 === 0;
         case 'half-yearly':
-            return monthOfYm === 1 || monthOfYm === 7;
+            return ((monthOfYm - monthOfStart) + 12) % 6 === 0;
         case 'yearly':
             return monthOfYm === monthOfStart;
         default:
@@ -151,7 +151,7 @@ function shouldOccurInMonth(exp: Expense, ym: string): boolean {
 
 /**
  * 计算支出在某个月的实际扣款日（1-月末），关联发薪日时 = 发薪日 + offset 后的有效日。
- * 未关联发薪日时返回 exp.dayOfMonth；无有效日时返回 null（该月跳过）。
+ * 未关联发薪日时返回 exp.dayOfMonth；超过月末则钳到月末（如 31 号在 2 月扣月末），保证每月都有扣款日。
  */
 function actualChargeDay(
     exp: Expense,
@@ -168,10 +168,16 @@ function actualChargeDay(
             .filter((d) => d >= 1 && d <= dim)
             .sort((a, b) => a - b);
         if (candidates.length > 0) return candidates[0];
-        // 偏移后越界：退回 exp.dayOfMonth（保证向后兼容）
-        return exp.dayOfMonth <= dim ? exp.dayOfMonth : null;
+        // 偏移后越界：退回 exp.dayOfMonth；超过月末则扣到月末
+        return Math.min(Math.max(exp.dayOfMonth, 1), dim);
     }
-    return exp.dayOfMonth <= dim ? exp.dayOfMonth : null;
+    return Math.min(Math.max(exp.dayOfMonth, 1), dim);
+}
+
+/** 支出在 ym 月是否会发生扣款（周期匹配且本月存在有效扣款日） */
+function willChargeInMonth(exp: Expense, ym: string, paydays: number[]): boolean {
+    if (!shouldOccurInMonth(exp, ym)) return false;
+    return actualChargeDay(exp, ym, paydays) !== null;
 }
 
 /** 判断 ymd 是否为某月任一发薪日（按有效日修正） */
@@ -545,7 +551,7 @@ const ExpenseTrackerPage = () => {
                         />
                     )}
                     {hydrated && view === 'list' && <List30View expenses={expenses} paydays={settings.paydays} />}
-                    {hydrated && view === 'summary' && <SummaryView baseYm={currentYm} expenses={expenses} />}
+                    {hydrated && view === 'summary' && <SummaryView baseYm={currentYm} expenses={expenses} paydays={settings.paydays} />}
                     {hydrated && view === 'all' && (
                         <AllExpensesView
                             expenses={expenses}
@@ -856,7 +862,7 @@ function List30View({ expenses, paydays }: { expenses: Expense[]; paydays: numbe
 
 // ============ 12 月汇总 ============
 
-function SummaryView({ baseYm, expenses }: { baseYm: string; expenses: Expense[] }) {
+function SummaryView({ baseYm, expenses, paydays }: { baseYm: string; expenses: Expense[]; paydays: number[] }) {
     const months: string[] = [];
     for (let i = 0; i < 12; i++) months.push(addMonths(baseYm, i));
     const baseMonthIdx = months.indexOf(baseYm);
@@ -881,13 +887,13 @@ function SummaryView({ baseYm, expenses }: { baseYm: string; expenses: Expense[]
         }
         for (const e of expenses) {
             for (const mo of months) {
-                if (shouldOccurInMonth(e, mo)) {
+                if (willChargeInMonth(e, mo, paydays)) {
                     m[e.category][mo] += e.amount;
                 }
             }
         }
         return m;
-    }, [expenses, months, categoryList]);
+    }, [expenses, months, categoryList, paydays]);
 
     const monthTotals = useMemo(() => {
         const t: Record<string, number> = {};
@@ -1095,16 +1101,22 @@ function AllExpensesView({
 function FooterStats({ expenses, paydays }: { expenses: Expense[]; paydays: number[] }) {
     const ym = todayYm();
     const ymThisYear = ym.slice(0, 4);
-    const monthTotal = expenses
-        .filter((e) => shouldOccurInMonth(e, ym))
-        .reduce((s, e) => s + e.amount, 0);
-    const monthCount = expenses.filter((e) => shouldOccurInMonth(e, ym)).length;
+    let monthTotal = 0;
+    let monthCount = 0;
+    for (const e of expenses) {
+        if (willChargeInMonth(e, ym, paydays)) {
+            monthTotal += e.amount;
+            monthCount += 1;
+        }
+    }
 
     // 本年累计：未来 12 个月内每月汇总（从本月起）
     let yearTotal = 0;
     for (let i = 0; i < 12; i++) {
         const mo = addMonths(ym, i);
-        yearTotal += expenses.filter((e) => shouldOccurInMonth(e, mo)).reduce((s, e) => s + e.amount, 0);
+        yearTotal += expenses
+            .filter((e) => willChargeInMonth(e, mo, paydays))
+            .reduce((s, e) => s + e.amount, 0);
     }
 
     // 本年（自然年）已发生的累计：1 月到现在
@@ -1113,7 +1125,7 @@ function FooterStats({ expenses, paydays }: { expenses: Expense[]; paydays: numb
     for (let m = 1; m <= parseInt(ym.split('-')[1], 10); m++) {
         const mo = `${yNum}-${String(m).padStart(2, '0')}`;
         calendarYearTotal += expenses
-            .filter((e) => shouldOccurInMonth(e, mo))
+            .filter((e) => willChargeInMonth(e, mo, paydays))
             .reduce((s, e) => s + e.amount, 0);
     }
 
@@ -1171,16 +1183,32 @@ function NextPaydayCard({ expenses, paydays }: { expenses: Expense[]; paydays: n
     }
 
     // 统计 [今天, nextYmd) 区间内的支出卡片
-    const upcoming = expenses.filter((e) => {
-        const [ny, nm, nd] = nextYmd.split('-').map(Number);
-        const cellYm = `${ny}-${String(nm).padStart(2, '0')}`;
-        if (!shouldOccurInMonth(e, cellYm)) return false;
-        const chargeDay = actualChargeDay(e, cellYm, paydays);
-        if (chargeDay === null) return false;
-        const chargeYmd = `${ny}-${String(nm).padStart(2, '0')}-${String(chargeDay).padStart(2, '0')}`;
-        return chargeYmd >= formatYMD(today) && chargeYmd < nextYmd;
-    });
-    const upcomingTotal = upcoming.reduce((s, e) => s + e.amount, 0);
+    const todayStr = formatYMD(today);
+    const [tY, tM] = [parseInt(todayStr.slice(0, 4), 10), parseInt(todayStr.slice(5, 7), 10)];
+    const [nY, nM] = nextYmd.split('-').map(Number);
+    const charges: { exp: Expense; chargeYmd: string }[] = [];
+    let cy = tY;
+    let cm = tM;
+    while (true) {
+        const cellYm = `${cy}-${String(cm).padStart(2, '0')}`;
+        for (const e of expenses) {
+            if (!shouldOccurInMonth(e, cellYm)) continue;
+            const chargeDay = actualChargeDay(e, cellYm, paydays);
+            if (chargeDay === null) continue;
+            const chargeYmd = `${cellYm}-${String(chargeDay).padStart(2, '0')}`;
+            if (chargeYmd >= todayStr && chargeYmd < nextYmd) {
+                charges.push({ exp: e, chargeYmd });
+            }
+        }
+        if (cy === nY && cm === nM) break;
+        cm += 1;
+        if (cm > 12) {
+            cm = 1;
+            cy += 1;
+        }
+    }
+    const upcomingCount = new Set(charges.map((c) => c.exp.id)).size;
+    const upcomingTotal = charges.reduce((s, c) => s + c.exp.amount, 0);
 
     const dayLabel = daysUntil === 0 ? '就是今天' : `还有 ${daysUntil} 天`;
 
@@ -1199,7 +1227,7 @@ function NextPaydayCard({ expenses, paydays }: { expenses: Expense[]; paydays: n
                 <div className="mt-3 pt-3 border-t border-emerald-300/60 dark:border-emerald-400/20">
                     <div className="text-xs text-emerald-700/80 dark:text-emerald-300/80">发薪前需支出</div>
                     <div className="text-base font-semibold tabular-nums text-emerald-900 dark:text-white">
-                        {upcoming.length} 张卡片 · {formatAmount(upcomingTotal)}
+                        {upcomingCount} 张卡片 · {formatAmount(upcomingTotal)}
                     </div>
                 </div>
             </div>
