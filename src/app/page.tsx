@@ -3,6 +3,7 @@ import {FAQStructuredData} from "@/components/structured-data";
 import {Link} from "next-view-transitions";
 import {ArrowUpRight} from "lucide-react";
 import LaserFlow from "@/components/LaserFlow";
+import ParticleFieldLoader from "@/components/particle-field-loader";
 import {HomeProjectWheelSection} from "@/components/home-project-wheel-section";
 import {HomeSkillsContainerSection} from "@/components/home-skills-container-section";
 import {HomeWorkflowSection} from "@/components/home-workflow-section";
@@ -75,6 +76,9 @@ export default async function Home() {
         <>
             <FAQStructuredData faqs={homeFAQs} />
             <main className="home-shell home-page-transition">
+                <div className="home-particle-canvas-root" aria-hidden="true">
+                    <ParticleFieldLoader />
+                </div>
                 <HomeViewportOrchestrator />
                 <section className="home-hero-section" data-home-section>
                     <div className="home-hero-glow home-hero-glow-left" />

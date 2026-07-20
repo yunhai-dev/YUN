@@ -4,6 +4,190 @@ description: "整理 Kubernetes 的核心概念、kubectl 常用命令与部署�
 keywords: ["Kubernetes", "K8s", "kubectl", "Pod", "Deployment", "容器编排", "集群管理"]
 ---
 
+## 集群架构与组件
+
+Kubernetes 集群由**控制平面（Control Plane）和一个或多个**工作节点（Worker Node）**组成。控制平面负责保存集群状态并作出调度决策，工作节点负责实际运行 Pod。
+
+```mermaid
+flowchart TB
+  user[用户 / CI] --> api[kube-apiserver]
+
+  subgraph control[控制平面]
+    api <--> etcd[(etcd)]
+    scheduler[kube-scheduler] --> api
+    controller[kube-controller-manager] --> api
+    cloud[cloud-controller-manager] --> api
+  end
+
+  api --> kubelet1[kubelet]
+  api --> kubelet2[kubelet]
+
+  subgraph node1[工作节点 A]
+    kubelet1 --> runtime1[容器运行时]
+    runtime1 --> pod1[Pod]
+    proxy1[kube-proxy / eBPF 数据平面]
+  end
+
+  subgraph node2[工作节点 B]
+    kubelet2 --> runtime2[容器运行时]
+    runtime2 --> pod2[Pod]
+    proxy2[kube-proxy / eBPF 数据平面]
+  end
+
+  pod1 <-->|CNI 网络| pod2
+```
+
+### 控制平面组件
+
+| 组件 | 作用 |
+| --- | --- |
+| `kube-apiserver` | Kubernetes API 的统一入口，负责请求认证、鉴权、准入检查和资源数据读写。`kubectl`、控制器以及 `kubelet` 都通过它交互，而不是直接访问 `etcd`。 |
+| `etcd` | 高可用键值数据库，保存集群配置和资源的期望状态，是控制平面的核心数据存储。生产环境应定期备份。 |
+| `kube-scheduler` | 为尚未分配节点的 Pod 选择工作节点。选择时会考虑资源请求、污点与容忍、亲和性、拓扑约束等条件。 |
+| `kube-controller-manager` | 运行 Deployment、ReplicaSet、Node、Job 等控制器，持续比较“期望状态”和“实际状态”并进行协调。 |
+| `cloud-controller-manager` | 可选组件，用于连接云厂商 API，管理云负载均衡器、节点和路由等资源；裸金属集群通常不使用。 |
+
+控制平面组件通常部署多个副本以实现高可用，多个 `kube-apiserver` 前面再放置一个负载均衡器；`etcd` 则通常以奇数成员组成集群。
+
+### 工作节点组件
+
+| 组件 | 作用 |
+| --- | --- |
+| `kubelet` | 节点代理，监听分配到本节点的 Pod，并调用容器运行时和存储、网络插件使 Pod 达到期望状态，同时上报节点与 Pod 状态。 |
+| 容器运行时 | 通过 CRI（Container Runtime Interface）运行容器，常见实现有 `containerd` 和 CRI-O。Kubernetes 不直接负责运行容器。 |
+| `kube-proxy` | 根据 Service 和 EndpointSlice 信息配置节点网络规则，实现 Service 流量转发。部分 CNI（如基于 eBPF 的实现）可以替代它的数据平面功能。 |
+| CNI 插件 | 为 Pod 分配 IP，并实现同节点和跨节点的 Pod 网络。常见实现包括 Calico、Cilium、Flannel 等。 |
+
+### 常用集群扩展
+
+这些组件很常见，但并不都属于 Kubernetes 核心控制平面：
+
+- **CoreDNS**：为 Service 和 Pod 提供集群内 DNS 解析。
+- **Metrics Server**：提供基础 CPU、内存指标，供 `kubectl top` 和 HPA 使用；它不是完整的监控系统。
+- **Ingress Controller / Gateway Controller**：读取 Ingress 或 Gateway API 资源，并真正配置反向代理或云负载均衡器。只创建 Ingress 资源而没有控制器不会产生入口流量。
+- **CSI 驱动**：通过 Container Storage Interface 对接云盘、分布式存储等持久化存储。
+- **CNI 插件**：实现 Pod 网络；NetworkPolicy 是否真正生效也取决于所选 CNI 是否支持。
+
+## 集群网络与服务访问
+
+Kubernetes 网络可以先记住四个基本原则：
+
+1. 每个 Pod 拥有自己的集群内 IP；同一个 Pod 中的容器共享网络命名空间，可以通过 `localhost` 和彼此通信。
+2. 在标准 Kubernetes 网络模型下，各节点上的 Pod 应能直接通过 Pod IP 通信，不需要应用自己做 NAT。
+3. Pod 会被重建，Pod IP 并不稳定；长期访问一组 Pod 应使用 Service，而不是保存 Pod IP。
+4. Service、Ingress 和 Gateway API 只是声明期望状态，实际转发依赖 `kube-proxy`、CNI、Ingress Controller、Gateway Controller 或云控制器等组件。
+
+### 常见访问路径
+
+| 访问场景 | 推荐方式 | 示例或说明 |
+| --- | --- | --- |
+| 同一 Pod 内的容器互访 | `localhost:<port>` | Sidecar 与主容器共享同一个 Pod IP 和端口空间。 |
+| Pod 访问同一集群中的 Pod | 目标 Pod IP | 由 CNI 提供路由；仅适合调试或已知生命周期的场景。 |
+| Pod 访问同命名空间的 Service | Service DNS 短名称 | `http://backend:8080` |
+| Pod 跨命名空间访问 Service | 带命名空间的 DNS | `http://backend.production:8080` |
+| 使用完整集群域名访问 Service | Service FQDN | `http://backend.production.svc.cluster.local:8080`，其中 `cluster.local` 可由集群自定义。 |
+| 访问无头 Service | Headless Service | 设置 `clusterIP: None`，DNS 返回后端 Pod 地址，常用于 StatefulSet 和服务发现。 |
+| 集群外访问单个服务 | `LoadBalancer` 或 `NodePort` | 云环境通常使用 `LoadBalancer`；`NodePort` 暴露为 `<任一节点IP>:<nodePort>`。 |
+| 集群外访问多个 HTTP/HTTPS 服务 | Ingress 或 Gateway API | 根据域名、路径等规则，将流量转发到不同 Service；需要对应控制器。 |
+| Pod 访问集群外服务 | 直接访问外部 DNS/IP | 通常经过节点 SNAT 或专用出口网关；具体行为由 CNI 和基础设施决定。 |
+
+Service 的典型转发链路如下：
+
+```text
+客户端 Pod
+  -> CoreDNS 将 backend.production.svc.cluster.local 解析为 Service ClusterIP
+  -> kube-proxy 或 CNI 数据平面匹配 Service
+  -> 从 EndpointSlice 中选择一个就绪 Pod
+  -> 将流量转发到目标 Pod IP:targetPort
+```
+
+可以使用以下命令检查整个链路：
+
+```shell
+kubectl get svc backend -n production # 查看 Service、ClusterIP 和端口
+kubectl get endpointslice -n production -l kubernetes.io/service-name=backend # 查看 Service 后端地址
+kubectl get pods -n production -l app=backend -o wide # 查看后端 Pod、IP 和所在节点
+kubectl exec -it <pod> -- nslookup backend.production # 在 Pod 内测试 DNS
+kubectl exec -it <pod> -- curl http://backend.production:8080 # 在 Pod 内测试服务访问
+```
+
+### 从集群外访问集群内服务
+
+常见入口链路为：
+
+```text
+用户
+  -> 公网或内网负载均衡器
+  -> Ingress Controller / Gateway
+  -> Service
+  -> Pod
+```
+
+- **`ClusterIP`**：默认类型，只能从集群网络内部访问。
+- **`NodePort`**：在每个节点上开放固定端口，适合基础接入或调试；生产环境通常在它前面再放负载均衡器。
+- **`LoadBalancer`**：请求云控制器或负载均衡器实现分配外部地址；裸金属环境需要 MetalLB 等实现。
+- **Ingress**：主要处理 HTTP/HTTPS 七层路由，必须安装 Ingress Controller。
+- **Gateway API**：比 Ingress 角色划分更清晰、扩展能力更强，也需要安装支持它的 Gateway Controller。
+
+`kubectl port-forward` 适合本地临时调试，不应作为生产服务入口。
+
+### 两个 Kubernetes 集群之间互访
+
+Kubernetes 核心 API 不会自动打通两个独立集群的 Pod 网络、Service DNS 和身份体系。跨集群访问通常选择以下方式之一：
+
+1. **通过服务入口访问（最简单）**
+   - 集群 A 将服务暴露为内网 `LoadBalancer`、Ingress 或 Gateway。
+   - 集群 B 通过该内网地址或企业 DNS 访问。
+   - 两个集群无需共享 Pod 网段，故障边界也较清晰，通常是优先方案。
+
+2. **打通 Pod 网络**
+   - 使用 VPC Peering、VPN、专线或支持多集群的 CNI，使双方 Pod CIDR 可以互相路由。
+   - 两个集群的 Pod CIDR、Service CIDR 和节点网段不能冲突。
+   - 还需要单独处理 DNS 服务发现、防火墙、NetworkPolicy 和流量加密；网络可达不等于服务可以被名称发现。
+
+3. **多集群服务发现或服务网格**
+   - 使用 Multi-Cluster Services API、Cilium Cluster Mesh、Istio 等方案同步服务信息或建立跨集群数据平面。
+   - 适合跨集群服务发现、流量治理、双向 TLS、故障转移等需求，但运维复杂度高于通过普通服务入口访问。
+
+跨集群设计时至少确认以下事项：
+
+- Pod CIDR、Service CIDR 和节点网段是否重叠。
+- 服务名称如何解析，以及 DNS 故障时如何处理。
+- 流量是否需要双向访问，还是只允许单向调用。
+- NetworkPolicy、云安全组和防火墙是否同时放行。
+- 身份认证、TLS、证书轮换及 Secret 是否跨集群同步。
+- 服务发现和故障转移是手动、DNS 级还是由多集群控制面完成。
+
+### NetworkPolicy
+
+默认情况下，许多 Kubernetes 集群允许 Pod 之间自由通信。可以使用 NetworkPolicy 将访问范围限制为“默认拒绝，再按需放行”。NetworkPolicy 是命名空间级资源，而且只有支持它的 CNI 才会执行规则。
+
+下面的规则只允许同一命名空间中带有 `app: frontend` 标签的 Pod 访问 `app: backend` Pod 的 TCP 8080 端口：
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8080
+```
+
+> `podSelector` 单独使用时只匹配当前 NetworkPolicy 所在命名空间。如果要允许其他命名空间，应结合 `namespaceSelector`，并根据需要再嵌套 `podSelector`。
+
 ## kubectl
 
 ### 基本信息
@@ -63,6 +247,21 @@ kubectl attach POD -c CONTAINER # 连接到现有的某个 Pod（将某个Pod的
 
 kubectl run nginx --image=nginx -- /bin/bash # 运行名字为 nginx 的 Pod 容器启动时执行 bash 而不是默认 nginx 服务
 ```
+
+### 滚动发布与回滚
+
+```shell
+kubectl rollout status deployment/nginx # 等待并查看 Deployment 滚动发布状态
+kubectl rollout history deployment/nginx # 查看 Deployment 的发布历史
+kubectl rollout history deployment/nginx --revision=2 # 查看指定版本的详情
+kubectl rollout undo deployment/nginx # 回滚到上一版本
+kubectl rollout undo deployment/nginx --to-revision=2 # 回滚到指定版本
+kubectl rollout restart deployment/nginx # 重启 Deployment 管理的所有 Pod
+kubectl rollout pause deployment/nginx # 暂停滚动发布，便于连续修改配置
+kubectl rollout resume deployment/nginx # 恢复已暂停的滚动发布
+```
+
+> 对非 `default` 命名空间的资源，在命令末尾加上 `-n <namespace>`，例如：`kubectl rollout status deployment/nginx -n production`。
 
 ### 修改删除清理
 
