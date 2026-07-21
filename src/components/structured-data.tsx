@@ -7,7 +7,7 @@ export function WebsiteStructuredData() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": siteName,
-    "alternateName": ["YunHai Ideas", "云海创意", "YunHai Notes"],
+    "alternateName": ["云云亦海", "YunHai Notes"],
     "url": baseUrl,
     "description": `${siteName}，专注于技术文章、项目经验、生活点滴与云端分享。`,
     "inLanguage": "zh-CN",

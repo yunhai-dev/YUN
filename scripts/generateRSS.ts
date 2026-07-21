@@ -5,7 +5,7 @@ import {markdownToHtml} from '../src/lib/markdown';
 
 const blogsDirectory = path.join(process.cwd(), 'src/content/blogs');
 const siteUrl = 'https://www.yhnotes.com';
-const siteName = 'YunHai Ideas 云海创意';
+const siteName = '云云亦海';
 
 interface BlogPostForRSS {
     slug: string;

@@ -13,8 +13,8 @@ import {getAllBlogPosts} from "@/data/blog-posts";
 
 const homeFAQs = [
     {
-        question: 'YunHai Ideas 是什么网站？',
-        answer: 'YunHai Ideas（云海创意）是全栈开发者 YunHai 的个人网站，专注于 AI 应用开发、Python、React/Next.js 技术分享与项目实践，提供技术博客、在线工具和开发文档。'
+        question: '云云亦海是什么网站？',
+        answer: '云云亦海是全栈开发者 YunHai 的个人网站，专注于 AI 应用开发、Python、React/Next.js 技术分享与项目实践，提供技术博客、在线工具和开发文档。'
     },
     {
         question: 'YunHai 擅长哪些技术？',

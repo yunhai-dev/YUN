@@ -1,7 +1,7 @@
 {
-  "name": "YunHai Ideas 云海创意",
-  "short_name": "云海创意",
-  "description": "YunHai Ideas 云海创意，专注于技术文章、项目经验、生活点滴与云端分享。",
+  "name": "云云亦海",
+  "short_name": "云云亦海",
+  "description": "云云亦海，专注于技术文章、项目经验、生活点滴与云端分享。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
