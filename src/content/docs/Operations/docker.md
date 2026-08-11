@@ -52,6 +52,11 @@ keywords: ["Docker", "容器", "镜像构建", "容器管理", "Docker Compose",
 
 > docker要求centos系统的内核大于`3.10`，通过`uname -r`查看内核版本
 
+### 快速安装脚本
+```bash
+bash <(curl -sSL https://cdn.jsdelivr.net/gh/docker/docker-install@master/install.sh)
+```
+
 ### 基础环境配置
 
 ```shell

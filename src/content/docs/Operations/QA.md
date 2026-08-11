@@ -19,5 +19,3 @@ proxy_cache_convert_head off;
 - 有些客户端（如 minio-py）发出的 HEAD 请求希望真实获取服务器响应（包括 header 中如 ETag, x-amz-meta-* 等）
 - 如果你开启了缓存（proxy_cache），**且未设置 proxy_cache_convert_head off;，你就可能收到不准确或被简化的响应头**
 - 有些服务还会拒绝伪造的 HEAD 响应（比如触发认证失败或签名校验失败）
-
-[REDACTED]
