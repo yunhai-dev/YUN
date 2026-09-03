@@ -51,6 +51,34 @@ export const devTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'gpui',
+        name: 'GPUI',
+        description: '由 Zed 的创建者开发的快速、高效的 Rust UI 框架。',
+        href: 'https://gpui.rs',
+        category: '开发工具',
+    },
+    {
+        id: 'vgpu',
+        name: 'vGPU',
+        description: '模块化的跨运行时 WebGPU 库，适用于着色器、3D 场景、GPU 张量、神经网络和数学可视化',
+        href: 'https://github.com/vercel-labs/vgpu',
+        category: '开发工具',
+    },
+    {
+        id: 'gpuix',
+        name: 'GPUIX',
+        description: 'React 绑定到 GPUI - Zed 的 GPU 加速 UI 框架',
+        href: 'https://github.com/remorses/gpuix',
+        category: '开发工具',
+    },
+    {
+        id: 'morphicons',
+        name: 'Morphicons',
+        description: '可为 Lucide、Tabler、Heroicons 或任何描边图标集添加动画效果。采用封闭形式求解最优旋转，结合弹簧物理效果，零依赖。',
+        href: 'https://www.morphicons.com',
+        category: '开发工具',
+    },
+    {
         id: 'react-flow',
         name: 'React Flow',
         description: '用于构建节点图和流程图的 React 库，支持拖放、缩放和平移',
@@ -118,6 +146,27 @@ export const devTools: Tool[] = [
         name: 'Better Auth',
         description: '简化前端认证和授权过程的工具或框架',
         href: 'https://github.com/better-auth/better-auth',
+        category: '开发工具'
+    },
+    {
+        id: 'cue',
+        name: 'Cue',
+        description: '一键拉起项目全部开发服务的命令行工具',
+        href: 'https://github.com/clouisle/Cue',
+        category: '开发工具'
+    },
+    {
+        id: 'buzz',
+        name: 'Buzz',
+        description: '人类和智能体在您拥有的中继上共同构建的工作空间',
+        href: 'https://github.com/block/buzz',
+        category: '开发工具'
+    },
+    {
+        id: 'openship',
+        name: 'OpenShip',
+        description: '开源自托管部署平台',
+        href: 'https://github.com/oblien/openship',
         category: '开发工具'
     },
     {

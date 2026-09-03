@@ -294,5 +294,12 @@ export const aiExt: Tool[] = [
         description: '免费开源的机器翻译 API，可自托管、离线使用',
         href: 'https://github.com/LibreTranslate/LibreTranslate',
         category: 'AI 工具'
-    }
+    },
+    {
+        id: 'macro',
+        name: 'Macro',
+        description: '将电子邮件、消息、文档、任务、客服人员和 CRM 整合到一个快速便捷的界面中，并共享团队级内存。',
+        href: 'https://github.com/macro-inc/macro',
+        category: 'AI 工具'
+    },
 ];

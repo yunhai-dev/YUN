@@ -93,6 +93,13 @@ export const aiLLMs: Tool[] = [
         category: 'AI 模型'
     },
     {
+        id: 'bd-unlimited-ocr',
+        name: 'Unlimited-OCR',
+        description: '百度开源一次性长时域解析OCR模型',
+        href: 'https://huggingface.co/baidu/Unlimited-OCR',
+        category: 'AI 模型'
+    },
+    {
         id: 'ocoolai',
         name: 'ocoolAI',
         description: '大模型 API 聚合服务商',
