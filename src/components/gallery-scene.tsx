@@ -3,7 +3,7 @@
 import {useEffect, useRef} from 'react';
 import {
     ACESFilmicToneMapping, AmbientLight, CatmullRomCurve3, Color, HemisphereLight,
-    MathUtils, PerspectiveCamera, Quaternion, Scene, SpotLight, SRGBColorSpace, Vector3, WebGLRenderer,
+    MathUtils, PCFSoftShadowMap, PerspectiveCamera, Quaternion, Scene, SpotLight, SRGBColorSpace, Vector3, WebGLRenderer,
 } from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import type {Material, Mesh, Object3D, Texture} from 'three';
@@ -75,6 +75,7 @@ export function GalleryScene({progress, onReady, onError}: GallerySceneProps) {
         let poses: CameraPose[] = [];
         let curves: Array<CatmullRomCurve3 | null> = [];
         let currentProgress = targetRef.current;
+        const useSoftShadows = window.innerWidth >= 900 && (navigator.hardwareConcurrency || 4) >= 4;
         const scene = new Scene();
         scene.background = new Color('#a8bbc2');
         scene.add(new HemisphereLight(0xeaf5ff, 0xa68d70, 1.65));
@@ -114,6 +115,8 @@ export function GalleryScene({progress, onReady, onError}: GallerySceneProps) {
             if ((navigator.hardwareConcurrency || 4) <= 2) throw new Error('Reduced device capability');
             renderer = new WebGLRenderer({antialias: true, powerPreference: 'high-performance'});
             renderer.outputColorSpace = SRGBColorSpace;
+            renderer.shadowMap.enabled = useSoftShadows;
+            renderer.shadowMap.type = PCFSoftShadowMap;
             renderer.toneMapping = ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.0;
             renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.25 : 1.6));
@@ -156,10 +159,29 @@ export function GalleryScene({progress, onReady, onError}: GallerySceneProps) {
                 curves = routeWaypoints.map((waypoints, index) =>
                     waypoints.length ? new CatmullRomCurve3([poses[index].position, ...waypoints, poses[index + 1].position], false, 'centripetal') : null
                 );
+                const shadowLights = new Set([
+                    'gallery beam 0 -1 0', 'gallery beam 12 1 0',
+                    'gallery beam 24 -1 0', 'gallery beam 36 1 0',
+                ]);
                 gltf.scene.traverse(object => {
                     // Blender area lights do not export to glTF. Keep its warm spots,
                     // but cap the conversion's very high luminous intensity for the web.
-                    if (object instanceof SpotLight) object.intensity = Math.min(object.intensity, 115);
+                    if (object instanceof SpotLight) {
+                        object.intensity = Math.min(object.intensity, 115);
+                        if (useSoftShadows && shadowLights.has(object.name)) {
+                            object.castShadow = true;
+                            object.shadow.mapSize.set(512, 512);
+                            object.shadow.camera.near = 0.5;
+                            object.shadow.camera.far = 18;
+                            object.shadow.bias = -0.0002;
+                            object.shadow.normalBias = 0.025;
+                        }
+                    }
+                    if (!('isMesh' in object) || !object.isMesh) return;
+                    const mesh = object as Mesh;
+                    const name = mesh.name;
+                    mesh.receiveShadow = /continuous walnut floor|continuous mineral wall|display platform|reading table|display surface|opal surface/.test(name);
+                    mesh.castShadow = /^(YunHai • (hand-crafted walnut oval|turned paper leaf|leather cover|actual brass book rest)|Clouisle • (walnut display platform|AGENT|IDEA|KNOWLEDGE|DELIVERY|knowledge tablet)|Crawlsy • (machined instrument|brass primary instrument|secondary gimbal|warm timber platform)|Archive • (walnut reading table|stacked research volume|reading lamp))/.test(name);
                 });
                 gallery = gltf.scene;
                 scene.add(gallery);
