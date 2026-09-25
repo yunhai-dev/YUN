@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import {markdownToHtml} from '../src/lib/markdown';
+import {marked} from 'marked';
+
+async function markdownToHtml(content: string): Promise<{content: string}> {
+    return {content: await marked.parse(content)};
+}
 
 const blogsDirectory = path.join(process.cwd(), 'src/content/blogs');
 const siteUrl = 'https://www.yhnotes.com';

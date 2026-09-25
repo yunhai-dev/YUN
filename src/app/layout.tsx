@@ -1,5 +1,5 @@
 import type {Metadata} from "next";
-import {Inter} from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import {Navbar} from "@/components/navbar";
 import {Footer} from "@/components/footer";
@@ -16,7 +16,7 @@ import { WebVitals } from "@/components/web-vitals";
 import HandControlOverlay from "@/components/HandControlOverlay";
 
 
-const inter = Inter({subsets: ["latin"]});
+const inter = localFont({src: './fonts/inter-latin.woff2', display: 'swap', weight: '100 900', fallback: ['Arial', 'sans-serif']});
 
 export const metadata: Metadata = {
     title: {

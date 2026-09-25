@@ -119,13 +119,13 @@ const JwtDecoderPage = () => {
                                     <pre className="p-3 bg-muted/30 rounded-md text-sm overflow-auto max-h-48 font-mono">
                                         {JSON.stringify(decoded.payload, null, 2)}
                                     </pre>
-                                    {decoded.payload.exp && (
+                                    {typeof decoded.payload.exp === 'number' && (
                                         <div className={`mt-2 text-sm ${isExpired(decoded.payload.exp as number) ? 'text-red-400' : 'text-green-400'}`}>
                                             过期时间: {formatTime(decoded.payload.exp as number)}
                                             {isExpired(decoded.payload.exp as number) ? ' (已过期)' : ' (有效)'}
                                         </div>
                                     )}
-                                    {decoded.payload.iat && (
+                                    {typeof decoded.payload.iat === 'number' && (
                                         <div className="text-sm text-muted-foreground">
                                             签发时间: {formatTime(decoded.payload.iat as number)}
                                         </div>

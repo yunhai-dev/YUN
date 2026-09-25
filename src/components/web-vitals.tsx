@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 // Web Vitals 类型定义
 interface WebVitalsMetric {
-  name: "CLS" | "FCP" | "FID" | "INP" | "LCP" | "TTFB";
+  name: "CLS" | "FCP" | "INP" | "LCP" | "TTFB";
   value: number;
   rating: "good" | "needs-improvement" | "poor";
   delta: number;
@@ -26,11 +26,10 @@ function sendToUmami(metric: WebVitalsMetric) {
 export function WebVitals() {
   useEffect(() => {
     // 动态导入 web-vitals 库
-    import("web-vitals").then(({ onCLS, onFCP, onFID, onINP, onLCP, onTTFB }) => {
+    import("web-vitals").then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
       // 报告各项性能指标
       onCLS(sendToUmami);
       onFCP(sendToUmami);
-      onFID(sendToUmami);
       onINP(sendToUmami);
       onLCP(sendToUmami);
       onTTFB(sendToUmami);
