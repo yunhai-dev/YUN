@@ -147,7 +147,7 @@ interface StyleOverride {
     font?: string;
     size?: number;
     color?: string;
-    underline?: { type: string };
+    underline?: { type: 'single' };
 }
 
 // 解析内联 tokens
