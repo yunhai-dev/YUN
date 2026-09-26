@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import {Link} from 'next-view-transitions';
-import {ArrowDown, ArrowRight, ArrowUpRight, Github, Menu} from 'lucide-react';
+import {ArrowDown, ArrowRight, ArrowUpRight} from 'lucide-react';
 import {FAQStructuredData} from '@/components/structured-data';
 import {getBlogPostBySlug} from '@/data/blog-posts';
+import {STORAGE_HOST} from '@/data/baseUrl';
+import {AtelierExhibit} from '@/components/atelier-exhibit';
 import './atelier-home.css';
 
 const homeFAQs = [
@@ -17,8 +19,8 @@ const thinking = [
 ];
 
 const smallerWorks = [
-    {number: '02', title: 'Crawlsy', label: '采集网络与爬虫管理', href: 'https://github.com/yunhai-dev/crawlsy', image: '/atelier/thinking-1.webp'},
-    {number: '03', title: 'D0 Tools', label: '给日常开发一点轻盈', href: 'https://github.com/yunhai-dev/D0-Tools', image: '/atelier/thinking-2.webp'},
+    {number: '02', title: 'Crawlsy', label: '采集网络与爬虫管理', href: 'https://github.com/yunhai-dev/crawlsy', image: `${STORAGE_HOST}/carwlsy.png`, imageAlt: 'Crawlsy 项目界面'},
+    {number: '03', title: 'D0 Tools', label: '给日常开发一点轻盈', href: 'https://github.com/yunhai-dev/D0-Tools', image: `${STORAGE_HOST}/data-label.webp`, imageAlt: 'D0 Tools 数据标注界面'},
 ];
 
 const noteSlugs = ['openclaw-thinking', 'expect', '2025-Summary'];
@@ -40,30 +42,6 @@ export default async function Home() {
         <>
             <FAQStructuredData faqs={homeFAQs} />
             <div className="atelier-home">
-                <header className="atelier-nav">
-                    <Link href="/" className="atelier-brand" aria-label="YunHai 首页"><span>YunHai</span><small>云云亦海</small></Link>
-                    <nav className="atelier-nav-center" aria-label="首页展区">
-                        <a href="#home" aria-current="page">Home</a><a href="#thinking">Thinking</a>
-                        <a href="#works">Works</a><a href="#notes">Notes</a><Link href="/about/">About</Link>
-                    </nav>
-                    <details className="atelier-nav-explore">
-                        <summary>Explore <span aria-hidden="true">＋</span></summary>
-                        <div className="atelier-nav-panel">
-                            <Link href="/blog/">博客 <ArrowUpRight size={13} /></Link>
-                            <Link href="/docs/">文档 <ArrowUpRight size={13} /></Link>
-                            <Link href="/tools/">工具 <ArrowUpRight size={13} /></Link>
-                            <Link href="/contact/">联系 <ArrowUpRight size={13} /></Link>
-                        </div>
-                    </details>
-                    <details className="atelier-mobile-menu">
-                        <summary aria-label="打开导航菜单"><Menu size={21} /></summary>
-                        <nav aria-label="移动端导航">
-                            <a href="#home">Home</a><a href="#thinking">Thinking</a><a href="#works">Works</a><a href="#notes">Notes</a>
-                            <Link href="/about/">关于</Link><Link href="/blog/">博客</Link><Link href="/docs/">文档</Link>
-                            <Link href="/tools/">工具</Link><Link href="/contact/">联系</Link>
-                        </nav>
-                    </details>
-                </header>
 
                 <section className="atelier-hero" id="home" aria-labelledby="atelier-title">
                     <Image src="/atelier/hero.webp" alt="" fill priority sizes="100vw" className="atelier-hero-image" aria-hidden="true" />
@@ -112,10 +90,7 @@ export default async function Home() {
                             <p>用技术创造具体的价值，<br />也探索更多可能的表达方式。<br /><span>Turning ideas into real things, and exploring more ways to create.</span></p>
                             <Link className="atelier-outline-link" href="/about/">了解更多 <ArrowRight size={15} aria-hidden="true" /></Link>
                         </div>
-                        <div className="atelier-featured-visual atelier-reveal">
-                            <Image src="/atelier/featured-work.webp" alt="玻璃展柜中的通透雕塑，象征 Clouisle 的智能与知识连接" fill sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
-                            <span>YH / SELECTED WORKS</span>
-                        </div>
+                        <AtelierExhibit />
                         <div className="atelier-works-list">
                             <div className="atelier-main-work">
                                 <span className="atelier-work-number">01 / AI PRODUCT</span><h3>Clouisle</h3>
@@ -125,7 +100,7 @@ export default async function Home() {
                             </div>
                             {smallerWorks.map(item => (
                                 <a className="atelier-small-work" href={item.href} target="_blank" rel="noopener noreferrer" key={item.number}>
-                                    <div className="atelier-small-work-image"><Image src={item.image} alt="" fill sizes="84px" loading="lazy" aria-hidden="true" /></div>
+                                    <div className="atelier-small-work-image"><Image src={item.image} alt={item.imageAlt} fill sizes="84px" loading="lazy" /></div>
                                     <div><span>{item.number} / OPEN SOURCE</span><strong>{item.title}</strong><small>{item.label}</small></div>
                                     <ArrowUpRight size={15} aria-hidden="true" />
                                 </a>
@@ -155,27 +130,18 @@ export default async function Home() {
                     </div>
                 </section>
 
-                <footer className="atelier-closing" id="explore">
+                <section className="atelier-closing" id="explore" aria-labelledby="atelier-explore-title">
                     <Image src="/atelier/closing.webp" alt="" fill sizes="100vw" loading="lazy" className="atelier-closing-image" aria-hidden="true" />
                     <div className="atelier-closing-shade" />
                     <div className="atelier-closing-inner">
                         <div className="atelier-closing-copy">
                             <span className="atelier-overline">The journey continues</span>
-                            <h2>继续探索<br /><em>Explore More</em></h2>
+                            <h2 id="atelier-explore-title">继续探索<br /><em>Explore More</em></h2>
                             <p>保持好奇，继续前行。<br /><span>Stay curious. Keep exploring.</span></p>
                             <Link className="atelier-closing-link" href="/about/">了解云云亦海 <ArrowRight size={17} aria-hidden="true" /></Link>
                         </div>
-                        <nav className="atelier-footer-nav" aria-label="页尾导航">
-                            <a href="#home">Home</a><a href="#thinking">Thinking</a><a href="#works">Works</a><a href="#notes">Notes</a>
-                            <Link href="/about/">About</Link><Link href="/blog/">Blog</Link><Link href="/docs/">Docs</Link><Link href="/tools/">Tools</Link>
-                        </nav>
-                        <div className="atelier-footer-signature">
-                            <strong>云 云 亦 海</strong><p>“技术是时代的浪潮，<br />而人是永远的海。”</p><span>— YunHai</span>
-                            <a href="https://github.com/yunhai-dev" target="_blank" rel="noopener noreferrer" aria-label="YunHai GitHub"><Github size={17} /></a>
-                        </div>
                     </div>
-                    <div className="atelier-footer-bottom"><span>© {new Date().getFullYear()} YunHai. All rights reserved.</span><span>Built with curiosity, for a more open tomorrow.</span></div>
-                </footer>
+                </section>
             </div>
         </>
     );
