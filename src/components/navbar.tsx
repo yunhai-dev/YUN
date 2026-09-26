@@ -113,8 +113,6 @@ export function Navbar() {
         setIsOpen(false);
     };
 
-    if (isHome) return null;
-
     return (
         <header
             className={cn(
