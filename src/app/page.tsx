@@ -4,6 +4,7 @@ import {ArrowDown, ArrowRight, ArrowUpRight} from 'lucide-react';
 import {FAQStructuredData} from '@/components/structured-data';
 import {getBlogPostBySlug} from '@/data/blog-posts';
 import {STORAGE_HOST} from '@/data/baseUrl';
+import {AtelierExhibit} from '@/components/atelier-exhibit';
 import './atelier-home.css';
 
 const homeFAQs = [
@@ -89,16 +90,7 @@ export default async function Home() {
                             <p>用技术创造具体的价值，<br />也探索更多可能的表达方式。<br /><span>Turning ideas into real things, and exploring more ways to create.</span></p>
                             <Link className="atelier-outline-link" href="/about/">了解更多 <ArrowRight size={15} aria-hidden="true" /></Link>
                         </div>
-                        <div className="atelier-featured-visual atelier-reveal">
-                            <Image src="/atelier/featured-work.webp" alt="" fill sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" aria-hidden="true" />
-                            <div className="atelier-project-preview">
-                                <div className="atelier-project-preview-screen">
-                                    <Image src={`${STORAGE_HOST}/admin-panel.webp`} alt="Clouisle AI 管理平台界面" fill sizes="(max-width: 650px) 84vw, (max-width: 900px) 52vw, 22vw" loading="lazy" />
-                                </div>
-                                <div className="atelier-project-preview-caption"><span>01 / PRODUCT INTERFACE</span><strong>Clouisle · AI Workspace</strong></div>
-                            </div>
-                            <span>YH / SELECTED WORKS</span>
-                        </div>
+                        <AtelierExhibit />
                         <div className="atelier-works-list">
                             <div className="atelier-main-work">
                                 <span className="atelier-work-number">01 / AI PRODUCT</span><h3>Clouisle</h3>
