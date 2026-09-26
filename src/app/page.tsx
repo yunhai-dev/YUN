@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import {Link} from 'next-view-transitions';
-import {ArrowDown, ArrowRight, ArrowUpRight, Github, Menu} from 'lucide-react';
+import {ArrowDown, ArrowRight, ArrowUpRight, Github} from 'lucide-react';
 import {FAQStructuredData} from '@/components/structured-data';
 import {getBlogPostBySlug} from '@/data/blog-posts';
 import './atelier-home.css';
@@ -40,30 +40,6 @@ export default async function Home() {
         <>
             <FAQStructuredData faqs={homeFAQs} />
             <div className="atelier-home">
-                <header className="atelier-nav">
-                    <Link href="/" className="atelier-brand" aria-label="YunHai 首页"><span>YunHai</span><small>云云亦海</small></Link>
-                    <nav className="atelier-nav-center" aria-label="首页展区">
-                        <a href="#home" aria-current="page">Home</a><a href="#thinking">Thinking</a>
-                        <a href="#works">Works</a><a href="#notes">Notes</a><Link href="/about/">About</Link>
-                    </nav>
-                    <details className="atelier-nav-explore">
-                        <summary>Explore <span aria-hidden="true">＋</span></summary>
-                        <div className="atelier-nav-panel">
-                            <Link href="/blog/">博客 <ArrowUpRight size={13} /></Link>
-                            <Link href="/docs/">文档 <ArrowUpRight size={13} /></Link>
-                            <Link href="/tools/">工具 <ArrowUpRight size={13} /></Link>
-                            <Link href="/contact/">联系 <ArrowUpRight size={13} /></Link>
-                        </div>
-                    </details>
-                    <details className="atelier-mobile-menu">
-                        <summary aria-label="打开导航菜单"><Menu size={21} /></summary>
-                        <nav aria-label="移动端导航">
-                            <a href="#home">Home</a><a href="#thinking">Thinking</a><a href="#works">Works</a><a href="#notes">Notes</a>
-                            <Link href="/about/">关于</Link><Link href="/blog/">博客</Link><Link href="/docs/">文档</Link>
-                            <Link href="/tools/">工具</Link><Link href="/contact/">联系</Link>
-                        </nav>
-                    </details>
-                </header>
 
                 <section className="atelier-hero" id="home" aria-labelledby="atelier-title">
                     <Image src="/atelier/hero.webp" alt="" fill priority sizes="100vw" className="atelier-hero-image" aria-hidden="true" />
