@@ -3,6 +3,7 @@ import {Link} from 'next-view-transitions';
 import {ArrowDown, ArrowRight, ArrowUpRight} from 'lucide-react';
 import {FAQStructuredData} from '@/components/structured-data';
 import {getBlogPostBySlug} from '@/data/blog-posts';
+import {STORAGE_HOST} from '@/data/baseUrl';
 import './atelier-home.css';
 
 const homeFAQs = [
@@ -17,8 +18,8 @@ const thinking = [
 ];
 
 const smallerWorks = [
-    {number: '02', title: 'Crawlsy', label: '采集网络与爬虫管理', href: 'https://github.com/yunhai-dev/crawlsy', image: '/atelier/thinking-1.webp'},
-    {number: '03', title: 'D0 Tools', label: '给日常开发一点轻盈', href: 'https://github.com/yunhai-dev/D0-Tools', image: '/atelier/thinking-2.webp'},
+    {number: '02', title: 'Crawlsy', label: '采集网络与爬虫管理', href: 'https://github.com/yunhai-dev/crawlsy', image: `${STORAGE_HOST}/carwlsy.png`, imageAlt: 'Crawlsy 项目界面'},
+    {number: '03', title: 'D0 Tools', label: '给日常开发一点轻盈', href: 'https://github.com/yunhai-dev/D0-Tools', image: `${STORAGE_HOST}/data-label.webp`, imageAlt: 'D0 Tools 数据标注界面'},
 ];
 
 const noteSlugs = ['openclaw-thinking', 'expect', '2025-Summary'];
@@ -89,7 +90,7 @@ export default async function Home() {
                             <Link className="atelier-outline-link" href="/about/">了解更多 <ArrowRight size={15} aria-hidden="true" /></Link>
                         </div>
                         <div className="atelier-featured-visual atelier-reveal">
-                            <Image src="/atelier/featured-work.webp" alt="玻璃展柜中的通透雕塑，象征 Clouisle 的智能与知识连接" fill sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
+                            <Image src={`${STORAGE_HOST}/admin-panel.webp`} alt="Clouisle AI 管理平台界面" fill sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
                             <span>YH / SELECTED WORKS</span>
                         </div>
                         <div className="atelier-works-list">
@@ -101,7 +102,7 @@ export default async function Home() {
                             </div>
                             {smallerWorks.map(item => (
                                 <a className="atelier-small-work" href={item.href} target="_blank" rel="noopener noreferrer" key={item.number}>
-                                    <div className="atelier-small-work-image"><Image src={item.image} alt="" fill sizes="84px" loading="lazy" aria-hidden="true" /></div>
+                                    <div className="atelier-small-work-image"><Image src={item.image} alt={item.imageAlt} fill sizes="84px" loading="lazy" /></div>
                                     <div><span>{item.number} / OPEN SOURCE</span><strong>{item.title}</strong><small>{item.label}</small></div>
                                     <ArrowUpRight size={15} aria-hidden="true" />
                                 </a>
