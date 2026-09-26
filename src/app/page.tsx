@@ -90,7 +90,13 @@ export default async function Home() {
                             <Link className="atelier-outline-link" href="/about/">了解更多 <ArrowRight size={15} aria-hidden="true" /></Link>
                         </div>
                         <div className="atelier-featured-visual atelier-reveal">
-                            <Image src={`${STORAGE_HOST}/admin-panel.webp`} alt="Clouisle AI 管理平台界面" fill sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
+                            <Image src="/atelier/featured-work.webp" alt="" fill sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" aria-hidden="true" />
+                            <div className="atelier-project-preview">
+                                <div className="atelier-project-preview-screen">
+                                    <Image src={`${STORAGE_HOST}/admin-panel.webp`} alt="Clouisle AI 管理平台界面" fill sizes="(max-width: 650px) 84vw, (max-width: 900px) 52vw, 22vw" loading="lazy" />
+                                </div>
+                                <div className="atelier-project-preview-caption"><span>01 / PRODUCT INTERFACE</span><strong>Clouisle · AI Workspace</strong></div>
+                            </div>
                             <span>YH / SELECTED WORKS</span>
                         </div>
                         <div className="atelier-works-list">
