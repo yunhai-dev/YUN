@@ -132,21 +132,12 @@ html:has(.atelier-home) { scroll-behavior: smooth; }
 .atelier-closing { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: clamp(480px, 56svh, 620px); isolation: isolate; border-top: 1px solid var(--atelier-line); background: #0d1921; }
 .atelier-closing-image { object-position: center 50%; }
 .atelier-closing-shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgba(4, 12, 18, .57), transparent 31%, transparent 67%, rgba(4, 12, 18, .44)), linear-gradient(180deg, transparent 60%, rgba(3, 10, 16, .55)); }
-.atelier-closing-inner { width: 100%; max-width: 1580px; flex: 1; margin: auto; padding: 66px clamp(30px, 4.8vw, 82px); display: grid; grid-template-columns: 1fr 150px 190px; gap: 45px; align-items: center; }
+.atelier-closing-inner { width: 100%; max-width: 1580px; flex: 1; margin: auto; padding: 66px clamp(30px, 4.8vw, 82px); display: grid; grid-template-columns: minmax(0, 560px); align-items: center; }
 .atelier-closing-copy h2 { margin: 20px 0 22px; font-family: "Songti SC", "Noto Serif CJK SC", serif; font-size: clamp(38px, 4.2vw, 65px); font-weight: 400; line-height: 1.15; }
 .atelier-closing-copy h2 em { font-family: Georgia, serif; font-size: .49em; font-style: normal; letter-spacing: -.02em; }
 .atelier-closing-copy p { color: #e5e9e6; font-family: "Songti SC", serif; font-size: 14px; line-height: 1.65; }
 .atelier-closing-copy p span { color: #aeb9ba; font-family: Georgia, serif; font-size: 12px; }
 .atelier-closing-link { min-width: 180px; margin-top: 15px; }
-.atelier-footer-nav { display: grid; gap: 11px; padding-top: 30px; }
-.atelier-footer-nav a { width: fit-content; color: #bac3c2; font-size: 11px; letter-spacing: .04em; transition: color .2s ease; }
-.atelier-footer-nav a:hover { color: #fff; }
-.atelier-footer-signature { padding-top: 25px; color: #dbe1e0; }
-.atelier-footer-signature strong { font-family: "Songti SC", serif; font-size: 17px; font-weight: 400; letter-spacing: .35em; white-space: nowrap; }
-.atelier-footer-signature p { margin: 25px 0 5px; font-family: "Songti SC", serif; font-size: 11px; line-height: 1.9; letter-spacing: .09em; }
-.atelier-footer-signature > span { color: #a9b4b6; font-family: Georgia, serif; font-size: 11px; }
-.atelier-footer-signature a { display: block; width: fit-content; margin-top: 25px; color: #bec9c9; }
-.atelier-footer-bottom { width: 100%; display: flex; justify-content: space-between; gap: 20px; max-width: 1580px; margin: auto; padding: 18px clamp(30px, 4.8vw, 82px) 26px; border-top: 1px solid var(--atelier-line); color: #849497; font-size: 9px; letter-spacing: .09em; }
 
 @keyframes atelier-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes atelier-reveal { from { opacity: .55; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -213,9 +204,6 @@ html:has(.atelier-home) { scroll-behavior: smooth; }
     .atelier-closing-inner { min-height: 0; padding: 62px 25px 47px; grid-template-columns: 1fr 1fr; gap: 36px 18px; }
     .atelier-closing-copy { grid-column: 1 / -1; }
     .atelier-closing-copy h2 { font-size: 44px; }
-    .atelier-footer-nav { padding-top: 0; }
-    .atelier-footer-signature { padding-top: 0; }
-    .atelier-footer-bottom { flex-direction: column; padding: 22px 25px 28px; font-size: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

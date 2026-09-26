@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import {Link} from 'next-view-transitions';
-import {ArrowDown, ArrowRight, ArrowUpRight, Github} from 'lucide-react';
+import {ArrowDown, ArrowRight, ArrowUpRight} from 'lucide-react';
 import {FAQStructuredData} from '@/components/structured-data';
 import {getBlogPostBySlug} from '@/data/blog-posts';
 import './atelier-home.css';
@@ -131,27 +131,18 @@ export default async function Home() {
                     </div>
                 </section>
 
-                <footer className="atelier-closing" id="explore">
+                <section className="atelier-closing" id="explore" aria-labelledby="atelier-explore-title">
                     <Image src="/atelier/closing.webp" alt="" fill sizes="100vw" loading="lazy" className="atelier-closing-image" aria-hidden="true" />
                     <div className="atelier-closing-shade" />
                     <div className="atelier-closing-inner">
                         <div className="atelier-closing-copy">
                             <span className="atelier-overline">The journey continues</span>
-                            <h2>继续探索<br /><em>Explore More</em></h2>
+                            <h2 id="atelier-explore-title">继续探索<br /><em>Explore More</em></h2>
                             <p>保持好奇，继续前行。<br /><span>Stay curious. Keep exploring.</span></p>
                             <Link className="atelier-closing-link" href="/about/">了解云云亦海 <ArrowRight size={17} aria-hidden="true" /></Link>
                         </div>
-                        <nav className="atelier-footer-nav" aria-label="页尾导航">
-                            <a href="#home">Home</a><a href="#thinking">Thinking</a><a href="#works">Works</a><a href="#notes">Notes</a>
-                            <Link href="/about/">About</Link><Link href="/blog/">Blog</Link><Link href="/docs/">Docs</Link><Link href="/tools/">Tools</Link>
-                        </nav>
-                        <div className="atelier-footer-signature">
-                            <strong>云 云 亦 海</strong><p>“技术是时代的浪潮，<br />而人是永远的海。”</p><span>— YunHai</span>
-                            <a href="https://github.com/yunhai-dev" target="_blank" rel="noopener noreferrer" aria-label="YunHai GitHub"><Github size={17} /></a>
-                        </div>
                     </div>
-                    <div className="atelier-footer-bottom"><span>© {new Date().getFullYear()} YunHai. All rights reserved.</span><span>Built with curiosity, for a more open tomorrow.</span></div>
-                </footer>
+                </section>
             </div>
         </>
     );
