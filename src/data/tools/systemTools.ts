@@ -121,6 +121,13 @@ export const systemTools: Tool[] = [
     category: "系统工具",
   },
   {
+    id: "kite",
+    name: "Kite",
+    description: "轻量现代 Kubernetes 仪表盘，一个工作区统一管理所有集群",
+    href: "https://github.com/kite-org/kite",
+    category: "系统工具",
+  },
+  {
     id: "conduit",
     name: "Conduit",
     description: "基于 Rust SSH 协议的内网穿透隧道管理工具",
@@ -209,6 +216,13 @@ export const systemTools: Tool[] = [
     name: "ZeroTier",
     description: "虚拟局域网（SD-WAN）工具，能让分布在不同网络的设备像在同一个局域网里通信",
     href: "https://my.zerotier.com/",
+    category: "网络工具",
+  },
+  {
+    id: "netbird",
+    name: "NetBird",
+    description: "零信任网络管理平台，基于 WireGuard 的对等加密网络，安全连接人、机器与 AI 代理，统一身份认证，支持自托管",
+    href: "https://github.com/netbirdio/netbird",
     category: "网络工具",
   }
 ];

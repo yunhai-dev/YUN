@@ -198,6 +198,13 @@ export const devTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'gpui-kit',
+        name: 'GPUI Kit',
+        description: '一套基于GPUI的Rust桌面应用框架',
+        href: 'https://gpui-kit.com',
+        category: '开发工具',
+    },
+    {
         id: 'clawcloud',
         name: 'Claw Cloud',
         description: '面向开发人员的云基础设施和应用部署平台',
@@ -436,6 +443,55 @@ export const devTools: Tool[] = [
         category: '设计资源',
     },
     {
+        id: 'photocraft',
+        name: 'PhotoCraft',
+        description: '开源图像编辑器，纯 Rust 编写的 Photoshop 平替，支持 macOS/Windows/Linux/Web',
+        href: 'https://github.com/storytold/photocraft',
+        category: '设计资源',
+    },
+    {
+        id: 'vectorcraft',
+        name: 'VectorCraft',
+        description: '开源矢量插画工具，纯 Rust 编写的 Illustrator 平替，原生桌面应用',
+        href: 'https://github.com/storytold/vectorcraft',
+        category: '设计资源',
+    },
+    {
+        id: 'filmcraft',
+        name: 'FilmCraft',
+        description: '开源视频剪辑软件，纯 Rust 编写的 Premiere 平替，多轨时间线',
+        href: 'https://github.com/storytold/filmcraft',
+        category: '设计资源',
+    },
+    {
+        id: 'lightcraft',
+        name: 'LightCraft',
+        description: '开源照片库与 RAW 显影工具，纯 Rust 编写的 Lightroom 平替，本地运行',
+        href: 'https://github.com/storytold/lightcraft',
+        category: '设计资源',
+    },
+    {
+        id: 'pdfcraft',
+        name: 'PdfCraft',
+        description: '开源 PDF 工作台，纯 Rust 编写的 Acrobat 平替，阅读、合并、拆分、加密',
+        href: 'https://github.com/storytold/pdfcraft',
+        category: '设计资源',
+    },
+    {
+        id: 'effectcraft',
+        name: 'EffectCraft',
+        description: '开源动效与视觉特效工具，纯 Rust 编写，合成、时间线与图层',
+        href: 'https://github.com/storytold/effectcraft',
+        category: '设计资源',
+    },
+    {
+        id: 'designcraft',
+        name: 'DesignCraft',
+        description: '开源页面排版与出版工具，纯 Rust 编写，杂志级多栏文本流排版',
+        href: 'https://github.com/storytold/designcraft',
+        category: '设计资源',
+    },
+    {
         id: 'lrc-edit',
         name: "LRC 歌词编辑器",
         description: "制作和编辑LRC格式的歌词文件，支持时间轴同步、音频播放和实时预览",
@@ -525,6 +581,62 @@ export const devTools: Tool[] = [
         description: "静态网站评论系统的客户端工具，支持API地址配置、评论管理和多层级回复功能",
         href: "/tools/comment-system",
         category: '效率工具',
+    },
+    {
+        id: "magpie",
+        name: "Magpie",
+        description: "每个 Agent 的模型管理，一个地方搞定。Codex 集成 DeepSeek、Claude Code 集成 Kimi，菜单栏直达。",
+        href: "https://github.com/yetone/magpie",
+        category: '开发工具'
+    },
+    {
+        id: "rtk",
+        name: "RTK",
+        description: "Rust 编写的 CLI 代理，对常用开发命令减少 60-90% 的 LLM token 消耗，单二进制文件，零依赖",
+        href: "https://github.com/rtk-ai/rtk",
+        category: '开发工具'
+    },
+    {
+        id: "strix",
+        name: "Strix",
+        description: "开源 AI 渗透测试工具，自动发现并修复应用漏洞",
+        href: "https://github.com/usestrix/strix",
+        category: '开发工具'
+    },
+    {
+        id: "codegraph",
+        name: "CodeGraph",
+        description: "本地代码知识图谱，代码变化时自动同步，供 Claude Code、Cursor、Copilot 等代理使用，减少 token 与工具调用",
+        href: "https://github.com/colbymchenry/codegraph",
+        category: '开发工具'
+    },
+    {
+        id: "shaders",
+        name: "Shaders",
+        description: "面向 Vue、React、Svelte、Solid 等框架的开源 WebGPU 着色器组件库，可组合构建动画背景与交互视觉效果，并提供 MCP 服务",
+        href: "https://shaders.com",
+        category: '开发工具'
+    },
+    {
+        id: "tablepro",
+        name: "TablePro",
+        description: "面向开发者的原生数据库客户端，免费开源",
+        href: "https://github.com/TableProApp/TablePro",
+        category: '开发工具'
+    },
+    {
+        id: "extend-ui",
+        name: "Extend UI",
+        description: "面向文档代理与文档型产品的开源组件库，含 PDF/DOCX/XLSX 查看器、文件浏览与电子签名等 14 个组件，MIT 许可",
+        href: "https://github.com/extend-hq/ui",
+        category: '设计资源'
+    },
+    {
+        id: "glance",
+        name: "Glance",
+        description: "自托管个人仪表盘，把 RSS、天气、日历、股票、待办等所有信息聚合到一页",
+        href: "https://github.com/glanceapp/glance",
+        category: '效率工具'
     },
     {
         id: "expense-tracker",

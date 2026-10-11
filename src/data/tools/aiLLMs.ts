@@ -100,6 +100,20 @@ export const aiLLMs: Tool[] = [
         category: 'AI 模型'
     },
     {
+        id: 'timesfm',
+        name: 'TimesFM',
+        description: 'Google Research 开源的预训练时间序列基础模型，用于零样本时间序列预测',
+        href: 'https://github.com/google-research/timesfm',
+        category: 'AI 模型'
+    },
+    {
+        id: 'moss-transcribe-diarize',
+        name: 'MOSS-Transcribe-Diarize',
+        description: '0.9B 参数的开源语音转写模型，支持 50 多种语言长音频识别、说话人分离、时间戳与声学事件检测',
+        href: 'https://github.com/OpenMOSS/MOSS-Transcribe-Diarize',
+        category: 'AI 模型'
+    },
+    {
         id: 'ocoolai',
         name: 'ocoolAI',
         description: '大模型 API 聚合服务商',

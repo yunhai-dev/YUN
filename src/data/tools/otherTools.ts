@@ -177,6 +177,13 @@ export const otherTools: Tool[] = [
         category: '传输'
     },
     {
+        id: "tinycast",
+        name: "TinyCast",
+        description: "轻量级原生 macOS 启动器，支持快捷键与剪贴板历史",
+        href: "https://github.com/abue-ammar/tinycast",
+        category: '桌面'
+    },
+    {
         id: 'freefilesync',
         name: 'FreeFileSync',
         description: '高效免费的文件同步软件',

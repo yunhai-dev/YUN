@@ -233,6 +233,20 @@ export const aiExt: Tool[] = [
         category: 'Agent Skills'
     },
     {
+        id: 'video-shotcraft',
+        name: 'Video ShotCraft',
+        description: 'AI 视频技能，基于 Remotion 为 Claude Code & Codex 生成电影级产品视频，含 152 张分镜卡、209 个动效预览与可复用模板',
+        href: 'https://github.com/Vincentwei1021/video-shotcraft',
+        category: 'Agent Skills'
+    },
+    {
+        id: 'claude-seo',
+        name: 'Claude SEO',
+        description: 'Claude Code 通用 SEO 技能，26 个子技能 + 19 个子代理，覆盖技术 SEO、E-E-A-T、Schema、GEO、本地 SEO 与电商 SEO，支持 Live SEO 数据与 PDF/Excel 报告',
+        href: 'https://github.com/AgriciDaniel/claude-seo',
+        category: 'Agent Skills'
+    },
+    {
         id: 'ttson-old',
         name: 'TTS-Old',
         description: '文本转语音工具 (旧版)',
@@ -300,6 +314,20 @@ export const aiExt: Tool[] = [
         name: 'Macro',
         description: '将电子邮件、消息、文档、任务、客服人员和 CRM 整合到一个快速便捷的界面中，并共享团队级内存。',
         href: 'https://github.com/macro-inc/macro',
+        category: 'AI 工具'
+    },
+    {
+        id: 'codex-provider-sync',
+        name: 'Codex Provider Sync',
+        description: '同步 Codex 会话 provider 元数据至 rollout 文件和 SQLite 状态',
+        href: 'https://github.com/Dailin521/codex-provider-sync',
+        category: 'AI 工具'
+    },
+    {
+        id: 'openvoiceos',
+        name: 'OpenVoiceOS',
+        description: '开源语音助手 AI 平台，Mycroft 社区分叉，可自托管部署在树莓派与 Linux 设备上',
+        href: 'https://github.com/OpenVoiceOS/ovos-core',
         category: 'AI 工具'
     },
 ];
