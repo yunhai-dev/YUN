@@ -478,6 +478,178 @@ autossh -fN -R 3000:localhost:22 user@remote_host
 
 
 
+## scp 基本使用：通过 SSH 复制文件
+
+`scp` 适合临时上传、下载文件或复制整个目录，传输通过 SSH 加密。它不会做增量同步，重复执行会重新传输文件；经常同步大目录时，更适合使用下一节的 `rsync`。
+
+以下示例中的 `user`、`remote_host` 和路径都需要替换为实际值。请先确认能通过 `ssh user@remote_host` 登录，且目标目录已存在、当前用户有写入权限。配置了 SSH 免密登录后，文件传输也可以使用相同的密钥。
+
+### 1. 基本语法
+
+```bash
+scp [选项] 源路径 目标路径
+```
+
+远程路径写成 `user@remote_host:/path/to/file`；不带主机信息的路径表示本地路径。
+
+### 2. 上传与下载文件
+
+```bash
+# 将本地文件上传到远程服务器
+scp ./report.txt user@remote_host:/home/user/
+
+# 上传时重命名文件
+scp ./report.txt user@remote_host:/home/user/report-backup.txt
+
+# 将远程文件下载到本地当前目录
+scp user@remote_host:/home/user/report.txt ./
+```
+
+### 3. 复制目录
+
+使用 `-r` 递归复制目录及其内容：
+
+```bash
+# 上传本地目录（结果为 /home/user/project）
+scp -r ./project user@remote_host:/home/user/
+
+# 下载远程目录到本地当前目录
+scp -r user@remote_host:/home/user/project ./
+```
+
+### 4. 指定端口与私钥
+
+```bash
+# 使用 2222 端口，注意 scp 的端口参数是大写 -P
+scp -P 2222 ./report.txt user@remote_host:/home/user/
+
+# 指定私钥，并保留文件的修改时间、访问时间和权限模式
+scp -i ~/.ssh/id_ed25519 -p ./report.txt user@remote_host:/home/user/
+```
+
+| 选项 | 作用 |
+| --- | --- |
+| `-r` | 递归复制目录 |
+| `-P 2222` | 指定 SSH 端口（大写 `P`） |
+| `-i 私钥路径` | 指定身份验证使用的私钥 |
+| `-p` | 保留修改时间、访问时间和权限模式（小写 `p`） |
+| `-C` | 启用传输压缩，对文本更有帮助，已压缩文件通常收益有限 |
+
+> 注意：目标位置已有同名文件时，`scp` 通常会直接覆盖，不会询问。重要文件请先备份；路径含空格时，应使用引号包裹整个路径参数。
+
+---
+
+## rsync 基本使用：增量同步文件与目录
+
+`rsync` 适合备份、部署以及反复同步目录。默认根据文件大小和修改时间判断是否需要更新；通过 SSH 同步时，可仅传输文件中发生变化的数据，减少重复传输。
+
+### 1. 安装与基本语法
+
+通过 SSH 使用 `rsync` 时，本地和远程服务器都需要安装 `rsync`，并确保 SSH 登录可用。
+
+```bash
+# Ubuntu / Debian（本地和远程按需安装）
+sudo apt update
+sudo apt install rsync
+
+# 查看版本
+rsync --version
+```
+
+```bash
+rsync [选项] 源路径 目标路径
+```
+
+以下示例使用单冒号的 `user@remote_host:/path/` 写法，通过 SSH 连接，不需要单独启动 rsync 守护进程。
+
+### 2. 本地同步、上传与下载
+
+```bash
+# 本地目录同步
+rsync -avh ./source/ ./backup/
+
+# 上传本地目录的内容到远程目录
+rsync -avh --progress ./project/ user@remote_host:/home/user/project/
+
+# 将远程目录的内容下载到本地目录
+rsync -avh --progress user@remote_host:/home/user/project/ ./project/
+
+# 上传单个文件
+rsync -avh ./report.txt user@remote_host:/home/user/
+```
+
+请确保目标父目录已存在且可写。重复执行同一条命令时，`rsync` 会跳过其判断为未变化的文件。默认不会删除目标目录中多出来的文件，但会更新同路径的文件。
+
+### 3. 注意源目录末尾的斜杠
+
+这是使用 `rsync` 时最容易混淆的地方。假设 `/backup/` 已存在：
+
+```bash
+# 带斜杠：复制 project 目录中的内容到 /backup/
+rsync -avh ./project/ /backup/
+
+# 不带斜杠：复制 project 目录本身，结果为 /backup/project/
+rsync -avh ./project /backup/
+```
+
+简单记忆：**源目录末尾有 `/`，同步内容；没有 `/`，同步目录本身。**
+
+### 4. 指定 SSH 端口与私钥
+
+```bash
+rsync -avh --progress \
+  -e "ssh -p 2222 -i ~/.ssh/id_ed25519" \
+  ./project/ user@remote_host:/home/user/project/
+```
+
+这里使用的是 SSH 的小写 `-p` 端口参数。`rsync` 自身的 `-p` 表示保留权限，不能用来指定 SSH 端口。
+
+### 5. 排除不需要同步的内容
+
+```bash
+rsync -avh \
+  --exclude='node_modules/' \
+  --exclude='.git/' \
+  --exclude='.env' \
+  ./project/ user@remote_host:/home/user/project/
+```
+
+也可以把规则写入 `rsync-exclude.txt`，每行一条，再使用 `--exclude-from=rsync-exclude.txt` 加载。排除规则不会清理目标端已经存在的敏感文件，因此不要仅依靠排除 `.env` 来处理已经上传的凭据。
+
+### 6. 先预演，再执行镜像同步
+
+加上 `--delete` 后，目标目录中源目录没有的文件也会被删除（默认排除规则保护的文件除外）。**只有确实需要让目标与源保持一致时才使用，并先检查同步方向和目录路径。**
+
+```bash
+# 第一步：仅预览变更和删除，不实际修改文件
+rsync -avhn --delete --itemize-changes \
+  ./project/ user@remote_host:/home/user/project/
+
+# 第二步：确认预览无误后，去掉 -n 执行
+rsync -avh --delete --itemize-changes \
+  ./project/ user@remote_host:/home/user/project/
+```
+
+### 7. 常用选项速查
+
+| 选项 | 作用 |
+| --- | --- |
+| `-a` | 归档模式，递归同步并保留符号链接、权限、时间等元数据；属主、属组等能否保留取决于权限 |
+| `-v` | 显示详细信息 |
+| `-h` | 以易读格式显示大小 |
+| `-z` | 压缩传输数据，适合文本；已压缩文件通常不必开启 |
+| `--progress` | 显示单个文件的传输进度 |
+| `-P` | 等同于 `--partial --progress`，保留未完成文件并显示进度，便于再次运行时复用已传输的数据 |
+| `-n` / `--dry-run` | 预演操作，不实际修改文件 |
+| `--itemize-changes` | 列出各文件的变化类型 |
+| `--exclude='规则'` | 排除匹配的文件或目录 |
+| `--delete` | 删除目标目录中源目录没有的文件，谨慎使用 |
+| `-e "ssh ..."` | 自定义 SSH 连接参数 |
+
+> `-a` 不包含硬链接、ACL 和扩展属性的保留；如果需要完整的系统级备份，应根据文件系统、权限和 rsync 版本另外评估 `-H`、`-A`、`-X` 等选项。
+
+---
+
 ## fd 的安装及使用
 
 [fd](https://github.com/cha0ran/fd-zh)
