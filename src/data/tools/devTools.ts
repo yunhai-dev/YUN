@@ -51,6 +51,13 @@ export const devTools: Tool[] = [
         category: '开发工具',
     },
     {
+        id: 'boardui',
+        name: 'BoardUI',
+        description: '面向仪表盘与智能体界面的 React 设计系统：103 个组件（含 19 个图表卡片）、10 个 Pro 模板，基于 Tailwind CSS v4 + React Aria，可通过 MCP 让 AI 智能体直接安装调用，免费版 MIT 开源',
+        href: 'https://www.boardui.com/zh-hans',
+        category: '开发工具',
+    },
+    {
         id: 'gpui',
         name: 'GPUI',
         description: '由 Zed 的创建者开发的快速、高效的 Rust UI 框架。',
@@ -83,6 +90,13 @@ export const devTools: Tool[] = [
         name: 'React Flow',
         description: '用于构建节点图和流程图的 React 库，支持拖放、缩放和平移',
         href: 'https://reactflow.dev/',
+        category: '开发工具',
+    },
+    {
+        id: 'antv-infographic',
+        name: 'AntV Infographic',
+        description: '蚂蚁 AntV 的声明式信息图可视化引擎，约 200 套内置模板，语法为 AI 生成调优，支持流式渲染与 SVG 高质量输出',
+        href: 'https://github.com/antvis/infographic',
         category: '开发工具',
     },
     {
@@ -622,6 +636,13 @@ export const devTools: Tool[] = [
         name: "TablePro",
         description: "面向开发者的原生数据库客户端，免费开源",
         href: "https://github.com/TableProApp/TablePro",
+        category: '开发工具'
+    },
+    {
+        id: "semantic-release",
+        name: "semantic-release",
+        description: "基于 Conventional Commits 的全自动版本管理与发布工具，自动判定版本号、生成 Changelog 并发布到 npm/GitHub",
+        href: "https://github.com/semantic-release/semantic-release",
         category: '开发工具'
     },
     {

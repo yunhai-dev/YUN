@@ -93,6 +93,13 @@ export const aiLLMs: Tool[] = [
         category: 'AI 模型'
     },
     {
+        id: 'embeddinggemma-2',
+        name: 'EmbeddingGemma 2',
+        description: 'Google 新发布的可完全本地运行的 7.4 亿参数多模态嵌入模型，统一映射文本、图像、音频与视频帧，支撑 Foresight 离线检索',
+        href: 'https://developers.google.com/edge/foresight',
+        category: 'AI 模型'
+    },
+    {
         id: 'bd-unlimited-ocr',
         name: 'Unlimited-OCR',
         description: '百度开源一次性长时域解析OCR模型',
@@ -111,6 +118,27 @@ export const aiLLMs: Tool[] = [
         name: 'MOSS-Transcribe-Diarize',
         description: '0.9B 参数的开源语音转写模型，支持 50 多种语言长音频识别、说话人分离、时间戳与声学事件检测',
         href: 'https://github.com/OpenMOSS/MOSS-Transcribe-Diarize',
+        category: 'AI 模型'
+    },
+    {
+        id: 'laya',
+        name: 'Laya',
+        description: 'ConvAI Innovations 开源的非自回归 System 1 决策模型，不生成文本、只返回带校准概率的类型化答案，单次前向约 33ms，支持 100+ 语言，适合分类、路由、打分、风控与内容审核',
+        href: 'https://huggingface.co/convaiinnovations/laya',
+        category: 'AI 模型'
+    },
+    {
+        id: 'vllm-sr-decision-3',
+        name: 'Decision 3.0（vLLM Semantic Router）',
+        description: 'vLLM Semantic Router 开源多模态基础决策模型家族，不生成文本、一次调用返回所有答案的校准概率；旗舰 d3 为 26B（Jev 决策指数公开套件 65.45），另有 8B/5B/2B/0.9B/0.6B 的 flash/mini/nano/lite/edge 版本，支持文本、JSON、图像与视频输入',
+        href: 'https://huggingface.co/collections/vllm-sr/decision-30',
+        category: 'AI 模型'
+    },
+    {
+        id: 'minicpm5-2b',
+        name: 'MiniCPM5-2B',
+        description: 'OpenBMB（面壁智能）MiniCPM5 系列 2.5B 端侧小钢炮，2B 级开源 SOTA（平均 53.9，甚至超过同榜 4B 模型），主打代码、数学、128K 长上下文、工具调用与 Agent，配套 GGUF/MLX/GPTQ/LiteRT 全格式，Apache-2.0',
+        href: 'https://huggingface.co/openbmb/MiniCPM5-2B',
         category: 'AI 模型'
     },
     {

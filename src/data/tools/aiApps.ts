@@ -72,6 +72,13 @@ export const aiApps: Tool[] = [
         category: 'AI 应用',
     },
     {
+        id: 'opik',
+        name: 'Opik',
+        description: 'Comet 出品的开源 LLM 可观测性与评估平台：LLM/RAG/Agent 全链路 Tracing、自动化评估、Prompt Playground 与生产监控，原生集成 OpenAI、LangChain、LlamaIndex',
+        href: 'https://github.com/comet-ml/opik',
+        category: 'AI 应用',
+    },
+    {
         id: 'astrbot',
         name: 'AstrBot',
         description: '一站式 Agent 聊天机器人平台，支持 QQ、微信、飞书、钉钉等多平台',
@@ -83,6 +90,13 @@ export const aiApps: Tool[] = [
         name: 'Hyprnote',
         description: '本地优先的 AI 会议笔记应用，实时转录、智能摘要，支持离线运行',
         href: 'https://github.com/fastrepl/hyprnote',
+        category: 'AI 应用',
+    },
+    {
+        id: 'google-foresight',
+        name: 'Google AI Edge Foresight',
+        description: 'Google 推出的 Mac 端完全离线 AI 会议助手，本地完成会议转写、简短笔记增强与个人知识库检索，基于 Gemma 4 与 EmbeddingGemma 2，免费且保护隐私',
+        href: 'https://developers.google.com/edge/foresight',
         category: 'AI 应用',
     },
     {

@@ -224,5 +224,19 @@ export const systemTools: Tool[] = [
     description: "零信任网络管理平台，基于 WireGuard 的对等加密网络，安全连接人、机器与 AI 代理，统一身份认证，支持自托管",
     href: "https://github.com/netbirdio/netbird",
     category: "网络工具",
+  },
+  {
+    id: "homelable",
+    name: "Homelable",
+    description: "自托管 Homelab 基础设施可视化与监控：交互式网络拓扑图、网络扫描、Proxmox/Zigbee/Z-Wave 导入、机柜布线画布、Markdown 文档空间与存活监控，还带 MCP 服务",
+    href: "https://github.com/Pouzor/homelable",
+    category: "网络工具",
+  },
+  {
+    id: "tailscale",
+    name: "Tailscale",
+    description: "基于 WireGuard 的零配置异地组网工具，多设备一键组成虚拟局域网，支持跨平台、子网路由、出口节点与 Taildrop 文件互传",
+    href: "https://tailscale.com/",
+    category: "网络工具",
   }
 ];
