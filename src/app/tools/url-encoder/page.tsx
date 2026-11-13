@@ -117,7 +117,7 @@ const UrlEncoderPage = () => {
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
                             placeholder="在此处输入需要编码或解码的文本..."
-                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                         />
                     </div>
 
@@ -129,7 +129,7 @@ const UrlEncoderPage = () => {
                             <select
                                 value={mode}
                                 onChange={(e) => setMode(e.target.value as EncodingMode)}
-                                className="px-3 py-2 border border-input rounded-md bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring min-w-[180px]"
+                                className="px-3 py-2 border border-input rounded-md bg-background text-sm focus:outline-hidden focus:ring-1 focus:ring-ring min-w-[180px]"
                             >
                                 <option value="encodeURIComponent">encodeURIComponent</option>
                                 <option value="encodeURI">encodeURI</option>

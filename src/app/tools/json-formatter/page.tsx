@@ -379,7 +379,7 @@ const JsonFormatterPage = () => {
                     )}
 
                     <div
-                        className={`flex flex-col border border-input rounded-md overflow-hidden bg-background shadow-sm ${isFullscreen ? 'flex-1' : 'h-[80vh]'}`}>
+                        className={`flex flex-col border border-input rounded-md overflow-hidden bg-background shadow-xs ${isFullscreen ? 'flex-1' : 'h-[80vh]'}`}>
                         {/* 顶部工具栏 */}
                         <div className="flex flex-wrap items-center p-2 border-b border-input bg-card gap-1">
                             <div className="flex items-center gap-0.5 border-r border-input pr-2 mr-1">
@@ -473,7 +473,7 @@ const JsonFormatterPage = () => {
                                 <textarea
                                     value={inputJson}
                                     onChange={(e) => setInputJson(e.target.value)}
-                                    className="w-full h-full p-4 bg-background font-mono resize-none focus:outline-none border-0 leading-relaxed whitespace-pre-wrap"
+                                    className="w-full h-full p-4 bg-background font-mono resize-none focus:outline-hidden border-0 leading-relaxed whitespace-pre-wrap"
                                     style={{fontSize: `${fontSize}px`}}
                                     placeholder="在此输入 JSON 数据..."
                                     spellCheck={false}
@@ -492,7 +492,7 @@ const JsonFormatterPage = () => {
                                 onMouseDown={handleMouseDown}
                             >
                                 <div
-                                    className="absolute w-4 h-8 bg-muted border border-border rounded-full flex items-center justify-center shadow-sm">
+                                    className="absolute w-4 h-8 bg-muted border border-border rounded-full flex items-center justify-center shadow-xs">
                                     <div className="w-0.5 h-4 bg-muted-foreground/50 mx-0.5 rounded-full"></div>
                                 </div>
                             </div>

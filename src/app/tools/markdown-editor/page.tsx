@@ -603,7 +603,7 @@ ${selection}
                     )}
 
                     <div
-                        className={`flex flex-col border border-input rounded-md overflow-hidden bg-background shadow-sm ${isFullscreen ? 'h-full' : ''}`}>
+                        className={`flex flex-col border border-input rounded-md overflow-hidden bg-background shadow-xs ${isFullscreen ? 'h-full' : ''}`}>
                         {/* Typora 风格工具栏 */}
                         <div className="flex flex-wrap items-center p-2 border-b border-input bg-card gap-1">
                             {/* 标题组 */}
@@ -731,7 +731,7 @@ ${selection}
                                     value={markdownText}
                                     onChange={(e) => setMarkdownText(e.target.value)}
                                     onKeyDown={handleKeyDown}
-                                    className="w-full h-full p-6 bg-background font-mono text-sm focus:outline-none focus:ring-0 overflow-y-auto resize-none border-0 leading-relaxed"
+                                    className="w-full h-full p-6 bg-background font-mono text-sm focus:outline-hidden focus:ring-0 overflow-y-auto resize-none border-0 leading-relaxed"
                                     placeholder="在此输入 Markdown 文本..."
                                     spellCheck={false}
                                 />
@@ -743,7 +743,7 @@ ${selection}
                                 onMouseDown={handleMouseDown}
                             >
                                 <div
-                                    className="absolute w-4 h-8 bg-muted border border-border rounded-full flex items-center justify-center shadow-sm">
+                                    className="absolute w-4 h-8 bg-muted border border-border rounded-full flex items-center justify-center shadow-xs">
                                     <div className="w-0.5 h-4 bg-muted-foreground/50 mx-0.5 rounded-full"></div>
                                 </div>
                             </div>
@@ -838,7 +838,7 @@ ${selection}
                                         }}
                                         placeholder={selectedText ? `改写选中的 ${selectedText.length} 字...` : "描述你想生成的内容..."}
                                         rows={1}
-                                        className="flex-1 min-h-[36px] py-1 resize-none border-none focus:outline-none focus:ring-0 bg-transparent text-sm"
+                                        className="flex-1 min-h-[36px] py-1 resize-none border-none focus:outline-hidden focus:ring-0 bg-transparent text-sm"
                                         style={{maxHeight: '100px'}}
                                         autoFocus
                                     />

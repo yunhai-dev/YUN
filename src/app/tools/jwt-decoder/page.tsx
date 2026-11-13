@@ -90,7 +90,7 @@ const JwtDecoderPage = () => {
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
                             placeholder="粘贴 JWT Token..."
-                            className="w-full h-48 p-3 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                            className="w-full h-48 p-3 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                         />
                     </div>
 

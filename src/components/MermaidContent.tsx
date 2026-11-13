@@ -39,7 +39,7 @@ export function MermaidContent({ content }: MermaidContentProps) {
       className="prose prose-invert max-w-none prose-headings:scroll-mt-32
         prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-[#30363d] prose-pre:rounded-lg
         prose-code:text-[#e6edf3] prose-code:bg-[#161b22] prose-code:rounded-md prose-code:px-1 prose-code:py-0.5
-        prose-pre:!p-0 [&_pre]:overflow-x-auto [&_pre]:p-4"
+        prose-pre:p-0! [&_pre]:overflow-x-auto [&_pre]:p-4"
     />
   );
 } 

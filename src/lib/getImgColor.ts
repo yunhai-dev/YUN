@@ -188,7 +188,11 @@ async function extractColorsFromImage(
     return colors.map(c => `#${toHex(Math.round(c[0]))}${toHex(Math.round(c[1]))}${toHex(Math.round(c[2]))}`);
 }
 
-function createFallbackPalette(colorCount: number): string[] {
+/**
+ * Deterministic palette used when the image cannot be read. Exported so callers that cache the
+ * result (e.g. the media player) can tell a real extraction from this failure fallback.
+ */
+export function createFallbackPalette(colorCount: number): string[] {
     const basePalette = ['#1f2937', '#334155', '#0f172a', '#1e3a8a', '#312e81'];
     return Array.from({ length: colorCount }, (_, index) => basePalette[index % basePalette.length]);
 }

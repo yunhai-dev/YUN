@@ -264,7 +264,7 @@ const ChatClient = () => {
                             value={input}
                             placeholder="询问任何问题"
                             rows={1}
-                            className="flex-1 min-h-[40px] py-2 px-2 resize-none border-none focus:outline-none focus:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground leading-6"
+                            className="flex-1 min-h-[40px] py-2 px-2 resize-none border-none focus:outline-hidden focus:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground leading-6"
                             style={{ maxHeight: '200px' }}
                         />
                         <div className={`flex items-center gap-1 shrink-0 ${isMultiline ? 'self-end mb-0.5' : ''}`}>

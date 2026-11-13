@@ -1213,7 +1213,7 @@ function NextPaydayCard({ expenses, paydays }: { expenses: Expense[]; paydays: n
     const dayLabel = daysUntil === 0 ? '就是今天' : `还有 ${daysUntil} 天`;
 
     return (
-        <div className="relative overflow-hidden rounded-xl border-2 border-emerald-500/70 dark:border-emerald-500/60 bg-gradient-to-br from-emerald-50 to-emerald-100/70 dark:from-emerald-950 dark:via-emerald-900/80 dark:to-emerald-950 p-4 shadow-sm dark:shadow-[0_0_0_1px_rgba(16,185,129,0.15),0_8px_24px_-8px_rgba(16,185,129,0.25)]">
+        <div className="relative overflow-hidden rounded-xl border-2 border-emerald-500/70 dark:border-emerald-500/60 bg-gradient-to-br from-emerald-50 to-emerald-100/70 dark:from-emerald-950 dark:via-emerald-900/80 dark:to-emerald-950 p-4 shadow-xs dark:shadow-[0_0_0_1px_rgba(16,185,129,0.15),0_8px_24px_-8px_rgba(16,185,129,0.25)]">
             <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 blur-2xl pointer-events-none" />
             <div className="relative">
                 <div className="flex items-center justify-between mb-1">
@@ -1380,7 +1380,7 @@ function ExpenseDialog({
                             id="category"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
                         >
                             {existingCategories.length === 0 && (
                                 <option value="__custom__">+ 新建分类...</option>
@@ -1409,7 +1409,7 @@ function ExpenseDialog({
                             id="cycle"
                             value={cycle}
                             onChange={(e) => setCycle(e.target.value as Cycle)}
-                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
                         >
                             {(Object.keys(CYCLE_LABELS) as Cycle[]).map((k) => (
                                 <option key={k} value={k}>

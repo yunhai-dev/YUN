@@ -139,7 +139,7 @@ export function DocsMobileSidebar({navigation}: DocsMobileSidebarProps) {
             </button>
 
             {isOpen && (
-                <div className="fixed inset-0 z-50 bg-background bg-opacity-95 overflow-y-auto p-4 pt-20">
+                <div className="fixed inset-0 z-50 bg-background/95 overflow-y-auto p-4 pt-20">
                     <button
                         onClick={() => setIsOpen(false)}
                         className="absolute top-4 right-4 text-muted-foreground hover:text-white p-2"

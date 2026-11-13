@@ -177,7 +177,7 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
 
   return (
     <div className={cn(
-      "flex flex-col h-full rounded-lg border border-border bg-card overflow-hidden shadow-sm",
+      "flex flex-col h-full rounded-lg border border-border bg-card overflow-hidden shadow-xs",
       className
     )}>
       {/* 终端头部 */}
@@ -257,7 +257,7 @@ const TerminalPlayer: React.FC<TerminalPlayerProps> = ({
               onClick={() => handleProgressClick(index)}
               className={cn(
                 "flex-1 h-1.5 rounded-full transition-all duration-300",
-                "hover:scale-y-150 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1",
+                "hover:scale-y-150 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-1",
                 index < currentCommandIndex
                   ? 'bg-primary'
                   : index === currentCommandIndex

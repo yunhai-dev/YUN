@@ -243,4 +243,9 @@ const commands: TerminalCommand[] = [
 
 ## 许可证
 
-GNU GPL v3 
+本项目采用双许可证：
+
+- **代码** —— 除另有说明外，所有源代码：[GNU Affero General Public License v3.0](LICENSE)（AGPL-3.0）。
+- **内容** —— `src/content/` 下的文章、文档与 API 笔记：[知识共享 署名-非商业性使用-相同方式共享 4.0 国际](src/content/LICENSE)（CC BY-NC-SA 4.0）。
+
+第三方组件遵循其各自许可证；移植的 Folia 运行时见 `src/app/media/[id]/player/folia/NOTICE.md`。 

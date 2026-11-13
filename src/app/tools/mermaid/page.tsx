@@ -230,7 +230,7 @@ const MermaidPage = () => {
                             value={inputCode}
                             onChange={(e) => setInputCode(e.target.value)}
                             placeholder="在此处输入您的 Mermaid 代码..."
-                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                         />
                     </div>
                     <div>
@@ -239,7 +239,7 @@ const MermaidPage = () => {
                         </label>
                         <div 
                             ref={previewRef}
-                            className="relative w-full h-96 p-2 border border-input rounded-md bg-muted/30 select-none focus:outline-none focus:ring-1 focus:ring-ring overflow-hidden"
+                            className="relative w-full h-96 p-2 border border-input rounded-md bg-muted/30 select-none focus:outline-hidden focus:ring-1 focus:ring-ring overflow-hidden"
                             onWheel={handleWheel}
                             onMouseDown={handleMouseDown}
                             onMouseMove={handleMouseMove}
@@ -330,7 +330,7 @@ const MermaidPage = () => {
                             id="themeSelect"
                             value={theme}
                             onChange={(e) => setTheme(e.target.value as 'default' | 'dark' | 'forest' | 'neutral')}
-                            className="bg-background border border-input rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                            className="bg-background border border-input rounded-md px-2 py-1 text-sm focus:outline-hidden focus:ring-1 focus:ring-ring"
                         >
                             <option value="default">默认</option>
                             <option value="dark">暗色</option>
@@ -409,7 +409,7 @@ const MermaidPage = () => {
                                 }}
                                 placeholder={inputCode.trim() ? "描述你想如何修改图表..." : "描述你想生成的图表..."}
                                 rows={1}
-                                className="flex-1 min-h-[36px] py-1 resize-none border-none focus:outline-none focus:ring-0 bg-transparent text-sm"
+                                className="flex-1 min-h-[36px] py-1 resize-none border-none focus:outline-hidden focus:ring-0 bg-transparent text-sm"
                                 style={{maxHeight: '100px'}}
                                 autoFocus
                             />

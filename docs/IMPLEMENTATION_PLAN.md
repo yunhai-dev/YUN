@@ -20,3 +20,75 @@
     - Import/export JSON
   - [ ] Browser verification with Chrome DevTools MCP
   - See `docs/plan/expense-tracker.md`
+
+- [ ] Folia player integration (background + player page)
+  - [x] Shell backdrop: vendored latent paper-shader background (mesh + dithering)
+  - [x] Bottom subtitle overlay (yields to the expanded control pill)
+  - [x] Player chrome fidelity (idle auto-hide + cursor hide)
+  - [ ] Additional visualizer modes + shared registry
+    - [x] 倾诉 Tilt（vendored DOM typography mode）
+    - [x] 莫奈 Monet（vendored poster layout + measured lyric rail）
+    - [x] 凝彩 Tempera（vendored Pixi director + 15 compositions）
+    - [x] 云阶 Partita（GlowWord 分栏阶梯）
+    - [x] Mindscape Cadenza（Pixi 碎片构境）
+    - [x] Cappella（气泡消息样式）
+    - [x] Claddagh（环形歌词）
+    - [x] Luminous Classic（GlowWord 经典版）
+    - [x] 雾笺 Nebbia（WebGL 雨雾场景）
+    - [x] Fume（画布烟雾排版）
+    - [x] 花火 Hanabi（Pixi 烟花 + 文本）
+    - [x] 绘光 Lumiere（Pixi 线稿 + 光场）
+    - [x] 町景 Machi（three.js 街景引擎）
+    - [x] Pendolo（摆锤排版）
+    - [x] Still（静态极简）
+  - [x] Player settings sheet (style, background, subtitle, idle chrome; localStorage)
+  - [ ] Per-style visualizer tunings
+  - [x] Smart transitions — equal-power crossfade (double deck, Web Audio; 1–12s preference)
+  - [ ] Autoplay analysis (beat/HTDemucs automix) — deferred, see `docs/plan/folia-smart-transition.md`
+  - See `docs/plan/folia-player-integration.md`
+
+- [ ] Preset lyric themes for built-in tracks (Folia `Theme`)
+  - [x] Data model + closed icon vocabulary (`MediaTheme`, `THEME_ICON_NAMES`)
+  - [x] Adapter wiring (`toFoliaTheme(palette, preset)`, preset palette short-circuit)
+  - [x] Lucide resolver + Sonnet SVG data URLs (37-icon curated table)
+  - [x] Enable dormant icon layers (Monet decor, Machi/Geometric/Hanabi/Nebbia/Lumiere/Pendolo)
+  - [x] Provider gate: preset theme names on konbini signs
+  - [x] Author all 208 themes in 10 batches (parallel subagents)
+  - [x] Validation (`scripts/validate-media-themes.mjs`, tsc, ESLint, LRC keyword check)
+  - [ ] Visual pass in the dev server (user)
+  - See `docs/plan/folia-preset-themes.md`
+
+- [x] Folia shell background types
+  - [x] Shared contract (`backgrounds/definition.ts`) + `twgl.js` dependency
+  - [x] 通用 Common (FluidBackground + GeometricBackground)
+  - [x] 莫奈 Monet (cover image treatment + drift; worker pipeline)
+  - [x] 漫游 Nomand (paper-shaders image effects)
+  - [x] 空 Sora (twgl starfield)
+  - [x] 嵌入 URL (sanitized iframe layer)
+  - [x] Integration: backdrop dispatch, player prefs, settings picker
+  - [x] Static validation (tsc, ESLint)
+  - [ ] Visual pass in the dev server (user)
+  - See `docs/plan/folia-backgrounds.md`
+
+- [ ] Tailwind CSS v4 upgrade (align with upstream Folia)
+  - [x] Inventory v3-only usage outside `src/app/media/[id]/player/folia`
+  - [x] Dependencies + PostCSS plugin
+  - [x] CSS entry (`@import "tailwindcss"` + `@config` + `@plugin` + `@custom-variant`)
+  - [x] Class renames in app/shadcn code (opacity, backdrop blur, outline, shadow scale)
+  - [x] Revert the Fume centering workaround (upstream classes now correct)
+  - [x] Static validation (Tailwind compile, tsc, ESLint)
+  - [ ] Visual regression pass in the dev server (user)
+  - See `docs/plan/tailwind-v4-upgrade.md`
+
+- [ ] Folia visualizer player (商籁 + 镜台)
+  - [x] Enhanced LRC word-timing layer with even-split fallback
+  - [x] Vendor Folia Sonnet/Diorama runtime (AGPL-3.0) with neutral app-service stubs
+  - [x] LRC/palette adapters + MotionValue audio bridge
+  - [x] Third player style: visualizer shell + mode switch
+  - [x] Remove the immersive/apple players (visualizer is now the only style)
+  - [x] 商籁 Sonnet host using the vendored Pixi runtime
+  - [x] 镜台 Diorama host using the vendored React Three Fiber scene
+  - [x] Lyrics timeline panel (vertical rail, click-to-seek, active line follows playback)
+  - [x] Type-check, ESLint and production build pass
+  - [ ] Browser regression pass (requires manual verification)
+  - See `docs/plan/folia-visualizer.md`

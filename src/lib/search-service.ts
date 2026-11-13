@@ -12,6 +12,17 @@ type SearchDoc = {
 let searchIndex: MiniSearch | null = null;
 let searchIndexPromise: Promise<MiniSearch | null> | null = null;
 
+// The same URL can be listed under multiple tool categories, and media/docs ids
+// share one namespace here. MiniSearch rejects duplicate ids, so keep the first.
+const dedupeById = (docs: SearchDoc[]) => {
+  const seen = new Set<string>();
+  return docs.filter((doc) => {
+    if (seen.has(doc.id)) return false;
+    seen.add(doc.id);
+    return true;
+  });
+};
+
 const buildSearchIndex = (data: SearchDoc[]) => {
   const tools = getAllTools().map((tool) => ({
     id: tool.href,
@@ -31,7 +42,7 @@ const buildSearchIndex = (data: SearchDoc[]) => {
     fields: ["title", "content"],
     storeFields: ["id", "title", "content", "type"],
   });
-  ms.addAll([...data, ...tools, ...medias]);
+  ms.addAll(dedupeById([...data, ...tools, ...medias]));
   return ms;
 };
 

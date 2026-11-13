@@ -647,7 +647,7 @@ export default function SharePage() {
                                     placeholder="输入邮箱搜索项目"
                                     value={email}
                                     onChange={handleEmailChange}
-                                    className="px-3 py-1 pr-8 border rounded-md text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-primary w-full sm:w-60"
+                                    className="px-3 py-1 pr-8 border rounded-md text-sm bg-transparent focus:outline-hidden focus:ring-2 focus:ring-primary w-full sm:w-60"
                                 />
                                 {email && (
                                     <button
@@ -905,7 +905,7 @@ export default function SharePage() {
                                                                 placeholder="输入验证令牌"
                                                                 value={verifyTokens[project.id] || ''}
                                                                 onChange={(e) => handleVerifyTokenChange(project.id, e.target.value)}
-                                                                className="px-3 py-1 border rounded-md text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                                                                className="px-3 py-1 border rounded-md text-sm bg-transparent focus:outline-hidden focus:ring-2 focus:ring-primary"
                                                             />
                                                             <Button
                                                                 variant="outline"

@@ -598,7 +598,7 @@ const P2PTransferPage = () => {
                                         <textarea
                                             value={localSDP}
                                             readOnly
-                                            className="w-full h-32 p-3 border border-input rounded-lg bg-muted font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                                            className="w-full h-32 p-3 border border-input rounded-lg bg-muted font-mono text-xs text-foreground resize-none focus:outline-hidden focus:ring-2 focus:ring-ring"
                                             placeholder="正在生成连接码..."
                                         />
                                         <Button
@@ -641,7 +641,7 @@ const P2PTransferPage = () => {
                                     value={remoteSDP}
                                     onChange={(e) => setRemoteSDP(e.target.value)}
                                     placeholder="在此粘贴接收方的连接码..."
-                                    className="w-full h-32 p-3 border border-input rounded-lg bg-background font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                                    className="w-full h-32 p-3 border border-input rounded-lg bg-background font-mono text-xs text-foreground resize-none focus:outline-hidden focus:ring-2 focus:ring-ring"
                                 />
                                 <Button
                                     onClick={handleApplyAnswer}
@@ -676,7 +676,7 @@ const P2PTransferPage = () => {
                                     value={remoteSDP}
                                     onChange={(e) => setRemoteSDP(e.target.value)}
                                     placeholder="在此粘贴发送方的连接码..."
-                                    className="w-full h-32 p-3 border border-input rounded-lg bg-background font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                                    className="w-full h-32 p-3 border border-input rounded-lg bg-background font-mono text-xs text-foreground resize-none focus:outline-hidden focus:ring-2 focus:ring-ring"
                                 />
                                 <Button
                                     onClick={handleReceiveOffer}
@@ -707,7 +707,7 @@ const P2PTransferPage = () => {
                                         <textarea
                                             value={localSDP}
                                             readOnly
-                                            className="w-full h-32 p-3 border border-input rounded-lg bg-muted font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                                            className="w-full h-32 p-3 border border-input rounded-lg bg-muted font-mono text-xs text-foreground resize-none focus:outline-hidden focus:ring-2 focus:ring-ring"
                                         />
                                         <Button
                                             onClick={handleCopyToClipboard}

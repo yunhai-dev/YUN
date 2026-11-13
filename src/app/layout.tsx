@@ -132,7 +132,7 @@ export default function RootLayout({
                     {/* 跳过导航链接 - 可访问性优化 */}
                     <a
                         href="#main-content"
-                        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none"
+                        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-hidden"
                     >
                         跳过导航，直达内容
                     </a>

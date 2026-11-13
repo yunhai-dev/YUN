@@ -21,12 +21,12 @@ export default function LoginPage() {
                         <input
                             type="text"
                             placeholder="Username"
-                            className="w-full p-2 bg-background rounded border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                            className="w-full p-2 bg-background rounded border border-border focus:outline-hidden focus:ring-1 focus:ring-primary"
                         />
                         <input
                             type="password"
                             placeholder="Password"
-                            className="w-full p-2 bg-background rounded border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                            className="w-full p-2 bg-background rounded border border-border focus:outline-hidden focus:ring-1 focus:ring-primary"
                         />
                         <button
                             type="submit"

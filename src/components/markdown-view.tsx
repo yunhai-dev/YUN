@@ -61,13 +61,13 @@ const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
     const baseClasses = `prose max-w-none prose-headings:scroll-mt-32
           prose-pre:border prose-pre:rounded-lg
           prose-code:font-mono prose-code:rounded-md prose-code:px-1 prose-code:py-0.5
-          prose-pre:!p-0 [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre_code]:font-mono [&_pre_code_*]:font-mono`;
+          prose-pre:p-0! [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre_code]:font-mono [&_pre_code_*]:font-mono`;
     
     const themeClasses = isDark === null 
         ? '' // 等待主题初始化时不应用任何样式变化
         : isDark 
-            ? 'prose-invert prose-pre:bg-[#0d1117] prose-pre:border-[#30363d] prose-code:text-[#e6edf3] prose-code:bg-[#161b22] [&_pre]:bg-[#0d1117] [&_:not(pre)>code]:bg-[#161b22] [&_.hljs]:!bg-[#0d1117]' 
-            : 'hljs-light prose-pre:bg-[#f6f8fa] prose-pre:border-[#d0d7de] prose-code:text-[#1f2328] prose-code:bg-[#f6f8fa] [&_pre]:bg-[#f6f8fa] [&_:not(pre)>code]:bg-[#f6f8fa] [&_.hljs]:!bg-[#f6f8fa]';
+            ? 'prose-invert prose-pre:bg-[#0d1117] prose-pre:border-[#30363d] prose-code:text-[#e6edf3] prose-code:bg-[#161b22] [&_pre]:bg-[#0d1117] [&_:not(pre)>code]:bg-[#161b22] [&_.hljs]:bg-[#0d1117]!'
+            : 'hljs-light prose-pre:bg-[#f6f8fa] prose-pre:border-[#d0d7de] prose-code:text-[#1f2328] prose-code:bg-[#f6f8fa] [&_pre]:bg-[#f6f8fa] [&_:not(pre)>code]:bg-[#f6f8fa] [&_.hljs]:bg-[#f6f8fa]!';
 
     return (
         <div

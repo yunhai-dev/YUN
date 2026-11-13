@@ -41,7 +41,7 @@ export function BackToTop({ threshold = 400, className }: BackToTopProps) {
         'bg-primary text-primary-foreground shadow-lg',
         'hover:bg-primary/90 hover:scale-110',
         'transition-all duration-300 ease-out',
-        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+        'focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none',
         className
       )}

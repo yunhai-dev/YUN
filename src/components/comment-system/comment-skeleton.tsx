@@ -30,7 +30,7 @@ export function CommentSkeleton({
     return (
       <div className={`space-y-6 ${className}`}>
         {/* 初始加载骨架屏遮罩 */}
-        <div className="absolute inset-0 bg-background/95 backdrop-blur-sm z-50 rounded-lg">
+        <div className="absolute inset-0 bg-background/95 backdrop-blur-xs z-50 rounded-lg">
           <div className="space-y-6 p-6">
             {/* 表单骨架 */}
             <Card className="p-6 animate-pulse bg-gradient-to-r from-muted/50 via-muted/30 to-muted/20">

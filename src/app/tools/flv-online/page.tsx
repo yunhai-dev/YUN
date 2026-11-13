@@ -615,7 +615,7 @@ const FlvOnlinePage = () => {
                                     value={inputUrl}
                                     onChange={(e) => setInputUrl(e.target.value)}
                                     placeholder="输入 FLV 直播流地址，例如: http://example.com/live/stream.flv"
-                                    className="flex-1 px-3 border border-input rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                                    className="flex-1 px-3 border border-input rounded-md bg-background text-sm focus:outline-hidden focus:ring-2 focus:ring-ring"
                                     onKeyDown={(e) => e.key === 'Enter' && handleConnect()}
                                 />
                                 <Button

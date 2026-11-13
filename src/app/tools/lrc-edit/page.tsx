@@ -471,7 +471,7 @@ const LrcEditorPage = () => {
                                         title: e.target.value
                                     }))}
                                     placeholder="输入歌曲标题"
-                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div>
@@ -484,7 +484,7 @@ const LrcEditorPage = () => {
                                         artist: e.target.value
                                     }))}
                                     placeholder="输入艺术家名称"
-                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div>
@@ -497,7 +497,7 @@ const LrcEditorPage = () => {
                                         album: e.target.value
                                     }))}
                                     placeholder="输入专辑名称"
-                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div>
@@ -510,7 +510,7 @@ const LrcEditorPage = () => {
                                         by: e.target.value
                                     }))}
                                     placeholder="输入制作者"
-                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                    className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                         </div>
@@ -550,7 +550,7 @@ const LrcEditorPage = () => {
                                         value={batchLyrics}
                                         onChange={(e) => setBatchLyrics(e.target.value)}
                                         placeholder="每行输入一句歌词，会自动按时间间隔添加..."
-                                        className="w-full h-32 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                                        className="w-full h-32 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                                     />
                                     <div className="flex gap-2">
                                         <Button onClick={addBatchLyrics} size="sm">
@@ -587,7 +587,7 @@ const LrcEditorPage = () => {
                                                     updateTimeStamp(index, newTime);
                                                 }
                                             }}
-                                            className="w-20 text-sm p-1 border border-input rounded bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                            className="w-20 text-sm p-1 border border-input rounded bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
                                             placeholder="00:00:00"
                                         />
 
@@ -612,7 +612,7 @@ const LrcEditorPage = () => {
                                                     }}
                                                     placeholder="输入歌词"
                                                     autoFocus
-                                                    className="flex-1 p-2 border border-input rounded bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                                    className="flex-1 p-2 border border-input rounded bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
                                                 />
                                                 <Button size="sm" onClick={saveEdit}>保存</Button>
                                                 <Button size="sm" variant="outline" onClick={cancelEdit}>取消</Button>
@@ -705,7 +705,7 @@ const LrcEditorPage = () => {
                                 <textarea
                                     value={generateLrcContent()}
                                     readOnly
-                                    className="w-full h-32 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                                    className="w-full h-32 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                                     rows={8}
                                 />
                             </div>

@@ -180,7 +180,7 @@ const TextDiffPage = () => {
                             value={text1}
                             onChange={(e) => setText1(e.target.value)}
                             placeholder="在此处输入原始文本..."
-                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                         />
                     </div>
 
@@ -209,7 +209,7 @@ const TextDiffPage = () => {
                             value={text2}
                             onChange={(e) => setText2(e.target.value)}
                             placeholder="在此处输入对比文本..."
-                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                            className="w-full h-96 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                         />
                     </div>
                 </div>

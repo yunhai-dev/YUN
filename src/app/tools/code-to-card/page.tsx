@@ -368,7 +368,7 @@ console.log(fibonacci(10)); // 55`;
                                     onChange={(e) => setCode(e.target.value)}
                                     onKeyDown={handleKeyDown}
                                     placeholder="在此输入代码..."
-                                    className="w-full h-[60vh] p-4 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                                    className="w-full h-[60vh] p-4 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                                     style={{
                                         fontFamily: "'Fira Code', 'Consolas', 'Monaco', monospace",
                                         fontSize: '14px',

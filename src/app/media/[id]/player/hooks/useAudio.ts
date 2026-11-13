@@ -1,205 +1,105 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from 'next/navigation';
+"use client";
 
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { getAllMediaItems } from '@/data/media';
+import { getMediaTheme } from '@/data/mediaThemes';
+import type { MediaItem } from '@/types/media';
+import { playbackEngine } from '../playback/playbackEngine';
+import { preloadLyrics, preloadPalette } from '../playback/mediaCache';
+import { usePlayerPrefs } from './usePlayerPrefs';
+
+/**
+ * Adapter between the player UI and the shared PlaybackEngine.
+ *
+ * The <audio> element itself lives in the /media layout, so a crossfade can keep playing while
+ * the route advances to the next song. The returned ref is a stable getter that always resolves
+ * to the deck that is currently audible.
+ */
 export const useAudio = (
-    src: string,
-    title: string,
-    author: string,
-    imageUrl: string,
+    musicItem: MediaItem,
     forwardId: string,
     backwardId: string
 ) => {
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const [autoPlay, setAutoPlay] = useState(false);
-    const { toast } = useToast();
-    const nextToast = useRef(false);
-    const router = useRouter();
+    const {id, title, author, imageUrl, musicUrl} = musicItem;
+    const snapshot = useSyncExternalStore(
+        playbackEngine.subscribe,
+        playbackEngine.getSnapshot,
+        playbackEngine.getSnapshot
+    );
+    const {toast} = useToast();
+    const {prefs} = usePlayerPrefs();
+    const upcomingToast = useRef(false);
+    const lastTrackId = useRef<string | null>(null);
 
-    const togglePlay = useCallback(() => {
-        const audio = audioRef.current;
-        if (audio) {
-            if (!audio.paused && !audio.ended && audio.readyState > 2) {
-                audio.pause();
-                if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
-                setIsPlaying(false);
-            } else {
-                audio.play().then(() => {
-                    if (navigator.mediaSession) navigator.mediaSession.playbackState = 'playing';
-                    setIsPlaying(true);
-                }).catch((e) => {
-                    let errorMsg = "请检查音频文件是否存在或浏览器支持";
-                    if (e && e.name === "NotAllowedError") {
-                        errorMsg = "浏览器阻止了自动播放，请手动点击播放按钮";
-                    }
-                    toast({
-                        title: "播放失败",
-                        description: errorMsg,
-                        variant: "destructive"
-                    });
-                    console.error('Audio playback failed:', e);
-                });
-            }
-        }
-    }, [toast]);
-
-    const play = useCallback(async () => {
-        const audio = audioRef.current;
-        if (audio) {
-            try {
-                await audio.play();
-                setIsPlaying(true);
-                if (navigator.mediaSession) navigator.mediaSession.playbackState = 'playing';
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    }, []);
-
-    const pause = useCallback(() => {
-        const audio = audioRef.current;
-        if (audio) {
-            audio.pause();
-            setIsPlaying(false);
-            if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
-        }
-    }, []);
-
-    const seek = useCallback((time: number) => {
-        const audio = audioRef.current;
-        if (audio) {
-            audio.currentTime = time;
-            setCurrentTime(time);
-        }
-    }, []);
-
-    const clearState = useCallback(() => {
-        const audio = audioRef.current;
-        if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
-        if (audio) {
-            audio.currentTime = 0;
-            audio.pause();
-        }
-    }, []);
-
-    const nexttrackCallback = useCallback(() => {
-        clearState();
-        router.push(`/media/${forwardId}/`);
-    }, [clearState, forwardId, router]);
-
-    const previoustrackCallback = useCallback(() => {
-        clearState();
-        router.push(`/media/${backwardId}/`);
-    }, [backwardId, clearState, router]);
-
-    const handleLoadedMetadata = useCallback(() => {
-        const audio = audioRef.current;
-        if (audio) {
-            const newDuration = audio.duration;
-            setDuration(newDuration);
-            if (audio.currentTime > 0) {
-                setCurrentTime(0);
-            }
-        }
-    }, []);
-
-    const handleTimeUpdate = useCallback(() => {
-        const audio = audioRef.current;
-        if (audio) {
-            const newCurrentTime = audio.currentTime;
-            const newDuration = audio.duration || duration;
-            if (newDuration > 0) {
-                setCurrentTime(newCurrentTime);
-                setDuration(newDuration);
-                setIsPlaying(!audio.paused && !audio.ended && audio.readyState > 2);
-            }
-            if (autoPlay) {
-                if (!nextToast.current && newDuration - newCurrentTime <= 10) {
-                    setIsPlaying(false);
-                    toast({
-                        title: '即将播放下一首',
-                        duration: 3000,
-                    });
-                    nextToast.current = true;
-                } else if (newCurrentTime >= newDuration) {
-                    nexttrackCallback();
-                }
-            }
-        }
-    }, [autoPlay, duration, nexttrackCallback, toast]);
+    const audioRef = useMemo(() => playbackEngine.getActiveRefObject(), []);
 
     useEffect(() => {
-        const audio = audioRef.current;
-        if (audio) {
-            audio.addEventListener('timeupdate', handleTimeUpdate);
-            audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-            
-            if (navigator.mediaSession) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: title,
-                    artist: author,
-                    artwork: [
-                        {
-                            src: imageUrl,
-                            sizes: '512x512',
-                            type: 'image/png',
-                        },
-                    ],
-                });
+        const nextItem = getAllMediaItems().find(item => item.id === forwardId);
+        playbackEngine.bindTrack({
+            id,
+            url: musicUrl,
+            title,
+            author,
+            imageUrl,
+            nextId: forwardId,
+            nextUrl: nextItem?.musicUrl ?? null,
+            prevId: backwardId,
+        });
 
-                navigator.mediaSession.setActionHandler('play', togglePlay);
-                navigator.mediaSession.setActionHandler('pause', togglePlay);
-                navigator.mediaSession.setActionHandler('previoustrack', previoustrackCallback);
-                navigator.mediaSession.setActionHandler('nexttrack', nexttrackCallback);
-            }
-            
-            setIsPlaying(!audio.paused && !audio.ended && audio.readyState > 2);
+        // The visual handoff mounts the next page from scratch; warm its lyrics now so the
+        // crossfade never reveals an empty lyric sheet. Preset themes ship their palette, so
+        // cover extraction is only needed for tracks without one.
+        preloadLyrics(nextItem?.lyricsUrl);
+        if (nextItem && !getMediaTheme(nextItem.id)) preloadPalette(nextItem.imageUrl);
+    }, [id, musicUrl, title, author, imageUrl, forwardId, backwardId]);
 
-            return () => {
-                audio.removeEventListener('timeupdate', handleTimeUpdate);
-                audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-            };
-        }
-    }, [author, handleTimeUpdate, handleLoadedMetadata, imageUrl, nexttrackCallback, previoustrackCallback, title, togglePlay]);
-
+    // The old "up next" hint only belongs to the hard-cut path; with smart transitions the fade
+    // itself is the cue. Reset the guard whenever the track changes or a seek moves out of range.
     useEffect(() => {
-        const autoPlayConfig = window.localStorage.getItem('autoPlay');
-        if (autoPlayConfig && autoPlayConfig === 'true') {
-            setAutoPlay(true);
-            // We don't auto-play immediately on mount to avoid policy issues, 
-            // but the original code did call togglePlay() here.
-            // We'll leave it to the component or user interaction, 
-            // or if the original code did it, we can try.
-            // The original code: togglePlay() inside useEffect.
-             const audio = audioRef.current;
-             if(audio && audio.paused) {
-                 audio.play().catch(e => console.log("Autoplay blocked", e));
-             }
-        } else {
-            setAutoPlay(false);
+        if (lastTrackId.current !== snapshot.trackId) {
+            lastTrackId.current = snapshot.trackId;
+            upcomingToast.current = false;
         }
-    }, []);
+        if (!snapshot.autoPlay || prefs.smartTransition || snapshot.duration <= 0) return;
+
+        const remaining = snapshot.duration - snapshot.currentTime;
+        if (remaining > 10) {
+            upcomingToast.current = false;
+            return;
+        }
+        if (!upcomingToast.current && remaining > 0) {
+            upcomingToast.current = true;
+            toast({title: '即将播放下一首', duration: 3000});
+        }
+    }, [prefs.smartTransition, snapshot.autoPlay, snapshot.currentTime, snapshot.duration, snapshot.trackId, toast]);
 
     const toggleAutoPlay = useCallback(() => {
-        setAutoPlay(prev => {
-            const newState = !prev;
-            setTimeout(() => {
-                window.localStorage.setItem('autoPlay', newState.toString());
-                toast({
-                    title: newState ? '已开启自动播放' : '已关闭自动播放',
-                    duration: 3000,
-                });
-            }, 0);
-            return newState;
+        const next = !playbackEngine.getAutoPlay();
+        playbackEngine.setAutoPlay(next);
+        toast({
+            title: next ? '已开启自动播放' : '已关闭自动播放',
+            duration: 3000,
         });
     }, [toast]);
 
+    const controls = useMemo(() => ({
+        togglePlay: () => playbackEngine.togglePlay(),
+        seek: (time: number) => playbackEngine.seek(time),
+        setAutoPlay: toggleAutoPlay,
+        play: () => playbackEngine.play(true),
+        pause: () => playbackEngine.pause(),
+        clearState: () => playbackEngine.clearState(),
+    }), [toggleAutoPlay]);
+
     return {
         audioRef,
-        audioState: { isPlaying, currentTime, duration, autoPlay },
-        controls: { togglePlay, seek, setAutoPlay: toggleAutoPlay, play, pause, clearState }
+        audioState: {
+            isPlaying: snapshot.isPlaying,
+            currentTime: snapshot.currentTime,
+            duration: snapshot.duration,
+            autoPlay: snapshot.autoPlay,
+        },
+        controls,
     };
 };

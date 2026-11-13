@@ -260,7 +260,7 @@ const AnniversaryCard: React.FC<AnniversaryCardProps> = ({
             className={[
                 'relative bg-card text-foreground border border-border rounded-[14px] p-5 flex flex-col gap-4 transition-all duration-200',
                 'select-none hover:shadow-[0_4px_18px_-6px_rgba(var(--glow-color),0.35)]',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
                 expanded ? 'border-2' : '',
                 draggable ? 'cursor-grab' : '',
                 className

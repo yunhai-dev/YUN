@@ -1,8 +1,24 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+
+@source "../../src";
+@source not "../../src/content";
+
+@config "../../tailwind.config.ts";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+    /* Tailwind CSS 4 defaults border-color to currentColor; restore the v3 gray
+       so existing bare `border` / `divide-y` usages keep their look. */
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
     :root {
         --background: 210 6% 5%;
         --foreground: 0 0% 98%;
@@ -2859,4 +2875,23 @@ textarea:focus-visible,
     z-index: 0;
     pointer-events: none;
     will-change: transform;
+}
+
+/*
+ * Track handoff in the media player: the engine flags the route change with
+ * data-media-handoff so the outgoing lyrics/backdrop crossfade into the incoming song over a
+ * softer curve than a regular page navigation. The route advances as the audio crossfade
+ * begins, so this dissolve finishes just as the next song's first lines come due.
+ */
+html[data-media-handoff]::view-transition-old(root),
+html[data-media-handoff]::view-transition-new(root) {
+    animation-duration: 350ms;
+    animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-media-handoff]::view-transition-old(root),
+    html[data-media-handoff]::view-transition-new(root) {
+        animation-duration: 1ms;
+    }
 }

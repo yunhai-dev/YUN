@@ -113,6 +113,13 @@ export function Navbar() {
         setIsOpen(false);
     };
 
+    // The song player is full-bleed and brings its own top chrome; the fixed site header would
+    // overlay it. Keep the header on the /media list page.
+    const isPlayerPage = /^\/media\/[^/]+\/?$/.test(pathname);
+    if (isPlayerPage) {
+        return null;
+    }
+
     return (
         <header
             className={cn(
@@ -277,7 +284,7 @@ export function Navbar() {
                                     <div key={link.text}>
                                         <button
                                             className={cn(
-                                                "py-2 text-sm w-full text-left flex items-center gap-1 transition-colors hover:text-foreground focus:outline-none",
+                                                "py-2 text-sm w-full text-left flex items-center gap-1 transition-colors hover:text-foreground focus:outline-hidden",
                                                 link.children.some(child => pathname === child.href) ? "text-foreground" : "text-muted-foreground"
                                             )}
                                             onClick={() => setOpenMobileDropdown(openMobileDropdown === link.text ? null : link.text)}

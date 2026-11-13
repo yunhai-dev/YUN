@@ -188,7 +188,7 @@ const ToolsPage = () => {
                 <div className="flex gap-6">
                     {/* 左侧分类栏 - Tag 样式 */}
                     <aside className="w-48 flex-shrink-0 hidden lg:block">
-                        <div className="sticky top-32 rounded-lg border border-border bg-card/50 backdrop-blur-sm p-3">
+                        <div className="sticky top-32 rounded-lg border border-border bg-card/50 backdrop-blur-xs p-3">
                             <h2 className="text-sm font-semibold mb-3 px-2 text-muted-foreground">功能分类</h2>
                             <nav className="grid grid-cols-2 gap-1.5">
                                 {categories.map((category) => {
@@ -204,7 +204,7 @@ const ToolsPage = () => {
                                                     className={cn(
                                                         "px-2 py-1.5 rounded-md transition-all text-xs whitespace-nowrap text-left truncate",
                                                         selectedCategory === category
-                                                            ? "bg-primary text-primary-foreground shadow-sm"
+                                                            ? "bg-primary text-primary-foreground shadow-xs"
                                                             : "bg-accent/50 text-muted-foreground hover:bg-accent hover:text-foreground"
                                                     )}
                                                 >

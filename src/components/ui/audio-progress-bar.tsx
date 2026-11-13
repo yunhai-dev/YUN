@@ -9,6 +9,8 @@ interface AudioProgressBarProps {
   className?: string;
   disabled?: boolean;
   formatTime?: (seconds: number) => string;
+  /** `minimal` is the thin, borderless bar used by the visualizer player chrome. */
+  variant?: 'default' | 'minimal';
 }
 
 const defaultFormatTime = (seconds: number): string => {
@@ -32,10 +34,12 @@ export const AudioProgressBar: React.FC<AudioProgressBarProps> = ({
   onSeek,
   className = "",
   disabled = false,
-  formatTime = defaultFormatTime
+  formatTime = defaultFormatTime,
+  variant = 'default'
 }) => {
   const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [showHoverTooltip, setShowHoverTooltip] = useState(false);
+  const minimal = variant === 'minimal';
 
   // 进度条点击事件
   const handleProgressClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
@@ -75,33 +79,43 @@ export const AudioProgressBar: React.FC<AudioProgressBarProps> = ({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <div 
-        className={`relative w-full h-3 bg-black/20 dark:bg-white/20 border border-black/10 dark:border-white/10 rounded-full ${
+      <div
+        className={`relative w-full rounded-full ${
+          minimal
+            ? "h-1 bg-white/20 before:absolute before:inset-x-0 before:-inset-y-2 before:content-['']"
+            : 'h-3 bg-black/20 dark:bg-white/20 border border-black/10 dark:border-white/10 shadow-inner'
+        } ${
           disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-        } group shadow-inner`}
+        } group`}
         onClick={handleProgressClick}
         onMouseMove={handleProgressMouseMove}
         onMouseLeave={handleProgressMouseLeave}
       >
         {/* 进度条背景 */}
-        <div 
-          className="absolute top-0 left-0 h-full bg-primary rounded-full transition-all duration-100 shadow-sm"
+        <div
+          className={`absolute top-0 left-0 h-full rounded-full transition-all duration-100 ${
+            minimal ? 'bg-white' : 'bg-primary shadow-xs'
+          }`}
           style={{ width: `${progressPercentage}%` }}
         />
-        
+
         {/* 进度条拖拽手柄 */}
-        <div 
-          className={`absolute top-1/2 transform -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-white dark:border-black shadow-lg transition-all duration-100 ${
-            disabled ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
+        <div
+          className={`absolute top-1/2 transform -translate-y-1/2 rounded-full transition-all duration-100 ${
+            minimal
+              ? 'w-2.5 h-2.5 bg-white shadow'
+              : 'w-4 h-4 bg-primary border-2 border-white dark:border-black shadow-lg'
+          } ${
+            disabled ? 'opacity-0' : minimal ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
           }`}
-          style={{ 
-            left: `${progressPercentage}%`, 
-            marginLeft: '-8px' 
+          style={{
+            left: `${progressPercentage}%`,
+            marginLeft: minimal ? '-5px' : '-8px'
           }}
         />
-        
+
         {/* 悬浮时间提示 */}
-        {showHoverTooltip && hoverTime !== null && !disabled && (
+        {!minimal && showHoverTooltip && hoverTime !== null && !disabled && (
           <div 
             className="absolute -top-8 transform -translate-x-1/2 bg-black/90 dark:bg-white/90 text-white dark:text-black text-xs py-1 px-2 rounded shadow-lg pointer-events-none z-10 font-mono border border-black/20 dark:border-white/20"
             style={{ 

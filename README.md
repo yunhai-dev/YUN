@@ -243,4 +243,9 @@ Issues and Pull Requests are welcome to help improve the project.
 
 ## License
 
-GNU GPL v3
+This project is dual-licensed:
+
+- **Code** — all source code unless otherwise stated: [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
+- **Content** — articles, documentation and notes under `src/content/`: [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](src/content/LICENSE) (CC BY-NC-SA 4.0).
+
+Third-party components keep their own licenses; see `src/app/media/[id]/player/folia/NOTICE.md` for the vendored Folia runtime.

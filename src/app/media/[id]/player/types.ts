@@ -20,11 +20,10 @@ export interface AudioControls {
 
 export interface PlayerStyleProps {
     musicItem: MediaItem;
-    audioRef: RefObject<HTMLAudioElement>;
+    audioRef: RefObject<HTMLAudioElement | null>;
     audioState: AudioState;
     controls: AudioControls;
     forwardId: string;
     backwardId: string;
     lyrics: LyricLine[];
-    onToggleStyle: () => void;
 }

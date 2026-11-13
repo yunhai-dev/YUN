@@ -48,7 +48,7 @@ const EditableInput = ({
             ref={ref}
             contentEditable
             suppressContentEditableWarning
-            className={cn("outline-none border-b border-transparent focus:border-primary/50 transition-colors min-w-[20px] break-all whitespace-pre-wrap inline-block max-w-full align-top", className)}
+            className={cn("outline-hidden border-b border-transparent focus:border-primary/50 transition-colors min-w-[20px] break-all whitespace-pre-wrap inline-block max-w-full align-top", className)}
             onInput={(e) => {
                 onChange(e.currentTarget.innerText);
             }}

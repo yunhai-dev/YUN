@@ -227,7 +227,7 @@ interface ReplyItemProps {
 function ReplyItem({ reply, onReply, replyingToId, replyForm, client }: ReplyItemProps) {
   return (
     <>
-      <div className="rounded-lg p-3 transition-all duration-300 hover:bg-primary/10 hover:shadow-sm">
+      <div className="rounded-lg p-3 transition-all duration-300 hover:bg-primary/10 hover:shadow-xs">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-gradient-to-br from-green-400 via-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-medium shadow-lg">

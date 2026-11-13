@@ -108,7 +108,7 @@ const RegexTesterPage = () => {
                                     value={pattern}
                                     onChange={(e) => setPattern(e.target.value)}
                                     placeholder="输入正则表达式..."
-                                    className="flex-1 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                    className="flex-1 p-2 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring"
                                 />
                             </div>
                             <div className="flex flex-wrap gap-4 mt-3">
@@ -137,7 +137,7 @@ const RegexTesterPage = () => {
                                 value={testText}
                                 onChange={(e) => setTestText(e.target.value)}
                                 placeholder="输入要测试的文本..."
-                                className="w-full h-48 p-3 border border-input rounded-md bg-background font-mono text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                                className="w-full h-48 p-3 border border-input rounded-md bg-background font-mono text-sm focus:outline-hidden focus:ring-1 focus:ring-ring resize-none"
                             />
                         </div>
                     </div>
