@@ -6,8 +6,8 @@
 
 export type NebbiaStrokeData = Record<string, [number, number][][]>;
 
-// 在产物根目录：网页版 BASE_URL 是 /，Electron 是 ./（相对 index.html）
-const STROKES_URL = `${import.meta.env.BASE_URL}nebbia-strokes.json`;
+// 放在站点根目录的 public 下；本移植未生成该文件时 fetch 404，退回字体骨架。
+const STROKES_URL = '/nebbia-strokes.json';
 let loading: Promise<NebbiaStrokeData | null> | null = null;
 let loaded: NebbiaStrokeData | null = null;
 

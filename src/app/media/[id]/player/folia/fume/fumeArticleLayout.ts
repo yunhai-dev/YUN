@@ -581,7 +581,7 @@ export function* buildArticleLayout(
     const renderMs = nowMs() - renderStart;
     const totalMs = nowMs() - totalStart;
 
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV !== 'production') {
         console.info('[VisualizerFume] layout timing', {
             totalMs: roundMs(totalMs),
             measureMs: roundMs(measureTiming.prepareLayoutMs + measureTiming.placementMs),

@@ -319,7 +319,7 @@ export class MachiRuntime {
         this.renderer.shadowMap.autoUpdate = false;
         this.renderer.info.autoReset = false;
         // 着色器出错的检查：开发时用 three 自己的（逐个取日志，慢）；生产构建编好后只查链接状态（reportBrokenPrograms）。
-        this.renderer.debug.checkShaderErrors = import.meta.env.DEV;
+        this.renderer.debug.checkShaderErrors = process.env.NODE_ENV !== 'production';
         const canvas = this.renderer.domElement;
         canvas.style.position = 'absolute';
         canvas.style.inset = '0';
@@ -366,7 +366,7 @@ export class MachiRuntime {
         this.renderFrame(performance.now());
         this.renderer.domElement.style.visibility = '';
         this.wake();
-        if (import.meta.env.DEV) this.installDebugHook();
+        if (process.env.NODE_ENV !== 'production') this.installDebugHook();
     }
 
     /** 招牌要的东西：歌、主题、调色板、字体、图标。 */
