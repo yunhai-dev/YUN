@@ -1,64 +1,48 @@
-import {Link} from "next-view-transitions"
-import {Button} from "@/components/ui/button";
-import {Home, Search, FileText, Wrench} from "lucide-react";
+import { Link } from "next-view-transitions";
+import { ArrowRight } from "lucide-react";
 
 export default function NotFound() {
-    const popularLinks = [
-        {href: "/blog", label: "博客文章", icon: FileText},
-        {href: "/docs", label: "文档中心", icon: FileText},
-        {href: "/tools", label: "在线工具", icon: Wrench},
+    const links = [
+        { href: "/", label: "首页" },
+        { href: "/blog", label: "博客" },
+        { href: "/docs", label: "文档" },
+        { href: "/tools", label: "工具" },
     ];
 
     return (
-        <main className="min-h-screen flex flex-col">
-            <div className="flex-1 pt-32 pb-24 px-4 flex justify-center items-start">
-                <div className="text-center max-w-lg">
-                    {/* 404 Animation */}
-                    <div className="relative mb-8">
-                        <h1 className="text-8xl font-bold text-muted-foreground/20">404</h1>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <Search className="w-16 h-16 text-muted-foreground animate-pulse" />
-                        </div>
-                    </div>
-                    
-                    <h2 className="text-2xl font-semibold mb-4">页面未找到</h2>
-                    <p className="text-muted-foreground mb-8">
-                        抱歉，您访问的页面不存在、已被删除或链接已失效。
-                    </p>
-                    
-                    {/* Main Actions */}
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-                        <Button asChild>
-                            <Link href="/" className="flex items-center gap-2">
-                                <Home className="w-4 h-4" />
-                                返回首页
-                            </Link>
-                        </Button>
-                        <Button variant="outline" asChild>
-                            <Link href="/docs" className="flex items-center gap-2">
-                                <Search className="w-4 h-4" />
-                                浏览文档
-                            </Link>
-                        </Button>
-                    </div>
-                    
-                    {/* Popular Links */}
-                    <div className="border-t border-border pt-8">
-                        <p className="text-sm text-muted-foreground mb-4">或访问以下常用页面：</p>
-                        <div className="flex flex-wrap justify-center gap-3">
-                            {popularLinks.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-violet-500/50 hover:bg-muted transition-colors text-sm"
-                                >
-                                    <link.icon className="w-4 h-4" />
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
+        <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
+            <div className="flex-1 flex flex-col justify-center items-center px-6 py-32 text-center">
+                <div className="relative flex items-center justify-center mb-6">
+                    <span className="font-serif-sc text-[8rem] sm:text-[10rem] leading-none font-medium text-primary/15 select-none">
+                        404
+                    </span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src="/noomo/images/clouisle-mark.svg"
+                        alt="Clouisle Mark"
+                        className="absolute w-16 h-16 sm:w-20 sm:h-20 opacity-85"
+                    />
                 </div>
+
+                <h1 className="font-serif-sc text-2xl sm:text-3xl font-medium mb-3">
+                    此页未曾抵达
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground max-w-md mb-10 leading-relaxed">
+                    你访问的路径不存在、已被移动或链接已失效。
+                </p>
+
+                <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm">
+                    {links.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className="group inline-flex items-center gap-1.5 text-foreground/85 hover:text-primary border-b border-transparent hover:border-primary pb-0.5 transition-colors"
+                        >
+                            <span>{item.label}</span>
+                            <ArrowRight className="w-3.5 h-3.5 opacity-60 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                    ))}
+                </nav>
             </div>
         </main>
     );

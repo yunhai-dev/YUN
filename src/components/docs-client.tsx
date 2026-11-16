@@ -459,8 +459,8 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
     // 如果没有当前文档且文档列表为空，显示提示信息
     if (!currentSlug && allDocs.length === 0) {
         return (
-            <div className="flex-1 pt-32 pb-24">
-                <div className="container max-w-7xl mx-auto px-4">
+            <div className="flex-1 pt-28 md:pt-36 pb-24">
+                <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
                     <div className="text-red-500">
                         暂无文档内容。
                     </div>
@@ -470,8 +470,8 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
     }
 
     return (
-        <div className="flex-1">
-            <div className="container max-w-7xl mx-auto px-4 relative">
+        <div className="flex-1 min-h-screen bg-white dark:bg-zinc-950">
+            <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 relative">
                 {isMounted && (
                     <MobileControls
                         onToggleSidebar={handleToggleSidebar}
@@ -486,7 +486,7 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
                     <DocNavigation
                         docs={allDocs}
                         currentSlug={currentSlug}
-                        className="hidden lg:block w-48 shrink-0 mr-8"
+                        className="hidden lg:block w-52 shrink-0 mr-8"
                     />
 
                     {/* Mobile Sidebar */}
@@ -498,10 +498,9 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
                     />
 
                     {/* Main Content */}
-                    <article className="flex-1 min-w-0 px-0 lg:px-4 mt-32 mb-[50vh]">
-                        {/* add title*/}
-                        <h1 className="text-4xl font-bold">{title}</h1>
-                        <div className="w-full h-[1px] bg-gray-500 my-8"></div>
+                    <article className="flex-1 min-w-0 px-0 lg:px-8 mt-32 mb-[30vh]">
+                        <h1 className="font-serif-sc text-3xl sm:text-4xl lg:text-[2.5rem] font-medium leading-tight">{title}</h1>
+                        <div className="crystal-divider my-8" />
                         {renderContent}
                     </article>
 

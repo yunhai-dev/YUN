@@ -120,6 +120,26 @@ pnpm start
 bun run start
 ```
 
+### 预设主题生成
+
+`src/data/media.ts` 中的每首曲目都有一份 Folia 预设歌词主题。新增歌曲后，只需增量生成缺失的主题：
+
+```bash
+npm run themes:generate -- --dry-run     # 先列出缺主题的曲目
+npm run themes:generate                  # 调用本机 claude CLI 生成
+npm run themes:generate -- --limit 5     # 本次最多处理 5 首
+npm run themes:generate -- --concurrency 4
+```
+
+- `--only id1,id2`：只处理指定的缺失曲目
+- `--model sonnet`：传给 `claude` 的模型
+- `--attempts N`：每首的尝试次数（含重试），默认 2
+- `--concurrency N`：并行调用数，默认 3
+
+需要本机已登录 `claude` CLI（可用 `CLAUDE_BIN` 指定路径）。脚本会抓取每首歌的 LRC，按
+`scripts/validate-media-themes.mjs` 相同的规则校验，通过的条目追加到
+`src/data/mediaThemes/batch-auto.ts`；已有主题不会重算。生成后检查 diff 再提交。
+
 ## 主要功能
 
 - 个人博客系统

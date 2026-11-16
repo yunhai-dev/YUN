@@ -12,7 +12,7 @@ interface ReadingProgressProps {
 }
 
 export function ReadingProgress({
-  color = "linear-gradient(to right, #22c55e, #4ade80)",
+  color = "linear-gradient(to right, #a990f6, #eabdf6, #cebdf8)",
   height = 3,
   targetSelector,
 }: ReadingProgressProps) {

@@ -8,6 +8,7 @@ import { batch07 } from './batch-07';
 import { batch08 } from './batch-08';
 import { batch09 } from './batch-09';
 import { batch10 } from './batch-10';
+import { batchAuto } from './batch-auto';
 import type { MediaThemePreset } from './types';
 
 export type { MediaThemePreset } from './types';
@@ -25,6 +26,7 @@ export const mediaThemes: Record<string, MediaThemePreset> = {
     ...batch08,
     ...batch09,
     ...batch10,
+    ...batchAuto,
 };
 
 export const getMediaTheme = (id?: string | null): MediaThemePreset | undefined => (

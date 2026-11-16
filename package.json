@@ -10,7 +10,8 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "rss": "node scripts/run-typescript.mjs scripts/generateRSS.ts"
+    "rss": "node scripts/run-typescript.mjs scripts/generateRSS.ts",
+    "themes:generate": "node scripts/generate-media-themes.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.89",

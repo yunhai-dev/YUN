@@ -13,23 +13,20 @@ function MediaCard({item}: MediaCardProps) {
 
     const cardContent = (
         <div
-            className="block rounded-lg border border-border hover:border-violet-500/50 bg-card overflow-hidden p-1 h-full w-full glow-card group/card transition-colors">
-            {/* 荧光背景层 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-            
+            className="crystal-card overflow-hidden p-2 h-full w-full group/card flex flex-col">
             <div
-                className="aspect-square rounded-md overflow-hidden flex items-center justify-center mb-4 bg-[hsl(var(--linear-gray))/0.1] relative z-10">
+                className="aspect-square rounded-xl overflow-hidden flex items-center justify-center mb-3 bg-primary/5 relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={imageUrl}
                     alt={title}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover"/>
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover/card:scale-105"/>
             </div>
-            <div className="p-4 relative z-10">
-                <div className="text-sm text-muted-foreground mb-2">{author}</div>
-                <h3 className="text-xl font-semibold mb-2">{title}</h3>
+            <div className="px-3 pb-3 pt-1 relative z-10">
+                <div className="text-xs text-muted-foreground mb-1.5">{author}</div>
+                <h3 className="font-serif-sc text-lg font-medium group-hover/card:text-primary transition-colors line-clamp-1">{title}</h3>
             </div>
         </div>
     );
@@ -45,12 +42,17 @@ const MediaPage = () => {
     const musicItems = getAllMediaItems();
 
     return (
-        <main className="min-h-screen flex flex-col">
+        <main className="min-h-screen flex flex-col crystal-page-bg">
             <MediaScrollRestoration />
-            <div className="flex-1 pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 container max-w-7xl mx-auto">
-                <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 px-2 sm:px-0">音乐</h1>
+            <div className="flex-1 pt-32 pb-20 px-5 md:px-8 max-w-6xl w-full mx-auto">
+                <header className="mb-10">
+                    <h1 className="crystal-hero-title text-4xl sm:text-5xl mb-2">音乐</h1>
+                    <p className="text-muted-foreground text-base">
+                        声景收藏 · 共 {musicItems.length} 首，点击封面进入全屏沉浸播放。
+                    </p>
+                </header>
                 <div
-                    className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center px-2 sm:px-0">
+                    className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 justify-items-center">
                     {musicItems.length > 0 ? (
                         musicItems.map((item) => (
                             <div className="h-full w-full" key={item.id}>

@@ -1,49 +1,59 @@
 import { getAllAPIDocuments } from "@/lib/api";
-import { siteName } from '@/config/site';
+import { siteName } from "@/config/site";
 import { Metadata } from "next";
-import {Link} from "next-view-transitions"
+import { Link } from "next-view-transitions";
+import { ArrowRight } from "lucide-react";
 
-// 生成页面元数据
 export const metadata: Metadata = {
   title: `API 文档`,
   description: `浏览 ${siteName} 提供的API文档组件`,
 };
 
-// API页面组件
 export default async function APIPage() {
   const apiDocuments = await getAllAPIDocuments();
 
   return (
-    <div className="flex-1 pt-32 pb-24">
-      <div className="container max-w-7xl mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-8">API 文档</h1>
+    <main className="flex-1 min-h-screen bg-white dark:bg-zinc-950 pt-28 md:pt-36 pb-24">
+      <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-10 border-b border-border/60 mb-8">
+          <h1 className="font-serif-sc text-5xl sm:text-6xl font-medium tracking-tight">
+            API 文档
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-md md:text-right">
+            探索可集成的服务接口规范、请求参数与响应结构。
+          </p>
+        </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {apiDocuments.length > 0 ? (
-            apiDocuments.map((api) => (
-              <div key={api.id} className="block rounded-lg border border-border hover:border-violet-500/50 bg-card overflow-hidden p-6 glow-card group/card transition-colors">
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
-                <Link href={`/api/${api.id}`} className="group relative z-10 block">
-                  <h2 className="text-xl font-semibold mb-2">{api.title}</h2>
-                  <div className="text-xs bg-primary/10 text-primary inline-block px-2 py-1 rounded mb-3">
-                    版本 {api.version}
-                  </div>
-                  {api.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {api.description}
-                    </p>
-                  )}
-                </Link>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-10 text-muted-foreground">
-              <p>暂无可用的 API 文档</p>
-              <p className="mt-2 text-sm">API 文档将显示在 src/content/apis/ 目录中的 JSON 文件</p>
-            </div>
-          )}
-        </div>
+        {apiDocuments.length > 0 ? (
+          <div className="divide-y divide-border/45">
+            {apiDocuments.map((api) => (
+              <Link
+                key={api.id}
+                href={`/api/${api.id}`}
+                className="group grid grid-cols-1 md:grid-cols-12 items-baseline gap-3 md:gap-6 py-6 px-2 -mx-2 rounded-lg hover:bg-primary/5 transition-colors"
+              >
+                <span className="md:col-span-2 text-xs text-muted-foreground tabular-nums">
+                  v{api.version}
+                </span>
+                <span className="md:col-span-4 font-serif-sc text-xl font-medium group-hover:text-primary transition-colors">
+                  {api.title}
+                </span>
+                <span className="md:col-span-5 text-sm text-muted-foreground line-clamp-2">
+                  {api.description || "OpenAPI 规范文档"}
+                </span>
+                <span className="hidden md:flex md:col-span-1 justify-end text-muted-foreground/50 group-hover:text-primary transition-all group-hover:translate-x-1">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="py-16 text-center text-muted-foreground">
+            <p>暂无可用的 API 文档</p>
+            <p className="mt-2 text-sm">API 文档将显示在 src/content/apis/ 目录中的 JSON 文件</p>
+          </div>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

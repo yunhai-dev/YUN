@@ -28,11 +28,16 @@ export default async function AnniversaryPage() {
   ];
 
   return (
-    <div className="flex-1 pt-32 pb-24">
-      <div className="main">
-        <h1 className="text-3xl font-bold mb-4">纪念日</h1>
-        <p className="mb-4">记录的意义不在当下，而在未来的回忆中。</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <main className="flex-1 min-h-screen bg-white dark:bg-zinc-950 pt-28 md:pt-36 pb-24">
+      <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-10 border-b border-border/60 mb-12">
+          <h1 className="font-serif-sc text-5xl sm:text-6xl font-medium tracking-tight">纪念日</h1>
+          <p className="text-sm sm:text-base text-muted-foreground md:text-right">
+            记录的意义不在当下，而在未来的回忆中。
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {items.map((item) => (
             <div className="h-auto" key={item.id}>
               <AnniversaryCard item={item} showJson={false} />
@@ -40,6 +45,6 @@ export default async function AnniversaryPage() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -55,6 +55,7 @@
   - [x] Provider gate: preset theme names on konbini signs
   - [x] Author all 208 themes in 10 batches (parallel subagents)
   - [x] Validation (`scripts/validate-media-themes.mjs`, tsc, ESLint, LRC keyword check)
+  - [x] Incremental generator for new tracks (`scripts/generate-media-themes.mjs`, claude CLI)
   - [ ] Visual pass in the dev server (user)
   - See `docs/plan/folia-preset-themes.md`
 

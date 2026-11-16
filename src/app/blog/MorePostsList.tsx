@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import React, {useState} from 'react';
-import {Link} from "next-view-transitions";
-import {cn} from "@/lib/utils";
-import {usePrefetch} from "@/components/prefetch-link";
+import React, { useState } from "react";
+import { Link } from "next-view-transitions";
+import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { usePrefetch } from "@/components/prefetch-link";
 import {
     Pagination,
     PaginationContent,
@@ -21,88 +22,71 @@ interface BlogPost {
     lastEdited?: string;
 }
 
-interface RegularPostProps {
-    slug: string;
-    category: string;
-    title: string;
-    date?: string;
-}
-
-function RegularPost({slug, category, title, date}: RegularPostProps) {
+function ArchiveRow({ slug, category, title, date }: { slug: string; category: string; title: string; date?: string }) {
     const prefetchProps = usePrefetch(`/blog/${slug}`);
-    
+
     return (
         <Link
             href={`/blog/${slug}`}
-            className="flex justify-between items-center hover:bg-muted transition-colors group w-full"
+            className="group grid grid-cols-1 md:grid-cols-12 items-baseline gap-2 md:gap-4 py-5 px-2 -mx-2 rounded-lg hover:bg-primary/5 transition-colors"
             {...prefetchProps}
         >
-            <div className="grid grid-cols-8 items-center gap-4 w-full p-4 rounded-lg hover:bg-muted">
-                <h3 className="col-span-4 text-md font-medium group-hover:text-foreground transition-colors">{title}</h3>
-                <span className="col-span-2 text-sm text-muted-foreground text-center">{category}</span>
-                {date && <span className="col-span-2 text-sm text-muted-foreground text-center">{date}</span>}
-            </div>
+            <span className="md:col-span-2 text-xs text-muted-foreground tabular-nums">
+                {date || "—"}
+            </span>
+            <span className="md:col-span-7 font-serif-sc text-base sm:text-lg font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                {title}
+            </span>
+            <span className="md:col-span-2 text-xs text-muted-foreground md:text-right">
+                {category}
+            </span>
+            <span className="hidden md:flex md:col-span-1 justify-end text-muted-foreground/50 group-hover:text-primary transition-all group-hover:translate-x-1">
+                <ArrowRight className="w-4 h-4" />
+            </span>
         </Link>
     );
 }
 
-interface MorePostsListProps {
-    recentPosts: BlogPost[];
-}
-
-export function MorePostsList({recentPosts}: MorePostsListProps) {
+export function MorePostsList({ recentPosts }: { recentPosts: BlogPost[] }) {
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 10;
 
-    // 计算分页相关数据
     const totalPages = Math.ceil(recentPosts.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentPosts = recentPosts.slice(startIndex, endIndex);
+    const currentPosts = recentPosts.slice(startIndex, startIndex + itemsPerPage);
 
-    // 生成页码数组
     const getPageNumbers = () => {
         const pageNumbers: (number | string)[] = [];
         const maxVisiblePages = 5;
 
         if (totalPages <= maxVisiblePages) {
-            for (let i = 1; i <= totalPages; i++) {
-                pageNumbers.push(i);
-            }
+            for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+        } else if (currentPage <= 3) {
+            for (let i = 1; i <= 4; i++) pageNumbers.push(i);
+            pageNumbers.push("ellipsis", totalPages);
+        } else if (currentPage >= totalPages - 2) {
+            pageNumbers.push(1, "ellipsis");
+            for (let i = totalPages - 3; i <= totalPages; i++) pageNumbers.push(i);
         } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) {
-                    pageNumbers.push(i);
-                }
-                pageNumbers.push('ellipsis');
-                pageNumbers.push(totalPages);
-            } else if (currentPage >= totalPages - 2) {
-                pageNumbers.push(1);
-                pageNumbers.push('ellipsis');
-                for (let i = totalPages - 3; i <= totalPages; i++) {
-                    pageNumbers.push(i);
-                }
-            } else {
-                pageNumbers.push(1);
-                pageNumbers.push('ellipsis');
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pageNumbers.push(i);
-                }
-                pageNumbers.push('ellipsis');
-                pageNumbers.push(totalPages);
-            }
+            pageNumbers.push(1, "ellipsis");
+            for (let i = currentPage - 1; i <= currentPage + 1; i++) pageNumbers.push(i);
+            pageNumbers.push("ellipsis", totalPages);
         }
-
         return pageNumbers;
     };
 
     return (
-        <div className="mb-8">
-            <h2 className="text-sm text-muted-foreground font-medium mb-2">更多文章</h2>
-            <div className="w-full h-[2px] bg-border mb-4"></div>
-            <div className="mb-6">
+        <section>
+            <div className="flex items-baseline justify-between pb-4 border-b border-border/60">
+                <h2 className="font-serif-sc text-xl font-medium">全部归档</h2>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                    共 {recentPosts.length} 篇
+                </span>
+            </div>
+
+            <div className="divide-y divide-border/40 mb-10">
                 {currentPosts.map((post, index) => (
-                    <RegularPost
+                    <ArchiveRow
                         key={`recent-${post.slug}-${index}`}
                         slug={post.slug}
                         category={post.category}
@@ -112,14 +96,13 @@ export function MorePostsList({recentPosts}: MorePostsListProps) {
                 ))}
             </div>
 
-            {/* 分页组件 */}
             {totalPages > 1 && (
                 <div className="flex justify-center mt-8">
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem>
                                 <PaginationPrevious
-                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                                     className={cn(
                                         "cursor-pointer",
                                         currentPage === 1 && "pointer-events-none opacity-50"
@@ -129,8 +112,8 @@ export function MorePostsList({recentPosts}: MorePostsListProps) {
 
                             {getPageNumbers().map((pageNum, index) => (
                                 <PaginationItem key={index}>
-                                    {pageNum === 'ellipsis' ? (
-                                        <PaginationEllipsis/>
+                                    {pageNum === "ellipsis" ? (
+                                        <PaginationEllipsis />
                                     ) : (
                                         <PaginationLink
                                             onClick={() => setCurrentPage(pageNum as number)}
@@ -145,7 +128,7 @@ export function MorePostsList({recentPosts}: MorePostsListProps) {
 
                             <PaginationItem>
                                 <PaginationNext
-                                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                                     className={cn(
                                         "cursor-pointer",
                                         currentPage === totalPages && "pointer-events-none opacity-50"
@@ -156,6 +139,6 @@ export function MorePostsList({recentPosts}: MorePostsListProps) {
                     </Pagination>
                 </div>
             )}
-        </div>
+        </section>
     );
 }

@@ -2,11 +2,15 @@ import {getAllBlogPosts, getBlogPostBySlug} from "@/data/blog-posts";
 import {markdownToHtml} from "@/lib/markdown";
 import {notFound} from "next/navigation";
 import Script from "next/script";
+import {Link} from "next-view-transitions";
 import BlogClient from "@/components/blog-client";
 import {Metadata} from "next";
 import {baseUrl, image, siteName} from '@/config/site';
 import {BreadcrumbStructuredData} from "@/components/structured-data";
 import {ReadingProgress} from "@/components/reading-progress";
+import {ResourceCard, type BlogResourceSummary} from "@/components/blog/ResourceCard";
+import {ArrowLeft} from "lucide-react";
+import React from "react";
 
 // 生成所有可能的博客文章路径
 export async function generateStaticParams() {
@@ -80,13 +84,16 @@ function formatDateToISO(dateStr: string): string {
 // 博客文章页面组件
 export default async function BlogPost({params}: { params: Promise<{ id: string }> }) {
     const id = (await params).id
-    const post = await getBlogPostBySlug(id);
+    const [post, allPosts] = await Promise.all([
+        getBlogPostBySlug(id),
+        getAllBlogPosts(),
+    ]);
 
     if (!post) {
         notFound();
     }
 
-    // 将 Markdown 转换为 HTML，并提取标题
+    // 将 Markdown 转换为 HTML
     const {content} = await markdownToHtml(post.content);
 
     // 格式化日期为ISO 8601格式
@@ -95,6 +102,32 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
     // 网站域名
     const siteUrl = baseUrl;
     const articleUrl = `${siteUrl}/blog/${id}`;
+
+    // 推荐 3 篇更多文章（优先同分类，再补最新）
+    const primaryCat = post.category.split(",")[0]?.trim();
+    const otherPosts = allPosts.filter((p) => p.slug !== post.slug);
+    const sameCat = primaryCat
+        ? otherPosts.filter((p) => p.category.includes(primaryCat))
+        : [];
+    const fallbackPool = otherPosts.filter((p) => !sameCat.some((s) => s.slug === p.slug));
+    const relatedPosts: BlogResourceSummary[] = [...sameCat, ...fallbackPool]
+        .slice(0, 3)
+        .map((p) => ({
+            slug: p.slug,
+            title: p.title,
+            category: p.category,
+            lastEdited: p.lastEdited,
+            excerpt: p.excerpt,
+            imageUrl: p.imageUrl,
+            tags: p.tags,
+            readingTime: p.readingTime,
+        }));
+
+    const displayCategories = post.category
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .slice(0, 3);
 
     // 生成结构化数据
     const structuredData = {
@@ -107,7 +140,7 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
             "@type": "Person",
             "name": post.author,
             "jobTitle": post.authorRole,
-            "url": `${siteUrl}/about` // 添加作者URL，指向关于页面
+            "url": `${siteUrl}/about`
         },
         "publisher": {
             "@type": "Organization",
@@ -128,7 +161,6 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
         "keywords": post.tags.join(', ')
     };
 
-
     // 生成面包屑
     const breadcrumbItems = [
         { name: '首页', url: '/' },
@@ -145,66 +177,95 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
                 dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
             />
             <BreadcrumbStructuredData items={breadcrumbItems} />
-            <div className="flex flex-col">
-                <div className="flex-1 pt-32 pb-24">
-                    <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col lg:flex-row gap-8">
-                            <article className="flex-1 max-w-4xl mx-auto w-full">
-                                <header className="mb-8">
-                                    <div className="text-sm text-muted-foreground mb-2">{post.category}</div>
-                                    <h1 className="text-3xl sm:text-4xl font-bold mb-4">{post.title}</h1>
-                                    <div
-                                        className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-                                        <div className="flex items-center gap-2">
-                                            <span>{post.author}</span>
-                                            {post.authorRole && (
-                                                <>
-                                                    <span>·</span>
-                                                    <span>{post.authorRole}</span>
-                                                </>
-                                            )}
-                                        </div>
-                                        <span>·</span>
-                                        <time dateTime={isoDate}>
-                                            {post.lastEdited}
-                                        </time>
-                                        <span>·</span>
-                                        <span>{post.readingTime}</span>
-                                    </div>
-                                </header>
+            <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950">
+                <main className="flex-1 pt-32 md:pt-40 pb-24">
+                    {/* Article Hero */}
+                    <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+                        <Link
+                            href="/blog"
+                            className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>返回文摘</span>
+                        </Link>
 
-                                {post.imageUrl && (
-                                    <div
-                                        className="flex w-full h-[200px] sm:h-[300px] md:h-[400px] mb-8 rounded-lg overflow-hidden">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img
-                                            src={post.imageUrl}
-                                            alt={post.title}
-                                            width={1200}
-                                            height={630}
-                                            loading="lazy"
-                                            className="object-cover rounded-lg w-full h-full"
-                                        />
-                                    </div>
-                                )}
+                        <header className="mb-10 pb-8 border-b border-border/50">
+                            <h1 className="font-serif-sc text-3xl sm:text-5xl lg:text-[3.25rem] font-medium leading-[1.22] tracking-tight mb-6">
+                                {post.title}
+                            </h1>
 
-                                <BlogClient content={content}/>
-                                <div className="mt-8 pt-8 border-t border-white/10">
-                                    <div className="flex flex-wrap gap-2">
-                                        {post.tags.map((tag) => (
-                                            <span
-                                                key={tag}
-                                                className="px-3 py-1 rounded-full bg-[hsl(var(--linear-gray))/0.1] text-sm text-muted-foreground"
-                                            >
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </article>
-                        </div>
+                            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-xs sm:text-sm text-muted-foreground">
+                                {displayCategories.map((cat) => (
+                                    <React.Fragment key={cat}>
+                                        <strong className="font-medium text-foreground/85">{cat}</strong>
+                                        <span className="inline-block w-1 h-1 rounded-full bg-foreground/45" />
+                                    </React.Fragment>
+                                ))}
+                                <time dateTime={isoDate} className="tabular-nums">
+                                    {post.lastEdited}
+                                </time>
+                                <span>·</span>
+                                <span>{post.readingTime}</span>
+                                <span>·</span>
+                                <span>
+                                    {post.author}
+                                    {post.authorRole && `（${post.authorRole}）`}
+                                </span>
+                            </div>
+                        </header>
+
+                        {post.imageUrl && (
+                            <div className="w-full aspect-[16/9] mb-12 sm:mb-16 rounded-[4px] overflow-hidden bg-muted/30">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={post.imageUrl}
+                                    alt={post.title}
+                                    width={1200}
+                                    height={675}
+                                    loading="eager"
+                                    className="object-cover w-full h-full"
+                                />
+                            </div>
+                        )}
                     </div>
-                </div>
+
+                    {/* Reading Column */}
+                    <article className="max-w-[740px] mx-auto px-5 sm:px-6">
+                        <BlogClient content={content}/>
+                        <div className="crystal-divider mt-14 mb-6" />
+                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+                            {post.tags.map((tag) => (
+                                <span key={tag}># {tag}</span>
+                            ))}
+                        </div>
+                    </article>
+
+                    {/* More Insights Section */}
+                    {relatedPosts.length > 0 && (
+                        <section className="max-w-[1440px] w-full mx-auto px-5 md:px-10 mt-24 pt-12 border-t border-border/60">
+                            <div className="flex items-baseline justify-between mb-8">
+                                <h2 className="font-serif-sc text-2xl sm:text-3xl font-medium tracking-tight">
+                                    更多文章
+                                </h2>
+                                <Link
+                                    href="/blog"
+                                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                                >
+                                    查看全部 →
+                                </Link>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {relatedPosts.map((item, idx) => (
+                                    <ResourceCard
+                                        key={item.slug}
+                                        post={item}
+                                        accentIndex={idx}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                </main>
             </div>
         </>
     );

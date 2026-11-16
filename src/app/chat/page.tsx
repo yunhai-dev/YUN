@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const ChatPage = () => {
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className="flex flex-col overflow-hidden bg-white dark:bg-zinc-950">
       <div className="flex h-full flex-1 flex-col overflow-hidden min-h-0">
         <div className="h-[calc(100vh-64px)] mt-[64px] w-full">
           <ChatClient />

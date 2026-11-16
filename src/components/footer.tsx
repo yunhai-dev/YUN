@@ -1,107 +1,83 @@
 "use client";
 
-import {Link} from "next-view-transitions"
-import {Separator} from "./ui/separator";
+import { Link } from "next-view-transitions";
+import { usePathname } from "next/navigation";
 
-import {usePathname} from "next/navigation";
-
-const footerLinks = [
-    {
-        title: "服务",
-        links: [
-            {href: "https://rustfs-console.yhnotes.com/", label: "对象存储"},
-            {href: "https://status.yhnotes.com/", label: "服务状态"},
-            {href: "https://monitor.yhnotes.com/", label: "监控状态"},
-        ],
-    },
-    {
-        title: "项目",
-        links: [
-            {href: "https://clouisle.asia", label: "Clouisle"},
-            {href: "https://github.com/yunhai-dev/D0-Tools", label: "D0 Tools"},
-            {href: "https://github.com/yunhai-dev/naive-for-qt", label: "Naive for Qt"},
-            {href: "https://github.com/yunhai-dev/job_hive", label: "Job Hive"},
-            {href: "https://github.com/yunhai-dev/crawlsy", label: "Crawlsy"},
-            {href: "https://github.com/yunhai-dev/yundownload", label: "Yundownload"},
-            {href: "https://github.com/yunhai-dev/YunChat", label: "Yun Chat"},
-        ],
-    },
-    {
-        title: "资源",
-        links: [
-            {href: "/api/", label: "API"},
-            {href: "/rss.xml", label: "RSS 订阅"},
-            {href: "/atom.xml", label: "Atom 订阅"},
-        ],
-    },
-    {
-        title: "联系",
-        links: [
-            {href: "https://github.com/yunhai-dev", label: "GitHub"},
-            {href: "https://gitee.com/yun2hai", label: "Gitee"},
-            {href: "mailto:yunhai@yhnotes.com", label: "邮件"},
-        ],
-    },
-    {
-        title: "帮助",
-        links: [
-            {href: "/contact/", label: "支持"},
-        ]
-    },
+const quickLinks = [
+    { href: "/blog/", label: "博客" },
+    { href: "/docs/", label: "文档" },
+    { href: "/tools/", label: "工具" },
+    { href: "/api/", label: "API" },
+    { href: "/media/", label: "音乐" },
+    { href: "/about/", label: "关于" },
+    { href: "/contact/", label: "联系" },
 ];
 
 export function Footer() {
-    const pathname = usePathname()
-    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || pathname === '/chat/') {
+    const pathname = usePathname();
+    const isStorytellingPage =
+        pathname === "/" ||
+        pathname.startsWith("/cases/") ||
+        pathname === "/cases" ||
+        pathname === "/contacts" ||
+        pathname.startsWith("/contacts/");
+    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || pathname === "/chat/" || isStorytellingPage) {
         return null;
     }
-    return (
-        <footer className="pb-16 pt-24 px-4 border-t border-white/5">
-            <div className="max-w-7xl mx-auto">
 
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-16">
-                    {footerLinks.map((section) => (
-                        <div key={section.title}>
-                            <h3 className="text-sm font-medium mb-4">{section.title}</h3>
-                            <ul className="space-y-3">
-                                {section.links.map((link) => (
-                                    <li key={link.label}>
-                                        {
-                                            link.href.startsWith("/") ? (
-                                                <Link href={link.href}
-                                                                className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                                    {link.label}
-                                                </Link>
-                                            ) : (
-                                                <Link
-                                                    target={link.href.startsWith('http') ? '_blank' : ''}
-                                                    href={link.href}
-                                                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                                >
-                                                    {link.label}
-                                                </Link>
-                                            )
-                                        }
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
+    return (
+        <footer className="relative py-14 bg-white dark:bg-zinc-950 border-t border-zinc-200/80 dark:border-zinc-800">
+            <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                    <div>
+                        <p className="font-serif-sc text-base font-medium tracking-wide text-foreground">
+                            YunHai · 云云亦海
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            发现具体问题 · 拆解构建 · 开源分享
+                        </p>
+                    </div>
+
+                    <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                        {quickLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="hover:text-foreground transition-colors"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </nav>
                 </div>
 
-                <Separator className="bg-white/5 mb-8"/>
-
-                <div className="text-sm text-muted-foreground flex justify-between flex-col md:flex-row gap-3">
-                    <p>© {new Date().getFullYear()} YunHai. 保留所有权利。</p>
-                    <p>分享协议&nbsp;
-                        <Link
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-muted-foreground/80">
+                    <p>
+                        © {new Date().getFullYear()} YunHai ·{" "}
+                        <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-blue-400"
-                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.en">
-                            (CC BY-NC-SA 4.0)
-                        </Link>
+                            className="hover:text-foreground transition-colors"
+                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.en"
+                        >
+                            CC BY-NC-SA 4.0
+                        </a>
                     </p>
+                    <div className="flex items-center gap-5">
+                        <a target="_blank" rel="noopener noreferrer" href="https://github.com/yunhai-dev" className="hover:text-foreground transition-colors">
+                            GitHub
+                        </a>
+                        <a target="_blank" rel="noopener noreferrer" href="https://gitee.com/yun2hai" className="hover:text-foreground transition-colors">
+                            Gitee
+                        </a>
+                        <a href="/rss.xml" className="hover:text-foreground transition-colors">
+                            RSS
+                        </a>
+                        <a target="_blank" rel="noopener noreferrer" href="https://status.yhnotes.com/" className="hover:text-foreground transition-colors">
+                            服务状态
+                        </a>
+                    </div>
                 </div>
             </div>
         </footer>

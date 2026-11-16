@@ -242,21 +242,6 @@ export const batch07: Record<string, MediaThemePreset> = {
         ],
         lyricsIcons: ['Sun', 'Star', 'Feather'],
     },
-    'nj-bdzdz-zys': {
-        name: '缘起缘灭',
-        description: '缘起缘浅缘灭，人海中看见又失散。',
-        palette: ['#0d0906', '#1f150c', '#3a2818', '#5c4026', '#7fd0c0', '#f2eadc'],
-        fontStyle: 'serif',
-        fontWeight: 600,
-        animationIntensity: 'normal',
-        wordColors: [
-            { word: '缘起', color: '#7fd0c0' },
-            { word: '缘灭', color: '#e0b070' },
-            { word: '人海', color: '#a8c8e8' },
-            { word: '神明', color: '#d8c0f0' },
-        ],
-        lyricsIcons: ['MountainSnow', 'Flame', 'Heart'],
-    },
     'yyw-firfet': {
         name: '丝路月牙',
         description: '敦煌风沙掩不住，月牙湾下那滴泪。',

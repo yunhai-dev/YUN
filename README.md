@@ -120,6 +120,28 @@ pnpm start
 bun run start
 ```
 
+### Preset Theme Generation
+
+Every track in `src/data/media.ts` gets a preset Folia lyric theme. After adding new songs,
+generate only the missing themes:
+
+```bash
+npm run themes:generate -- --dry-run     # list tracks without a theme
+npm run themes:generate                  # generate with the local Claude Code CLI
+npm run themes:generate -- --limit 5     # process at most 5 tracks
+npm run themes:generate -- --concurrency 4
+```
+
+- `--only id1,id2` — restrict to specific missing ids
+- `--model sonnet` — model passed to `claude`
+- `--attempts N` — attempts per track, including retries (default 2)
+- `--concurrency N` — parallel Claude calls (default 3)
+
+Requires a logged-in `claude` CLI (`CLAUDE_BIN` overrides the binary). The script fetches each
+track's LRC, validates the output with the same rules as `scripts/validate-media-themes.mjs`,
+and appends valid entries to `src/data/mediaThemes/batch-auto.ts`; existing themes are never
+regenerated. Review the diff and commit afterwards.
+
 ## Key Features
 
 - Personal Blog System

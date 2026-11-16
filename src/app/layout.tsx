@@ -1,5 +1,6 @@
 import type {Metadata} from "next";
 import localFont from "next/font/local";
+import { Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import {Navbar} from "@/components/navbar";
 import {Footer} from "@/components/footer";
@@ -14,9 +15,24 @@ import { BackToTop } from "@/components/back-to-top";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { WebVitals } from "@/components/web-vitals";
 import HandControlOverlay from "@/components/HandControlOverlay";
+import { NoomoExperienceShell } from "@/components/noomo/NoomoExperienceShell";
 
 
 const inter = localFont({src: './fonts/inter-latin.woff2', display: 'swap', weight: '100 900', fallback: ['Arial', 'sans-serif']});
+
+const notoSansSC = Noto_Sans_SC({
+    subsets: ['latin'],
+    weight: ['300', '400', '500'],
+    variable: '--font-noto-sans-sc',
+    display: 'swap',
+});
+
+const notoSerifSC = Noto_Serif_SC({
+    subsets: ['latin'],
+    weight: ['300', '400', '500', '600'],
+    variable: '--font-noto-serif-sc',
+    display: 'swap',
+});
 
 export const metadata: Metadata = {
     title: {
@@ -82,7 +98,7 @@ export default function RootLayout({
 }>) {
     return (
         <ViewTransitions>
-            <html lang="zh-CN" suppressHydrationWarning>
+            <html lang="zh-CN" className={`${notoSansSC.variable} ${notoSerifSC.variable} light`} suppressHydrationWarning>
             <head>
                 <link rel="preconnect" href="https://rustfs-endpoint.yhnotes.com" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://rustfs-endpoint.yhnotes.com" />
@@ -90,26 +106,25 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href="https://cloud.umami.is" />
                 {/* PWA 支持 */}
                 <link rel="manifest" href="/manifest.json" />
-                <meta name="theme-color" content="#8b5cf6" />
+                <meta name="theme-color" content="#ffffff" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="default" />
                 {/* RSS Feed */}
                 <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
                 <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
-                {/* 主题初始化脚本 - 防止闪烁 */}
+                {/* 主题初始化脚本 - 统一启用亮色模式 */}
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
                             (function() {
                                 try {
-                                    var theme = localStorage.getItem('theme') || 'dark';
-                                    if (theme === 'auto') {
-                                        var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                                        if (!isDark) {
-                                            document.documentElement.classList.add('light');
-                                        }
-                                    } else if (theme === 'light') {
-                                        document.documentElement.classList.add('light');
+                                    document.documentElement.classList.add('light');
+                                    document.documentElement.classList.remove('dark');
+                                    var p = window.location.pathname;
+                                    if (p === '/' || p === '/cases' || p.indexOf('/cases/') === 0 || p === '/contacts' || p.indexOf('/contacts/') === 0) {
+                                        document.documentElement.classList.add('noomo-active');
+                                        var vh = ((window.visualViewport && window.visualViewport.height) || window.innerHeight) * 0.01;
+                                        document.documentElement.style.setProperty('--app-vh', vh + 'px');
                                     }
                                 } catch (e) {}
                             })();
@@ -141,7 +156,9 @@ export default function RootLayout({
                     <Toaster/>
                     <main id="main-content" className="min-h-screen">
                         <ErrorBoundary>
-                            {children}
+                            <NoomoExperienceShell>
+                                {children}
+                            </NoomoExperienceShell>
                         </ErrorBoundary>
                     </main>
                     <Footer/>

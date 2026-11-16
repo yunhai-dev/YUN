@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -12,7 +13,15 @@ interface BackToTopProps {
 }
 
 export function BackToTop({ threshold = 400, className }: BackToTopProps) {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
+
+  const isStorytellingPage =
+    pathname === '/' ||
+    pathname.startsWith('/cases/') ||
+    pathname === '/cases' ||
+    pathname === '/contacts' ||
+    pathname.startsWith('/contacts/');
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -31,6 +40,8 @@ export function BackToTop({ threshold = 400, className }: BackToTopProps) {
       behavior: 'smooth',
     });
   };
+
+  if (isStorytellingPage) return null;
 
   return (
     <button

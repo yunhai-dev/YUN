@@ -148,6 +148,26 @@ player/folia/services/lucideIconResolver.ts
   12 chaotic；色板亮度无逆序。
 - 按用户要求未运行 `npm run build`、未启动开发服务器/浏览器；视觉效果待用户在开发环境确认。
 
+## 增量生成（2026-11-16）
+
+新曲目加入 `src/data/media.ts` 后，不再手工分批拟写：
+
+```bash
+npm run themes:generate -- --dry-run   # 先看缺哪些曲目
+npm run themes:generate               # 调用本机 claude CLI 逐首生成
+npm run themes:generate -- --limit 5  # 分批跑
+```
+
+- 只处理在任何 `batch-*.ts` 中都没有主题的曲目；已有 208 首不会重算。
+- 逐首抓取 `lyricsUrl` 的 LRC，把作者手册、歌曲信息、歌词与图标词表交给
+  `claude -p`（`--json-schema` 约束输出）；首次输出不合法时带上校验错误重试，
+  `--attempts` 可调；`--concurrency`（默认 3）控制并行调用数，结果按 media.ts 顺序落盘。
+- 生成结果写入 `src/data/mediaThemes/batch-auto.ts`（`index.ts` 已接入），并与
+  `scripts/validate-media-themes.mjs` 共用 `scripts/lib/mediaThemes.mjs` 的校验规则。
+  关键词校验会先剥离 LRC 的行/逐字时间标签，再按运行时同样的规则匹配。
+- `--model sonnet` 指定模型，`CLAUDE_BIN` 覆盖 CLI 路径；要求本机已登录 Claude Code。
+- 脚本写完后仍建议人工过一遍配色与文案再提交；删掉 `batch-auto.ts` 中的条目可重新生成。
+
 ## Testing Strategy
 
 **静态**
