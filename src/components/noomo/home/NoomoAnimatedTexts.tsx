@@ -80,6 +80,7 @@ const BigTextNew: React.FC<TextItemProps> = ({
           parent.style.display = self.isActive ? 'unset' : 'none';
         },
       });
+      parent.style.visibility = '';
       parent.style.display = st.isActive ? 'unset' : 'none';
 
       tl = gsap.timeline();
@@ -134,7 +135,7 @@ const BigTextNew: React.FC<TextItemProps> = ({
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
 
   return (
-    <div ref={parentRef} style={{ display: 'none' }} className={`absolute animated-text-big ${className}`}>
+    <div ref={parentRef} style={{ visibility: 'hidden' }} className={`absolute animated-text-big ${className}`}>
       <div ref={elRef} dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
@@ -179,6 +180,7 @@ const SmallTextNew: React.FC<TextItemProps> = ({
         parent.style.display = self.isActive ? 'unset' : 'none';
       },
     });
+    parent.style.visibility = '';
     parent.style.display = st.isActive ? 'unset' : 'none';
     parent.style.display = st.isActive ? 'unset' : 'none';
 
@@ -238,7 +240,7 @@ const SmallTextNew: React.FC<TextItemProps> = ({
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
 
   return (
-    <div ref={parentRef} style={{ display: 'none' }} className={`xs:fixed lg:absolute animated-text ${className}`}>
+    <div ref={parentRef} style={{ visibility: 'hidden' }} className={`xs:fixed lg:absolute animated-text ${className}`}>
       <div
         ref={elRef}
         className={mode === 'light' ? 'text-brand-black' : 'text-white'}
@@ -312,6 +314,7 @@ const LinesText: React.FC<TextItemProps> = ({
         parent.style.display = self.isActive ? 'unset' : 'none';
       },
     });
+    parent.style.visibility = '';
     parent.style.display = st.isActive ? 'unset' : 'none';
 
     const tl2 = gsap
@@ -336,7 +339,7 @@ const LinesText: React.FC<TextItemProps> = ({
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2, toTop]);
 
   return (
-    <div ref={parentRef} style={{ display: 'none' }} className={`absolute animated-text ${className}`}>
+    <div ref={parentRef} style={{ visibility: 'hidden' }} className={`absolute animated-text ${className}`}>
       <div ref={elRef} className="text-white" dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
@@ -583,7 +586,7 @@ export const NoomoAnimatedTexts: React.FC = () => {
       scrollStart2: e(3) + 150 / n,
       scrollEnd2: e(3) + 300 / n,
       text: `<p class="xs:text-serif-80 lg:text-serif-200 text-center whitespace-nowrap">
-        <i class="lg:text-serif-50 xs:block lg:inline xs:text-serif-30 text-brand-black lg:-translate-y-[200%] xs:translate-y-[140%] lg:-translate-x-[40%]">始于</i>
+        <i class="lg:text-serif-50 xs:block lg:inline-block xs:text-serif-30 text-brand-black lg:-translate-y-[200%] xs:translate-y-[140%] lg:-translate-x-[40%]">始于</i>
         <span class="gradient-text">好奇</span><br>
       </p>`,
     },
