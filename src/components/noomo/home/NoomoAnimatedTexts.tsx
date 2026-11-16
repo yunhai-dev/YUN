@@ -7,6 +7,10 @@ import { SplitText } from 'gsap/SplitText';
 import { noomoStore, useNoomoStore } from '../noomo-store';
 import { useNoomoNavigation } from '../NoomoExperienceShell';
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+}
+
 function getAppVhPx(): number {
   if (typeof window === 'undefined') return 0;
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--app-vh').trim();
@@ -76,6 +80,7 @@ const BigTextNew: React.FC<TextItemProps> = ({
           parent.style.display = self.isActive ? 'unset' : 'none';
         },
       });
+      parent.style.display = st.isActive ? 'unset' : 'none';
 
       tl = gsap.timeline();
       tl.fromTo(
@@ -103,6 +108,7 @@ const BigTextNew: React.FC<TextItemProps> = ({
           filter: blurOut,
           stagger: 0.05,
           ease: 'none',
+          immediateRender: false,
           scrollTrigger: {
             trigger: 'body',
             start: () => `top+=${vhToPx(scrollStart2)} top`,
@@ -128,7 +134,7 @@ const BigTextNew: React.FC<TextItemProps> = ({
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
 
   return (
-    <div ref={parentRef} className={`absolute animated-text-big ${className}`}>
+    <div ref={parentRef} style={{ display: 'none' }} className={`absolute animated-text-big ${className}`}>
       <div ref={elRef} dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
@@ -173,6 +179,8 @@ const SmallTextNew: React.FC<TextItemProps> = ({
         parent.style.display = self.isActive ? 'unset' : 'none';
       },
     });
+    parent.style.display = st.isActive ? 'unset' : 'none';
+    parent.style.display = st.isActive ? 'unset' : 'none';
 
     const tl = gsap.timeline();
     tl.fromTo(
@@ -205,6 +213,7 @@ const SmallTextNew: React.FC<TextItemProps> = ({
           filter: blurOut,
           stagger: 0.05,
           ease: 'none',
+          immediateRender: false,
           scrollTrigger: {
             trigger: 'body',
             start: () => `top+=${vhToPx(scrollStart2)} top`,
@@ -229,7 +238,7 @@ const SmallTextNew: React.FC<TextItemProps> = ({
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
 
   return (
-    <div ref={parentRef} className={`xs:fixed lg:absolute animated-text ${className}`}>
+    <div ref={parentRef} style={{ display: 'none' }} className={`xs:fixed lg:absolute animated-text ${className}`}>
       <div
         ref={elRef}
         className={mode === 'light' ? 'text-brand-black' : 'text-white'}
@@ -303,6 +312,7 @@ const LinesText: React.FC<TextItemProps> = ({
         parent.style.display = self.isActive ? 'unset' : 'none';
       },
     });
+    parent.style.display = st.isActive ? 'unset' : 'none';
 
     const tl2 = gsap
       .timeline({
@@ -326,7 +336,7 @@ const LinesText: React.FC<TextItemProps> = ({
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2, toTop]);
 
   return (
-    <div ref={parentRef} className={`absolute animated-text ${className}`}>
+    <div ref={parentRef} style={{ display: 'none' }} className={`absolute animated-text ${className}`}>
       <div ref={elRef} className="text-white" dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
