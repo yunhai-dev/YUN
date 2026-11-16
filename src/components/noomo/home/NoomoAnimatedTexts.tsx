@@ -52,7 +52,8 @@ const BigTextNew: React.FC<TextItemProps> = ({
     if (!parent || !el) return;
 
     let split: SplitText | null = null;
-    let tl: gsap.core.Timeline | null = null;
+    let tweenIn: gsap.core.Tween | null = null;
+    let tweenOut: gsap.core.Tween | null = null;
     let st: ScrollTrigger | null = null;
 
     const timer = window.setTimeout(() => {
@@ -63,28 +64,15 @@ const BigTextNew: React.FC<TextItemProps> = ({
         ic.classList.add('char');
         gsap.set(ic, { display: 'inline-block' });
       });
-      el.querySelectorAll('.char').forEach((ch) => {
-        ch.classList.add('opacity-0');
-      });
 
       const chars = Array.from(el.querySelectorAll('.char'));
       const isDesktop = window.innerWidth >= 1024;
       const blurOut = isDesktop ? 'blur(8px)' : 'none';
       const blurIn = isDesktop ? 'blur(0px)' : 'none';
 
-      st = ScrollTrigger.create({
-        trigger: 'body',
-        start: () => `top+=${vhToPx(Math.min(scrollStart, scrollStart2))} top`,
-        end: () => `top+=${vhToPx(Math.max(scrollEnd, scrollEnd2))} top`,
-        onToggle: (self) => {
-          parent.style.display = self.isActive ? 'unset' : 'none';
-        },
-      });
-      parent.style.visibility = '';
-      parent.style.display = st.isActive ? 'unset' : 'none';
+      gsap.set(chars, { opacity: 0, scale: 1.3, filter: blurOut });
 
-      tl = gsap.timeline();
-      tl.fromTo(
+      tweenIn = gsap.fromTo(
         chars,
         { opacity: 0, scale: 1.3, filter: blurOut },
         {
@@ -100,7 +88,9 @@ const BigTextNew: React.FC<TextItemProps> = ({
             scrub: true,
           },
         }
-      ).fromTo(
+      );
+
+      tweenOut = gsap.fromTo(
         chars,
         { opacity: 1, scale: 1, filter: blurIn },
         {
@@ -119,8 +109,18 @@ const BigTextNew: React.FC<TextItemProps> = ({
         }
       );
 
-      gsap.set(chars, { opacity: 0, scale: 1.3, filter: blurOut });
+      st = ScrollTrigger.create({
+        trigger: 'body',
+        start: () => `top+=${vhToPx(Math.min(scrollStart, scrollStart2))} top`,
+        end: () => `top+=${vhToPx(Math.max(scrollEnd, scrollEnd2))} top`,
+        onToggle: (self) => {
+          parent.style.display = self.isActive ? 'unset' : 'none';
+        },
+      });
+
       ScrollTrigger.refresh();
+      parent.style.visibility = '';
+      parent.style.display = st.isActive ? 'unset' : 'none';
     }, 500);
 
     return () => {
@@ -129,7 +129,10 @@ const BigTextNew: React.FC<TextItemProps> = ({
       if (chars.length) gsap.killTweensOf(chars);
       gsap.killTweensOf(parent);
       st?.kill();
-      tl?.kill();
+      tweenIn?.scrollTrigger?.kill();
+      tweenIn?.kill();
+      tweenOut?.scrollTrigger?.kill();
+      tweenOut?.kill();
       split?.revert();
     };
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
@@ -172,20 +175,13 @@ const SmallTextNew: React.FC<TextItemProps> = ({
     const blurOut = isDesktop ? 'blur(8px)' : 'none';
     const blurIn = isDesktop ? 'blur(0px)' : 'none';
 
-    const st = ScrollTrigger.create({
-      trigger: 'body',
-      start: () => `top+=${vhToPx(Math.min(scrollStart, scrollStart2))} top`,
-      end: () => `top+=${vhToPx(Math.max(scrollEnd, scrollEnd2))} top`,
-      onToggle: (self) => {
-        parent.style.display = self.isActive ? 'unset' : 'none';
-      },
+    gsap.set(chars, {
+      opacity: 0,
+      scale: (_i, target: HTMLElement) => (target.classList.contains('from-scale') ? 0 : 1.3),
+      filter: blurOut,
     });
-    parent.style.visibility = '';
-    parent.style.display = st.isActive ? 'unset' : 'none';
-    parent.style.display = st.isActive ? 'unset' : 'none';
 
-    const tl = gsap.timeline();
-    tl.fromTo(
+    const tweenIn = gsap.fromTo(
       chars,
       {
         opacity: 0,
@@ -205,36 +201,46 @@ const SmallTextNew: React.FC<TextItemProps> = ({
           scrub: true,
         },
       }
-    )
-      .fromTo(
-        chars,
-        { opacity: 1, scale: 1, filter: blurIn },
-        {
-          opacity: 0,
-          scale: 1.3,
-          filter: blurOut,
-          stagger: 0.05,
-          ease: 'none',
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: 'body',
-            start: () => `top+=${vhToPx(scrollStart2)} top`,
-            end: () => `top+=${vhToPx(scrollEnd2)} top`,
-            scrub: true,
-          },
-        }
-      )
-      .to(chars, {
+    );
+
+    const tweenOut = gsap.fromTo(
+      chars,
+      { opacity: 1, scale: 1, filter: blurIn },
+      {
         opacity: 0,
-        scale: (_i, target: HTMLElement) => (target.classList.contains('from-scale') ? 0 : 1.3),
+        scale: 1.3,
         filter: blurOut,
-      });
+        stagger: 0.05,
+        ease: 'none',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: 'body',
+          start: () => `top+=${vhToPx(scrollStart2)} top`,
+          end: () => `top+=${vhToPx(scrollEnd2)} top`,
+          scrub: true,
+        },
+      }
+    );
+
+    const st = ScrollTrigger.create({
+      trigger: 'body',
+      start: () => `top+=${vhToPx(Math.min(scrollStart, scrollStart2))} top`,
+      end: () => `top+=${vhToPx(Math.max(scrollEnd, scrollEnd2))} top`,
+      onToggle: (self) => {
+        parent.style.display = self.isActive ? 'unset' : 'none';
+      },
+    });
+    parent.style.visibility = '';
+    parent.style.display = st.isActive ? 'unset' : 'none';
 
     return () => {
       if (chars.length) gsap.killTweensOf(chars);
       gsap.killTweensOf(parent);
       st.kill();
-      tl.kill();
+      tweenIn.scrollTrigger?.kill();
+      tweenIn.kill();
+      tweenOut.scrollTrigger?.kill();
+      tweenOut.kill();
       split.revert();
     };
   }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
