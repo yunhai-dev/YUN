@@ -35,7 +35,7 @@ interface TextItemProps {
   toTop?: number;
 }
 
-const BigTextNew: React.FC<TextItemProps> = ({
+const BigTextNew: React.FC<TextItemProps> = React.memo(({
   className = '',
   content,
   scrollStart,
@@ -57,6 +57,7 @@ const BigTextNew: React.FC<TextItemProps> = ({
     let st: ScrollTrigger | null = null;
 
     const timer = window.setTimeout(() => {
+      el.innerHTML = content;
       const p = el.querySelector('p');
       if (!p) return;
       split = new SplitText(p, { type: 'chars', charsClass: 'char', linesClass: 'line++' });
@@ -134,17 +135,18 @@ const BigTextNew: React.FC<TextItemProps> = ({
       tweenOut?.scrollTrigger?.kill();
       tweenOut?.kill();
       split?.revert();
+      el.innerHTML = '';
     };
-  }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
+  }, [content, scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
 
   return (
     <div ref={parentRef} style={{ visibility: 'hidden' }} className={`absolute animated-text-big ${className}`}>
-      <div ref={elRef} dangerouslySetInnerHTML={{ __html: content }} />
+      <div ref={elRef} />
     </div>
   );
-};
+});
 
-const SmallTextNew: React.FC<TextItemProps> = ({
+const SmallTextNew: React.FC<TextItemProps> = React.memo(({
   className = '',
   content,
   scrollStart,
@@ -161,6 +163,7 @@ const SmallTextNew: React.FC<TextItemProps> = ({
     const el = elRef.current;
     if (!parent || !el) return;
 
+    el.innerHTML = content;
     const p = el.querySelector('p');
     if (!p) return;
 
@@ -242,21 +245,21 @@ const SmallTextNew: React.FC<TextItemProps> = ({
       tweenOut.scrollTrigger?.kill();
       tweenOut.kill();
       split.revert();
+      el.innerHTML = '';
     };
-  }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
+  }, [content, scrollStart, scrollEnd, scrollStart2, scrollEnd2]);
 
   return (
     <div ref={parentRef} style={{ visibility: 'hidden' }} className={`xs:fixed lg:absolute animated-text ${className}`}>
       <div
         ref={elRef}
         className={mode === 'light' ? 'text-brand-black' : 'text-white'}
-        dangerouslySetInnerHTML={{ __html: content }}
       />
     </div>
   );
-};
+});
 
-const LinesText: React.FC<TextItemProps> = ({
+const LinesText: React.FC<TextItemProps> = React.memo(({
   className = '',
   content,
   scrollStart,
@@ -273,6 +276,7 @@ const LinesText: React.FC<TextItemProps> = ({
     const el = elRef.current;
     if (!parent || !el) return;
 
+    el.innerHTML = content;
     const p = el.querySelector('p');
     if (!p) return;
 
@@ -341,15 +345,16 @@ const LinesText: React.FC<TextItemProps> = ({
       tl1.kill();
       tl2.kill();
       split.revert();
+      el.innerHTML = '';
     };
-  }, [scrollStart, scrollEnd, scrollStart2, scrollEnd2, toTop]);
+  }, [content, scrollStart, scrollEnd, scrollStart2, scrollEnd2, toTop]);
 
   return (
     <div ref={parentRef} style={{ visibility: 'hidden' }} className={`absolute animated-text ${className}`}>
-      <div ref={elRef} className="text-white" dangerouslySetInnerHTML={{ __html: content }} />
+      <div ref={elRef} className="text-white" />
     </div>
   );
-};
+});
 
 interface CaseHoverProps {
   id: string;
