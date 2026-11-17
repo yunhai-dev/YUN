@@ -11,6 +11,9 @@ const nextConfig = {
         ],
         minimumCacheTTL: 0
     },
+    experimental: {
+        agentUpgrade: 'security',
+    },
     typescript: {
         ignoreBuildErrors: true,
     },
