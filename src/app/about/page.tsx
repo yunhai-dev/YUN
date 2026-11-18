@@ -29,7 +29,7 @@ const practices = [
 
 export default function About() {
     return (
-        <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
+        <main className="min-h-screen flex flex-col">
             <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 pt-28 md:pt-36 pb-24">
                 {/* Opening Editorial Spread */}
                 <section className="grid grid-cols-1 md:grid-cols-12 gap-10 items-end pb-16 border-b border-border/60">

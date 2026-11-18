@@ -26,12 +26,12 @@ function ShelfDivider({ lean = "-1.5deg", edge = false }: { lean?: string; edge?
         edge ? "px-1" : "px-2.5"
       )}
     >
-      <span className={cn("rounded-[1px] bg-border/80", edge ? "w-[2px]" : "w-[3px]")} />
+      <span className={cn("rounded-[1px] bg-white/80", edge ? "w-[2px]" : "w-[3px]")} />
       <span
-        className="w-[3px] rounded-[1px] bg-border/70 transition-transform"
+        className="w-[3px] rounded-[1px] bg-white/70 transition-transform"
         style={{ transform: `rotate(${lean})` }}
       />
-      <span className="w-[5px] rounded-[1px] bg-border/60" />
+      <span className="w-[5px] rounded-[1px] bg-white/60" />
     </div>
   );
 }
@@ -49,7 +49,7 @@ export function CategoryFeatureCarousel({ posts }: CategoryFeatureCarouselProps)
     <section
       aria-roledescription="carousel"
       aria-label="精选文章"
-      className="mt-10 lg:mt-14 relative"
+      className="mt-6 lg:mt-8 relative"
     >
       {/* Desktop Book-Spine Shelf */}
       <div className="hidden md:flex items-stretch md:h-[360px]">

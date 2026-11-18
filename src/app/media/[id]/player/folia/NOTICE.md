@@ -37,6 +37,13 @@ The code in this directory is vendored from **Folia**:
   Shared hosts `songHandover.ts` and `pixi/pixiRuntimeHost.ts` are vendored as-is apart from the
   first-frame stub. Cappella's Vite `import.meta.glob` assets were replaced with explicit static
   imports (`cappella/avatarImages.ts`, `cappella/emoImages.ts`) preserving selection order.
+  The `/media` list page also adapts the upstream library wall: the 12-slot block templates and
+  reflections from `components/wall/blockTemplates.ts`, the infinite field period and culling from
+  `components/wall/layout.ts`, the slot item sequence from `components/wall/startTile.ts`, the wall
+  camera metrics from `library/suites/bravais/bravaisConstants.ts`, and the poster/shade/badge
+  presentation from `components/wall/wall.css`, reimplemented in
+  `src/app/media/mediaWallGeometry.ts` and `src/app/media/MediaLibrary.tsx` against this site's
+  static media catalog and playback routes.
 
 This project's source code is distributed under AGPL-3.0 (see the repository root `LICENSE`).
 Distributing a build that includes this directory requires complying with the AGPL-3.0 for

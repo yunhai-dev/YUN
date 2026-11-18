@@ -64,14 +64,14 @@ export function ResourceCard({
       href={`/blog/${post.slug}`}
       {...prefetchProps}
       className={cn(
-        "group flex flex-col rounded-2xl border border-zinc-200/90 dark:border-zinc-800 bg-zinc-50/90 hover:bg-zinc-100/90 dark:bg-zinc-900/60 dark:hover:bg-zinc-900 transition-colors duration-200 hover:shadow-sm overflow-hidden",
+        "group gradient-hairline flex flex-col rounded-2xl bg-white/30 backdrop-blur-xl backdrop-saturate-150 shadow-[0_10px_36px_-20px_rgba(64,52,110,0.35)] transition-colors duration-200 hover:bg-white/45 dark:bg-white/5 dark:hover:bg-white/10 overflow-hidden",
         featured && "min-h-[300px]",
-        inCarousel && "h-full bg-zinc-50 hover:bg-zinc-100/80 dark:bg-zinc-900/70 dark:hover:bg-zinc-900",
+        inCarousel && "h-full",
         className
       )}
     >
       {/* Card Top Header */}
-      <div className="flex items-center justify-between gap-4 px-5 py-3 border-b border-zinc-200/80 dark:border-zinc-800 text-xs text-muted-foreground">
+      <div className="flex items-center justify-between gap-4 px-5 py-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-2 font-medium text-foreground/80">
           <FileText className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span>{primaryCat}</span>

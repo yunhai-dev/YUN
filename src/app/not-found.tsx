@@ -10,7 +10,7 @@ export default function NotFound() {
     ];
 
     return (
-        <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
+        <main className="min-h-screen flex flex-col">
             <div className="flex-1 flex flex-col justify-center items-center px-6 py-32 text-center">
                 <div className="relative flex items-center justify-center mb-6">
                     <span className="font-serif-sc text-[8rem] sm:text-[10rem] leading-none font-medium text-primary/15 select-none">

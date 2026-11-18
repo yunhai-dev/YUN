@@ -47,6 +47,15 @@
   - [ ] Autoplay analysis (beat/HTDemucs automix) — deferred, see `docs/plan/folia-smart-transition.md`
   - See `docs/plan/folia-player-integration.md`
 
+- [ ] Folia media library wall
+  - [x] Port the Bravais block templates, infinite wrap and camera geometry
+  - [x] Full-bleed collage surface, tilted field, atmosphere and wall chrome
+  - [x] Drag/wheel pan with release inertia, arrow-key focus, search, session focus restore, player links
+  - [x] Card ↔ player cover flight, playing/paused marks, locate-playing action
+  - [x] Static checks (TypeScript, ESLint)
+  - [ ] User visual verification (no build/server)
+  - See `docs/plan/folia-media-library.md`
+
 - [ ] Preset lyric themes for built-in tracks (Folia `Theme`)
   - [x] Data model + closed icon vocabulary (`MediaTheme`, `THEME_ICON_NAMES`)
   - [x] Adapter wiring (`toFoliaTheme(palette, preset)`, preset palette short-circuit)

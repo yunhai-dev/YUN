@@ -86,7 +86,7 @@ export function DocNavigation({
 }) {
     return (
         <div className={className}>
-            <div className="sticky top-0 border-r pt-[64px] h-screen pointer-events-auto">
+            <div className="sticky top-0 pt-[64px] h-screen pointer-events-auto">
                 <nav
                     className="scroll-container hover:overflow-auto space-y-1 overflow-y-auto max-h-[calc(100vh-64px)] scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent pr-4 py-4">
                     {docs.map((doc) => (
@@ -470,7 +470,7 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
     }
 
     return (
-        <div className="flex-1 min-h-screen bg-white dark:bg-zinc-950">
+        <div className="flex-1 min-h-screen">
             <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 relative">
                 {isMounted && (
                     <MobileControls
@@ -481,7 +481,7 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
                     />
                 )}
 
-                <div className="flex">
+                <div className="crystal-veil flex">
                     {/* Desktop Sidebar */}
                     <DocNavigation
                         docs={allDocs}

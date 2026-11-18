@@ -67,7 +67,7 @@ export default async function BlogPage() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
+        <main className="min-h-screen flex flex-col">
             <Script
                 id="blog-collection-schema"
                 type="application/ld+json"

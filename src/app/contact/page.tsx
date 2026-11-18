@@ -23,7 +23,7 @@ const faqs = [
 
 export default function Contact() {
     return (
-        <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
+        <main className="min-h-screen flex flex-col">
             <FAQStructuredData faqs={faqs} />
 
             <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 pt-28 md:pt-36 pb-24">

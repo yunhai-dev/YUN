@@ -9,7 +9,6 @@ import {baseUrl, image, siteName} from '@/config/site';
 import {BreadcrumbStructuredData} from "@/components/structured-data";
 import {ReadingProgress} from "@/components/reading-progress";
 import {ResourceCard, type BlogResourceSummary} from "@/components/blog/ResourceCard";
-import {ArrowLeft} from "lucide-react";
 import React from "react";
 
 // 生成所有可能的博客文章路径
@@ -177,66 +176,57 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
                 dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
             />
             <BreadcrumbStructuredData items={breadcrumbItems} />
-            <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950">
-                <main className="flex-1 pt-32 md:pt-40 pb-24">
-                    {/* Article Hero */}
-                    <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
-                        <Link
-                            href="/blog"
-                            className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            <span>返回文摘</span>
-                        </Link>
+            <div className="flex flex-col min-h-screen">
+                <main className="flex-1 pt-12 md:pt-14 pb-24">
+                    {/* Article panel — title, hero image and body share one surface */}
+                    <article className="crystal-veil max-w-[740px] mx-auto px-5 sm:px-6">
+                        <div className="pb-8 sm:pb-10">
+                            <header className="mb-10 pb-8 border-b border-border/50">
+                                <h1 className="font-serif-sc text-3xl sm:text-5xl lg:text-[3.25rem] font-medium leading-[1.22] tracking-tight mb-6">
+                                    {post.title}
+                                </h1>
 
-                        <header className="mb-10 pb-8 border-b border-border/50">
-                            <h1 className="font-serif-sc text-3xl sm:text-5xl lg:text-[3.25rem] font-medium leading-[1.22] tracking-tight mb-6">
-                                {post.title}
-                            </h1>
+                                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-xs sm:text-sm text-muted-foreground">
+                                    {displayCategories.map((cat) => (
+                                        <React.Fragment key={cat}>
+                                            <strong className="font-medium text-foreground/85">{cat}</strong>
+                                            <span className="inline-block w-1 h-1 rounded-full bg-foreground/45" />
+                                        </React.Fragment>
+                                    ))}
+                                    <time dateTime={isoDate} className="tabular-nums">
+                                        {post.lastEdited}
+                                    </time>
+                                    <span>·</span>
+                                    <span>{post.readingTime}</span>
+                                    <span>·</span>
+                                    <span>
+                                        {post.author}
+                                        {post.authorRole && `（${post.authorRole}）`}
+                                    </span>
+                                </div>
+                            </header>
 
-                            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-xs sm:text-sm text-muted-foreground">
-                                {displayCategories.map((cat) => (
-                                    <React.Fragment key={cat}>
-                                        <strong className="font-medium text-foreground/85">{cat}</strong>
-                                        <span className="inline-block w-1 h-1 rounded-full bg-foreground/45" />
-                                    </React.Fragment>
+                            {post.imageUrl && (
+                                <div className="w-full aspect-[16/9] mb-12 sm:mb-16 rounded-[4px] overflow-hidden bg-muted/30">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={post.imageUrl}
+                                        alt={post.title}
+                                        width={1200}
+                                        height={675}
+                                        loading="eager"
+                                        className="object-cover w-full h-full"
+                                    />
+                                </div>
+                            )}
+
+                            <BlogClient content={content}/>
+                            <div className="crystal-divider mt-14 mb-6" />
+                            <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+                                {post.tags.map((tag) => (
+                                    <span key={tag}># {tag}</span>
                                 ))}
-                                <time dateTime={isoDate} className="tabular-nums">
-                                    {post.lastEdited}
-                                </time>
-                                <span>·</span>
-                                <span>{post.readingTime}</span>
-                                <span>·</span>
-                                <span>
-                                    {post.author}
-                                    {post.authorRole && `（${post.authorRole}）`}
-                                </span>
                             </div>
-                        </header>
-
-                        {post.imageUrl && (
-                            <div className="w-full aspect-[16/9] mb-12 sm:mb-16 rounded-[4px] overflow-hidden bg-muted/30">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={post.imageUrl}
-                                    alt={post.title}
-                                    width={1200}
-                                    height={675}
-                                    loading="eager"
-                                    className="object-cover w-full h-full"
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Reading Column */}
-                    <article className="max-w-[740px] mx-auto px-5 sm:px-6">
-                        <BlogClient content={content}/>
-                        <div className="crystal-divider mt-14 mb-6" />
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                            {post.tags.map((tag) => (
-                                <span key={tag}># {tag}</span>
-                            ))}
                         </div>
                     </article>
 

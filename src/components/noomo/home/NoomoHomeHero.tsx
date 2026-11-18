@@ -28,6 +28,7 @@ export const NoomoHomeHero: React.FC<{ onStartByClick?: () => void }> = ({ onSta
   const [hidden, setHidden] = useState(false);
 
   const handleMouseMove = () => {
+    if (state.mobileMenuOpen) return;
     if (!state.experienceStarted && typeof window !== 'undefined' && window.innerWidth >= 1024) {
       const snap = noomoStore.getSnapshot();
       if (snap.cursorText !== '点击开启') {

@@ -50,7 +50,7 @@ export default function ToolsLayout({ children }: { children: React.ReactNode })
         },
     };
     return (
-        <div className="min-h-screen bg-white dark:bg-zinc-950">
+        <div className="min-h-screen">
             <ToolsPwaRegister />
             <Script id="tools-collection-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
             {children}

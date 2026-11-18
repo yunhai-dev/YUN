@@ -1,68 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { NoomoSiteMenu, siteMenuPrimaryItems } from './NoomoSiteMenu';
 import { noomoStore, useNoomoStore } from './noomo-store';
-
-interface SimpleButtonProps {
-  href: string;
-  external?: boolean;
-  borderRadius?: 'medium' | 'full' | 'none';
-  children: React.ReactNode;
-  onClick?: () => void;
-}
-
-const SimpleButton: React.FC<SimpleButtonProps> = ({
-  href,
-  external = false,
-  borderRadius = 'medium',
-  children,
-  onClick,
-}) => {
-  const state = useNoomoStore();
-  const radiusClass =
-    borderRadius === 'full'
-      ? 'full-rounded'
-      : borderRadius === 'none'
-      ? 'none-rounded'
-      : 'medium-rounded';
-  const modeClass = state.sectionColor === 'dark' ? 'dark' : '';
-
-  const className = `simple-button relative text-sans-18 text-brand-black px-8 h-24 flex transition-all duration-300 ease-in-out items-center justify-center cursor-pointer ${radiusClass} ${modeClass}`;
-
-  const underline = (
-    <span className="inline-block absolute h-2 -bottom-3 opacity-0 transition-all duration-300 w-0" />
-  );
-
-  if (external) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-        onMouseEnter={() => noomoStore.setCursorHover(true)}
-        onMouseLeave={() => noomoStore.setCursorHover(false)}
-      >
-        {children}
-        {underline}
-      </a>
-    );
-  }
-
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={className}
-      onMouseEnter={() => noomoStore.setCursorHover(true)}
-      onMouseLeave={() => noomoStore.setCursorHover(false)}
-    >
-      {children}
-      {underline}
-    </Link>
-  );
-};
 
 export const NoomoHeader: React.FC<{
   onNavigate?: (targetPath: string) => void;
@@ -70,6 +11,7 @@ export const NoomoHeader: React.FC<{
   const state = useNoomoStore();
   const isCases = state.currentPage === 'cases';
   const isDark = state.sectionColor === 'dark';
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleLink = (e: React.MouseEvent, target: string) => {
     if (onNavigate) {
@@ -82,8 +24,64 @@ export const NoomoHeader: React.FC<{
     noomoStore.setMobileMenuOpen(!state.mobileMenuOpen);
   };
 
+  const closeMenu = () => {
+    noomoStore.setMobileMenuOpen(false);
+  };
+
+  const closeAndFocus = () => {
+    closeMenu();
+    requestAnimationFrame(() => menuButtonRef.current?.focus());
+  };
+
+  useEffect(() => {
+    if (!state.mobileMenuOpen) return;
+    // Freeze the homepage cursor effects while the menu owns the pointer.
+    noomoStore.setCursorHover(false);
+    noomoStore.setCursorHoverCase(false, '');
+    noomoStore.setCursorText('');
+    noomoStore.setCursorTextState(false);
+  }, [state.mobileMenuOpen]);
+
+  useEffect(() => {
+    // The vendored WebGL runtime reads this flag to ignore body-level pointer input.
+    const root = document.documentElement;
+    if (state.mobileMenuOpen) {
+      root.dataset.noomoPointerPaused = 'true';
+    } else {
+      delete root.dataset.noomoPointerPaused;
+    }
+    return () => {
+      delete root.dataset.noomoPointerPaused;
+    };
+  }, [state.mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!state.mobileMenuOpen) return;
+    const scroll = state.scroll;
+    if (!scroll) return;
+    const wasPaused = Boolean(scroll.paused());
+    scroll.paused(true);
+    return () => {
+      scroll.paused(wasPaused);
+    };
+  }, [state.mobileMenuOpen, state.scroll]);
+
+  useEffect(() => () => noomoStore.setMobileMenuOpen(false), []);
+
+  const isActive = (href: string) =>
+    (href === '/' && state.currentPage === 'home') ||
+    (href === '/contacts' && state.currentPage === 'contacts');
+  const activePrimaryIndex = siteMenuPrimaryItems.findIndex((item) => isActive(item.href));
+
   return (
-    <header className="fixed z-10 w-full xs:pt-20 lg:pt-38 top-0 left-0">
+    <>
+      <header
+        className={`fixed z-10 w-full xs:pt-20 lg:pt-38 top-0 left-0 transition-opacity duration-300 ${
+          state.mobileMenuOpen ? 'pointer-events-none opacity-0' : ''
+        }`}
+        inert={state.mobileMenuOpen}
+        aria-hidden={state.mobileMenuOpen}
+      >
       <div
         className={`cases-back absolute pointer-events-none top-0 left-0 w-full xs:h-200 lg:h-300 opacity-0 transition-all duration-500 ease-in-out ${
           isCases ? 'opacity-100' : ''
@@ -127,158 +125,40 @@ export const NoomoHeader: React.FC<{
           )}
         </div>
 
-        {/* Desktop navigation */}
-        <div className="md:flex xs:hidden gap-14">
-          <div className="flex gap-4 items-end">
-            <SimpleButton href="/blog/" borderRadius="medium">
-              Blog · 博客
-            </SimpleButton>
-            <SimpleButton href="/tools/" borderRadius="full">
-              Tools · 工具
-            </SimpleButton>
-            <SimpleButton href="/about/" borderRadius="medium">
-              About · 关于
-            </SimpleButton>
-            <SimpleButton
-              href="/contacts"
-              borderRadius="none"
-              onClick={() => onNavigate?.('/contacts')}
-            >
-              Contact · 联系
-            </SimpleButton>
-          </div>
-        </div>
-
-        {/* Mobile menu button */}
-        <div className="md:hidden xs:block">
+        {/* One drawer trigger at every width; the links themselves live in the right panel. */}
+        <div className="relative z-2">
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={toggleMenu}
-            className={`mobile-menu-button relative w-92 h-40 flex rounded-full justify-center items-center backdrop-blur-2xl bg-white/31 transition-all duration-500 ease-in-out ${
-              state.mobileMenuOpen ? '!w-40' : ''
-            }`}
+            aria-label={state.mobileMenuOpen ? '关闭菜单' : '打开菜单'}
+            aria-expanded={state.mobileMenuOpen}
+            aria-controls="noomo-site-menu"
+            className="mobile-menu-button relative w-92 h-40 flex rounded-full justify-center items-center backdrop-blur-2xl bg-white/31 transition-all duration-500 ease-in-out"
           >
             <div className="bb" />
             <p
-              className={`text-sans-18 transition-all duration-500 ease-in-out ${
+              className={`text-sans-18 transition-colors duration-500 ${
                 isDark ? 'text-white' : 'text-brand-black'
-              } ${state.mobileMenuOpen ? 'opacity-0' : ''}`}
+              }`}
             >
               Menu
             </p>
-            <div
-              className={`close absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 opacity-0 transition-all duration-300 ease-in-out ${
-                state.mobileMenuOpen ? 'opacity-100' : ''
-              }`}
-            >
-              <img alt="close" src="/noomo/images/svg/close.svg" />
-            </div>
           </button>
         </div>
       </div>
-
-      {/* Mobile drawer */}
-      <div
-        className={`mobile-menu absolute pb-24 top-0 left-0 w-full flex flex-col justify-between h-screen opacity-0 pointer-events-none transition-all duration-500 ease-in-out ${
-          state.mobileMenuOpen ? 'opacity-100 !pointer-events-auto' : ''
-        }`}
-        style={{
-          background: state.mobileMenuOpen ? 'rgba(6, 11, 29, 0.78)' : undefined,
-        }}
-      >
-        <div />
-        <div className="flex flex-col gap-36 items-center">
-          <Link
-            href="/"
-            onClick={(e) => {
-              noomoStore.setMobileMenuOpen(false);
-              handleLink(e, '/');
-            }}
-            className={`text-sans-30 text-white opacity-0 transition-all duration-300 ease-in-out ${
-              state.mobileMenuOpen ? 'opacity-100 delay-200' : ''
-            }`}
-          >
-            Home · 首页
-          </Link>
-          <Link
-            href="/blog/"
-            onClick={() => noomoStore.setMobileMenuOpen(false)}
-            className={`text-sans-30 text-white opacity-0 transition-all duration-300 ease-in-out ${
-              state.mobileMenuOpen ? 'opacity-100 delay-250' : ''
-            }`}
-          >
-            Blog · 博客
-          </Link>
-          <Link
-            href="/tools/"
-            onClick={() => noomoStore.setMobileMenuOpen(false)}
-            className={`text-sans-30 text-white opacity-0 transition-all duration-300 ease-in-out ${
-              state.mobileMenuOpen ? 'opacity-100 delay-300' : ''
-            }`}
-          >
-            Tools · 工具
-          </Link>
-          <Link
-            href="/docs/"
-            onClick={() => noomoStore.setMobileMenuOpen(false)}
-            className={`text-sans-30 text-white opacity-0 transition-all duration-300 ease-in-out ${
-              state.mobileMenuOpen ? 'opacity-100 delay-325' : ''
-            }`}
-          >
-            Docs · 文档
-          </Link>
-          <Link
-            href="/about/"
-            onClick={() => noomoStore.setMobileMenuOpen(false)}
-            className={`text-sans-30 text-white opacity-0 transition-all duration-300 ease-in-out ${
-              state.mobileMenuOpen ? 'opacity-100 delay-350' : ''
-            }`}
-          >
-            About · 关于
-          </Link>
-          <Link
-            href="/contacts"
-            onClick={(e) => {
-              noomoStore.setMobileMenuOpen(false);
-              handleLink(e, '/contacts');
-            }}
-            className={`text-sans-30 text-white opacity-0 transition-all duration-300 ease-in-out ${
-              state.mobileMenuOpen ? 'opacity-100 delay-400' : ''
-            }`}
-          >
-            Contact · 联系
-          </Link>
-        </div>
-        <div
-          className={`flex justify-between px-20 opacity-0 delay-400 transition-all duration-300 ease-in-out ${
-            state.mobileMenuOpen ? 'opacity-100' : ''
-          }`}
-        >
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://github.com/yunhai-dev"
-            className="text-sans-18 text-white opacity-61"
-          >
-            GitHub
-          </a>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://gitee.com/yun2hai"
-            className="text-sans-18 text-white opacity-61"
-          >
-            Gitee
-          </a>
-          <a
-            href="/rss.xml"
-            onClick={() => noomoStore.setMobileMenuOpen(false)}
-            className="text-sans-18 text-white opacity-61"
-          >
-            RSS
-          </a>
-        </div>
-      </div>
     </header>
+
+    <NoomoSiteMenu
+      open={state.mobileMenuOpen}
+      onClose={closeAndFocus}
+      onCloseQuietly={closeMenu}
+      activeIndex={activePrimaryIndex}
+      menuId="noomo-site-menu"
+      onNavigate={(event, href) => {
+        if (href === '/' || href === '/contacts') handleLink(event, href);
+      }}
+    />
+    </>
   );
 };

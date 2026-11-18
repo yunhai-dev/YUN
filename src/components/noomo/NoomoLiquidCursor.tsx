@@ -238,6 +238,8 @@ export const NoomoLiquidCursor: React.FC<{
     };
 
     const onPointerMove = (e: PointerEvent) => {
+      // The full-screen menu owns the pointer while it is open.
+      if (noomoStore.getSnapshot().mobileMenuOpen) return;
       lastClientX = e.clientX;
       lastClientY = e.clientY;
       hasMoved = true;
@@ -296,7 +298,11 @@ export const NoomoLiquidCursor: React.FC<{
   const isClickToStart = state.cursorTextVisible && Boolean(state.cursorText);
 
   return (
-    <div ref={rootRef} className="liquid-glass-root">
+    <div
+      ref={rootRef}
+      className="liquid-glass-root"
+      style={{ visibility: state.mobileMenuOpen ? 'hidden' : undefined }}
+    >
       <div
         className={`wrapper relative transition-all transform duration-300 ease-in-out scale-100 ${
           state.cursorHover ? '!scale-75' : ''

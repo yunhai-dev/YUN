@@ -21,12 +21,13 @@ export function Footer() {
         pathname === "/cases" ||
         pathname === "/contacts" ||
         pathname.startsWith("/contacts/");
-    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || pathname === "/chat/" || isStorytellingPage) {
+    const isMediaWallPage = pathname === "/media" || pathname === "/media/";
+    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || pathname === "/chat/" || isMediaWallPage || isStorytellingPage) {
         return null;
     }
 
     return (
-        <footer className="relative py-14 bg-white dark:bg-zinc-950 border-t border-zinc-200/80 dark:border-zinc-800">
+        <footer className="relative py-14 border-t border-zinc-200/80 dark:border-zinc-800">
             <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
 
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">

@@ -103,8 +103,10 @@ const config = {
               fontWeight: '600',
             },
             blockquote: {
-              color: 'hsl(var(--muted-foreground))',
-              borderLeftColor: 'hsl(var(--border))',
+              color: 'hsl(var(--foreground) / 0.85)',
+              borderLeftWidth: '3px',
+              borderLeftColor: 'hsl(var(--primary) / 0.55)',
+              fontStyle: 'normal',
             },
             code: {
               color: 'hsl(var(--foreground))',
