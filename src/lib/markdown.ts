@@ -1,7 +1,29 @@
 import {Marked, Renderer} from 'marked';
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/common';
+import dockerfile from 'highlight.js/lib/languages/dockerfile';
+import nginx from 'highlight.js/lib/languages/nginx';
+import protobuf from 'highlight.js/lib/languages/protobuf';
 import {alertBlock} from "@/lib/marked-extensions";
 import {terminalPlayerExtension} from "@/lib/terminal-player-extension";
+
+// The full highlight.js build ships 190+ grammars (~310KB gzip in the editor page).
+// `common` covers the languages used across the content; these three are extra.
+hljs.registerLanguage('dockerfile', dockerfile);
+hljs.registerLanguage('nginx', nginx);
+hljs.registerLanguage('protobuf', protobuf);
+
+const LANGUAGE_ALIASES: Record<string, string> = {
+    mysql: 'sql',
+    conf: 'ini',
+    vue: 'xml',
+    redis: 'plaintext',
+    sshconfig: 'plaintext',
+};
+
+const resolveLanguage = (name?: string): string => {
+    const normalized = (name ?? '').trim().toLowerCase();
+    return LANGUAGE_ALIASES[normalized] ?? normalized;
+};
 
 
 export interface TableOfContents {
@@ -69,7 +91,8 @@ export async function markdownToHtml(markdown: string): Promise<{ content: strin
                 const uniqueId = `mermaid-${mermaidIdCounter++}`;
                 return `<div class="mermaid" id="${uniqueId}" style="white-space: break-spaces">${text}</div>`;
             }
-            const validLang = lang && hljs.getLanguage(langName) ? langName : "plaintext";
+            const language = resolveLanguage(langName);
+            const validLang = language && hljs.getLanguage(language) ? language : "plaintext";
             const highlighted = hljs.highlight(text, {language: validLang}).value;
             const macAction = '<div class="size-[12px] bg-red-600 rounded-full"></div> <div class="size-[12px] bg-yellow-600 rounded-full"></div> <div class="size-[12px] bg-green-600 rounded-full"></div>'
             const header = `<div class="flex justify-between items-center code-header"><div class="filename flex items-center gap-1">${macAction}${filename ? filename : ''}</div><div class="flex items-center gap-2"><div class="langname">${langName}</div><button class="copy-btn" data-code="${encodeURIComponent(text)}" title="复制代码">${clipboardSvg}</button></div></div>`;

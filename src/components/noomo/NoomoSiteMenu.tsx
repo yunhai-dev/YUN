@@ -4,8 +4,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Hand, Loader2 } from 'lucide-react';
 import { SiGitee, SiGithub, SiRss } from 'react-icons/si';
-import { Command } from '@/components/command';
+import dynamic from 'next/dynamic';
 import { useHandControl } from '@/context/HandControlContext';
+
+// cmdk + MiniSearch 只在菜单首次打开后挂载，动态边界让它们离开全站首屏 chunk。
+const Command = dynamic(
+  () => import('@/components/command').then((m) => m.Command),
+  { ssr: false },
+);
 
 export interface SiteMenuLink {
   href: string;
