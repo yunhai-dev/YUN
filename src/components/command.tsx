@@ -22,18 +22,30 @@ export function Command({hotkey}: { hotkey?: boolean }) {
 
     // Initialize minisearch
     React.useEffect(() => {
+        if (!open) return
+
+        let cancelled = false
         const loadSearchIndex = async () => {
-            const ms = await getSearchIndex();
-            if (ms) {
-                setMiniSearch(ms);
+            const ms = await getSearchIndex()
+            if (ms && !cancelled) {
+                setMiniSearch(ms)
             }
         }
         loadSearchIndex()
-    }, [])
+        return () => {
+            cancelled = true
+        }
+    }, [open])
 
     // Execute search
     React.useEffect(() => {
-        if (miniSearch && query.trim()) {
+        if (!miniSearch || !query.trim()) {
+            setSearchResults([])
+            return
+        }
+
+        // Typing runs a prefix+fuzzy search; debounce keeps it off the keystroke path.
+        const timer = window.setTimeout(() => {
             const results = miniSearch.search(query, {
                 prefix: true,
                 fuzzy: 0.2
@@ -56,9 +68,9 @@ export function Command({hotkey}: { hotkey?: boolean }) {
             })
 
             setSearchResults(formattedResults)
-        } else {
-            setSearchResults([])
-        }
+        }, 120)
+
+        return () => window.clearTimeout(timer)
     }, [miniSearch, query])
 
     React.useEffect(() => {

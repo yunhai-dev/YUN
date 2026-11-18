@@ -1,5 +1,4 @@
 "use client";
-import mermaid from "mermaid";
 import {useEffect, useRef, useState} from "react";
 import '@/components/terminal-player-element';
 
@@ -40,21 +39,36 @@ const MarkdownView = ({contentHtml}: { contentHtml: string }) => {
     }, []);
 
     useEffect(() => {
-        if (isDark === null) return; // 等待主题初始化完成
+        if (isDark === null || mermaidInitialized.current) return; // 等待主题初始化完成
 
-        mermaid.initialize({
-            startOnLoad: false,
-            theme: isDark ? 'dark' : 'default',
-            securityLevel: 'loose'
-        })
-        
-        if (!mermaidInitialized.current && containerRef.current) {
-            mermaidInitialized.current = true;
-            // 使用 queueMicrotask 替代 setTimeout 以获得更稳定的时序
-            queueMicrotask(() => {
-                mermaid.run()
+        const container = containerRef.current;
+        if (!container) return;
+
+        // Mermaid 及其依赖（dagre/rough/katex）约 180KB gzip；只有真正包含图表
+        // 的文章才值得加载它。
+        const nodes = Array.from(container.querySelectorAll<HTMLElement>('.mermaid'));
+        if (nodes.length === 0) return;
+
+        mermaidInitialized.current = true;
+        let cancelled = false;
+
+        void import('mermaid')
+            .then(({default: mermaid}) => {
+                if (cancelled) return;
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: isDark ? 'dark' : 'default',
+                    securityLevel: 'loose'
+                });
+                return mermaid.run({nodes});
+            })
+            .catch((error) => {
+                console.error('[markdown-view] mermaid render failed:', error);
             });
-        }
+
+        return () => {
+            cancelled = true;
+        };
     }, [contentHtml, isDark]);
 
     // 使用 content-visibility 和 containment 优化渲染

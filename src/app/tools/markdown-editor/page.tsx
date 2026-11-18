@@ -36,17 +36,22 @@ import {
 } from "lucide-react";
 
 import {markdownToHtml} from "@/lib/markdown";
-import {downloadMarkdownAsDocx} from "@/lib/markdown-to-docx";
 import {siteName} from "@/config/site";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {useToast} from "@/hooks/use-toast";
-import html2canvas from 'html2canvas'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Button} from "@/components/ui/button";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {useAIGenerate} from "@/hooks/use-ai-generate";
 import {Loader} from "@/components/ai-elements/loader";
-import {MessageResponse} from "@/components/ai-elements/message";
+import dynamic from "next/dynamic";
+
+// `docx`/`html2canvas`/`streamdown` 只在导出或 AI 输出时才需要，静态 import 会让
+// 工具页首屏多下载 ~1MB。这里保留动态边界。
+const MessageResponse = dynamic(
+    () => import("@/components/ai-elements/message").then((m) => m.MessageResponse),
+    {ssr: false},
+);
 
 const getMarkdownExportTitle = (markdown: string) => {
     const lines = markdown.split('\n');
@@ -422,9 +427,10 @@ ${selection}
     }
 
     // 导出为图片
-    function exportAsImage() {
+    async function exportAsImage() {
         try {
             setExportLoading(true);
+            const {default: html2canvas} = await import('html2canvas');
             toast({
                 title: "导出图片",
                 description: "正在导出预览内容为图片，请稍候...",
@@ -513,6 +519,7 @@ ${selection}
     async function exportAsDocx() {
         try {
             setDocxLoading(true);
+            const {downloadMarkdownAsDocx} = await import("@/lib/markdown-to-docx");
             await downloadMarkdownAsDocx(markdownText, `${getMarkdownExportTitle(markdownText)}.docx`);
         } finally {
             setDocxLoading(false);
@@ -522,15 +529,19 @@ ${selection}
     // 当Markdown文本变化时更新预览
     useEffect(() => {
         try {
-            if (timerRef.current) {
-                clearTimeout(timerRef.current);
-            }
+            clearTimeout(timerRef.current ?? undefined);
             timerRef.current = setTimeout(() => {
                 localStorage.setItem('markdownText', markdownText);
             }, 1000)
-            markdownToHtml(markdownText).then(({content}) => {
-                setHtmlPreview(content)
-            })
+
+            // Highlighting the whole document on every keystroke blocks typing.
+            const previewTimer = window.setTimeout(() => {
+                markdownToHtml(markdownText).then(({content}) => {
+                    setHtmlPreview(content)
+                })
+            }, 250)
+
+            return () => window.clearTimeout(previewTimer)
         } catch (error) {
             console.error('Markdown解析错误:', error);
             setHtmlPreview('<p>预览出错</p>');

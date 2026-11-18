@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
+import type { HandLandmarker } from '@mediapipe/tasks-vision';
 import { MousePointer2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useHandControl } from '@/context/HandControlContext';
@@ -42,6 +42,8 @@ export default function HandControlOverlay() {
         setIsLoading(true);
         setStatus("正在加载模型...");
         try {
+            // ~46KB gzip 的推理库只应在用户开启手势控制时加载。
+            const { FilesetResolver, HandLandmarker } = await import('@mediapipe/tasks-vision');
             const vision = await FilesetResolver.forVisionTasks(
                 "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
             );

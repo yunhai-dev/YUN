@@ -5,6 +5,19 @@ import matter from "gray-matter";
 
 const allIndex = []
 
+// 搜索只需要可检索的正文摘要，完整 markdown（含代码块）会让索引膨胀到 4MB+。
+const SEARCH_TEXT_LIMIT = 600;
+const toSearchText = (markdown) => markdown
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[#>*_~|-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, SEARCH_TEXT_LIMIT)
+
 
 // build blogs index
 const blogsDirectory = path.join(process.cwd(), 'src/content/blogs');
@@ -19,7 +32,7 @@ fileNames.forEach(fileName => {
         type: 'blog',
         id: fileName.replace(/\.md$/, ''),
         title: data.title || '无标题',
-        content: content || '',
+        content: toSearchText(content || ''),
     })
 })
 
@@ -42,7 +55,7 @@ const findDocNavigation = (docsDirectory = docsDirs) => {
                 type: 'docs',
                 id: slug,
                 title: data.title || slug,
-                content: content || '',
+                content: toSearchText(content || ''),
             })
             // console.log(`Indexed doc: ${slug}`);
 

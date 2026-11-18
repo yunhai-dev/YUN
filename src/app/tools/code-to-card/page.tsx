@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { codeToHtml, type BundledLanguage } from 'shiki';
-import html2canvas from 'html2canvas';
+import type { BundledLanguage } from 'shiki';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -118,6 +117,8 @@ console.log(fibonacci(10)); // 55`;
             }
 
             try {
+                // Shiki 及其语法/主题数据按需加载，避免工具页首屏被高亮引擎拖慢。
+                const {codeToHtml} = await import('shiki');
                 const html = await codeToHtml(code, {
                     lang: language,
                     theme: theme,
@@ -247,6 +248,7 @@ console.log(fibonacci(10)); // 55`;
         setExportLoading(true);
 
         try {
+            const {default: html2canvas} = await import('html2canvas');
             const tempContainer = document.createElement('div');
             tempContainer.style.position = 'absolute';
             tempContainer.style.left = '-9999px';

@@ -3,15 +3,21 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Button} from "@/components/ui/button";
 import type {Mermaid} from "mermaid";
-import mermaid from "mermaid";
 import {Expand} from "@/components/icon/expand";
 import {Collapse} from "@/components/icon/collapse";
 import {Reset} from "@/components/icon/reset";
 import {useFullscreen} from "@/hooks/use-fullscreen";
 import {useAIGenerate} from "@/hooks/use-ai-generate";
 import {Loader} from "@/components/ai-elements/loader";
-import {MessageResponse} from "@/components/ai-elements/message";
+import dynamic from "next/dynamic";
 import {Sparkles, CornerDownLeft, Square, X} from "lucide-react";
+
+// Mermaid/streamdown 体积大且只在渲染或 AI 输出时才会用到，保持动态边界
+// 以免编辑器首屏为它们付出解析成本。
+const MessageResponse = dynamic(
+    () => import("@/components/ai-elements/message").then((m) => m.MessageResponse),
+    {ssr: false},
+);
 
 const MermaidPage = () => {
     const [inputCode, setInputCode] = useState('');
@@ -42,6 +48,7 @@ const MermaidPage = () => {
     useEffect(() => {
         const loadMermaid = async () => {
             try {
+                const {default: mermaid} = await import('mermaid');
                 mermaid.initialize({
                     startOnLoad: false,
                     theme: theme,
