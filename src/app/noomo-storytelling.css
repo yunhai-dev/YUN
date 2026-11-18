@@ -847,3 +847,89 @@ html.noomo-active .noomo-loader-bar--done {
   background: #2b334e;
   transition: width 0.4s ease-out;
 }
+
+/* Wordmark entrance: the divider stays static; each word draws itself as a stroke, then fills. */
+@keyframes preloaderWordDraw {
+  from { stroke-dashoffset: 18em; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes preloaderWordFill {
+  from { fill: transparent; }
+  to { fill: #fff; }
+}
+
+html.noomo-active .preloader-word {
+  fill: transparent;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-dasharray: 18em;
+  stroke-dashoffset: 18em;
+  animation:
+    preloaderWordDraw 2200ms linear 0ms both,
+    preloaderWordFill 600ms cubic-bezier(0.22, 1, 0.36, 1) 2300ms both;
+}
+
+html.noomo-active .preloader-word--delay {
+  animation-delay: 250ms, 2550ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.noomo-active .preloader-word {
+    animation-delay: 0ms, 0ms !important;
+  }
+}
+
+/* Reveal: one animated layer while loading, then two static clipped layers slide apart. */
+html.noomo-active .preloader {
+  background: transparent;
+}
+
+.preloader-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(45deg, #cebdf8, #e2dbf8);
+  will-change: transform;
+}
+
+.preloader-panel--left {
+  clip-path: polygon(0 0, 70% 0, 30% 100%, 0 100%);
+}
+
+.preloader-panel--right {
+  clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+}
+
+@keyframes preloaderSplitLeft {
+  to { transform: translate3d(-100%, 0, 0); }
+}
+
+@keyframes preloaderSplitRight {
+  to { transform: translate3d(100%, 0, 0); }
+}
+
+.preloader-panel--splitting {
+  animation-duration: 1400ms;
+  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  animation-fill-mode: forwards;
+}
+
+.preloader-panel--splitting.preloader-panel--left {
+  animation-name: preloaderSplitLeft;
+}
+
+.preloader-panel--splitting.preloader-panel--right {
+  animation-name: preloaderSplitRight;
+}
+
+/* The split copies must match the finished wordmark instantly, without restarting the draw. */
+html.noomo-active .preloader-word--static {
+  fill: #fff;
+  stroke: none;
+  animation: none;
+}
