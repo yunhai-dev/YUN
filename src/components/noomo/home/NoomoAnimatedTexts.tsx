@@ -368,6 +368,8 @@ const CaseHover: React.FC<CaseHoverProps> = ({ id, content, link, className = ''
   const { navigateWithTransition } = useNoomoNavigation();
   const [isTouchViewport, setIsTouchViewport] = useState(false);
   const [innerHeight, setInnerHeight] = useState(800);
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const check = () => {
@@ -393,15 +395,31 @@ const CaseHover: React.FC<CaseHoverProps> = ({ id, content, link, className = ''
     return unsub;
   }, [id, content, link, navigateWithTransition]);
 
-  const rawY = state.iceCubesPosition[id]?.y ?? -0.24;
-  const minY = -0.24;
-  const maxY = 1.2;
-  const clamped = (Math.min(maxY, Math.max(minY, rawY)) - minY) / (maxY - minY);
-  const minPx = -innerHeight * 0.5;
-  const maxPx = innerHeight;
-  const translateY = minPx + clamped * (maxPx - minPx);
-  const isActive = rawY > minY && rawY < maxY;
-  const fadeOpacity = rawY <= 0.75 ? 1 : rawY >= 1.15 ? 0 : 1 - (rawY - 0.75) / (1.15 - 0.75);
+  // Crystal positions change every frame while the ice section is on screen; write them
+  // straight to the DOM instead of re-rendering the overlay tree.
+  useEffect(() => {
+    const outer = outerRef.current;
+    if (!outer) return;
+
+    const minY = -0.24;
+    const maxY = 1.2;
+    const minPx = -innerHeight * 0.5;
+    const maxPx = innerHeight;
+
+    const apply = () => {
+      const rawY = noomoStore.getSnapshot().iceCubesPosition[id]?.y ?? minY;
+      const clamped = (Math.min(maxY, Math.max(minY, rawY)) - minY) / (maxY - minY);
+      const translateY = minPx + clamped * (maxPx - minPx);
+      const fadeOpacity = rawY <= 0.75 ? 1 : rawY >= 1.15 ? 0 : 1 - (rawY - 0.75) / (1.15 - 0.75);
+
+      outer.style.transform = `translateY(${-translateY}px)`;
+      outer.style.display = rawY > minY && rawY < maxY ? 'flex' : 'none';
+      if (contentRef.current) contentRef.current.style.opacity = String(fadeOpacity);
+    };
+
+    apply();
+    return noomoStore.onFrame(apply);
+  }, [id, innerHeight]);
 
   const handleClick = () => {
     if (!noomoStore.getSnapshot().transitionActive) {
@@ -411,19 +429,17 @@ const CaseHover: React.FC<CaseHoverProps> = ({ id, content, link, className = ''
 
   return (
     <div
+      ref={outerRef}
       className={`fixed z-9 case-debug xs:w-full lg:w-[48vh] lg:!hidden flex items-end xs:h-[45vh] lg:h-[48vh] transform bottom-0 ${className}`}
-      style={{
-        transform: `translateY(${-translateY}px)`,
-        display: isActive ? 'flex' : 'none',
-      }}
+      style={{ display: 'none' }}
       onClick={handleClick}
     >
       {isTouchViewport && (
         <div
+          ref={contentRef}
           className={`text-white content bottom-0 translate-y-110 text-center w-full xs:opacity-100 lg:opacity-0 transition-opacity ease-linear ${
             state.mobileMenuOpen || state.currentPage === 'cases' ? '!opacity-0 !delay-0' : ''
           }`}
-          style={{ opacity: fadeOpacity }}
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}

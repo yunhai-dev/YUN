@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { noomoStore, useNoomoStore } from '../noomo-store';
+import { noomoStore } from '../noomo-store';
 import type { CrystalViewportEventPayload, Sweet3Engine } from './sweet3-runtime';
 
 interface Sweet3CanvasProps {
@@ -32,7 +32,6 @@ export const Sweet3Canvas: React.FC<Sweet3CanvasProps> = ({ errorPage = false })
   const containerRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<Sweet3Engine | null>(null);
   const loadedRef = useRef(false);
-  const state = useNoomoStore();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -41,6 +40,7 @@ export const Sweet3Canvas: React.FC<Sweet3CanvasProps> = ({ errorPage = false })
     let cancelled = false;
     let activeEngine: Sweet3Engine | null = null;
     let activeCtor: typeof Sweet3Engine | null = null;
+    let unsubFrame: (() => void) | null = null;
 
     const handleHover = (hoveredId: string | null) => {
       if (detectTouchOrTablet()) return;
@@ -131,10 +131,27 @@ export const Sweet3Canvas: React.FC<Sweet3CanvasProps> = ({ errorPage = false })
 
       syncEngineState(entry.engine);
 
-      window.setTimeout(() => {
-        if (!cancelled && engineRef.current) {
-          engineRef.current.seek(noomoStore.getSnapshot().scrollProgress);
+      // Frame-rate values never reach React; the engine is driven directly.
+      let lastVideoElement: HTMLVideoElement | null = null;
+      unsubFrame = noomoStore.onFrame(() => {
+        const engine = engineRef.current;
+        if (!engine) return;
+        const snap = noomoStore.getSnapshot();
+        engine.seek(snap.scrollProgress);
+        engine.setScrollSpeed(snap.scrollSpeed);
+        engine.setIsCaseIce(snap.iceTransition);
+        engine.setIsCaseVideo(snap.videoTransition);
+        engine.setPointerTrail(snap.cursorTransition);
+        if (!errorPage) engine.setIsContact(snap.contactTransition);
+        if (snap.videoElement !== lastVideoElement) {
+          lastVideoElement = snap.videoElement;
+          engine.setCaseVideo(snap.videoElement);
         }
+      });
+
+      entry.engine.seek(noomoStore.getSnapshot().scrollProgress);
+      window.setTimeout(() => {
+        if (!cancelled) engineRef.current?.seek(noomoStore.getSnapshot().scrollProgress);
       }, 700);
     };
 
@@ -151,6 +168,7 @@ export const Sweet3Canvas: React.FC<Sweet3CanvasProps> = ({ errorPage = false })
 
     return () => {
       cancelled = true;
+      unsubFrame?.();
       unsubAction();
       if (activeEngine && activeCtor) {
         activeEngine.off(activeCtor.hoverEvent, handleHover as (payload: never) => void);
@@ -162,48 +180,6 @@ export const Sweet3Canvas: React.FC<Sweet3CanvasProps> = ({ errorPage = false })
       engineRef.current = null;
     };
   }, [errorPage]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.setPointerTrail(state.cursorTransition);
-    }
-  }, [state.cursorTransition]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.seek(state.scrollProgress);
-    }
-  }, [state.scrollProgress]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.setIsContact(state.contactTransition);
-    }
-  }, [state.contactTransition]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.setIsCaseIce(state.iceTransition);
-    }
-  }, [state.iceTransition]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.setCaseVideo(state.videoElement);
-    }
-  }, [state.videoElement]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.setIsCaseVideo(state.videoTransition);
-    }
-  }, [state.videoTransition]);
-
-  useEffect(() => {
-    if (engineRef.current && loadedRef.current) {
-      engineRef.current.setScrollSpeed(state.scrollSpeed);
-    }
-  }, [state.scrollSpeed]);
 
   return (
     <div

@@ -147,6 +147,9 @@ export const NoomoLiquidCursor: React.FC<{
     const root = rootRef.current;
     const glass = glassRef.current;
     if (!root || !glass) return;
+    // Touch/tablet never sees this cursor (CSS hides it at ≤1024px); skip the SVG filter
+    // setup and the animation loop entirely.
+    if (window.matchMedia('(hover: none)').matches) return;
 
     const ua = navigator.userAgent || '';
     const isSafariOrFirefox =
@@ -235,6 +238,7 @@ export const NoomoLiquidCursor: React.FC<{
         filterRef.current.mouse.y = (cy - rect.top) / rect.height;
         if (filterRef.current.mouseUsed) filterRef.current.updateShader();
       }
+      wake();
     };
 
     const onPointerMove = (e: PointerEvent) => {
@@ -259,14 +263,27 @@ export const NoomoLiquidCursor: React.FC<{
       setPos(curX, curY);
     };
 
+    // The loop parks itself once the cursor settles instead of burning a frame callback
+    // for the whole session.
     let rafId = 0;
     const tick = () => {
-      curX = curX + (targetX - curX) * followSpeed;
-      curY = curY + (targetY - curY) * followSpeed;
+      const dx = targetX - curX;
+      const dy = targetY - curY;
+      if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+        curX = targetX;
+        curY = targetY;
+        setPos(curX, curY);
+        rafId = 0;
+        return;
+      }
+      curX += dx * followSpeed;
+      curY += dy * followSpeed;
       setPos(curX, curY);
       rafId = requestAnimationFrame(tick);
     };
-    rafId = requestAnimationFrame(tick);
+    const wake = () => {
+      if (rafId === 0) rafId = requestAnimationFrame(tick);
+    };
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true, capture: true });

@@ -17,6 +17,7 @@ export const NoomoAudioEngine: React.FC = () => {
     let disposed = false;
 
     const initBgAudio = async () => {
+      if (audioCtx) return;
       try {
         const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         audioCtx = new AudioCtx();
@@ -114,13 +115,15 @@ export const NoomoAudioEngine: React.FC = () => {
     };
 
     document.addEventListener('visibilitychange', handleVisibility);
-    initBgAudio();
 
     const unsub = noomoStore.onAction(({ name, args }) => {
       const snap = noomoStore.getSnapshot();
       if (name === 'setEnableSound') {
-        if (args[0]) startBg();
-        else {
+        if (args[0]) {
+          // 1.7MB 的 BGM 只在用户第一次开启声音时下载/解码。
+          if (audioCtx) startBg();
+          else void initBgAudio();
+        } else {
           stopBg();
           stopAllSfx();
         }

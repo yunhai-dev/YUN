@@ -170,6 +170,8 @@ class NoomoStore {
 
   private listeners = new Set<() => void>();
   private actionListeners = new Set<ActionListener>();
+  private frameListeners = new Set<() => void>();
+  private frameScheduled = false;
 
   getSnapshot = (): NoomoState => this.state;
 
@@ -187,13 +189,45 @@ class NoomoStore {
     };
   };
 
+  /**
+   * Per-frame values (scroll progress, scroll speed, transition interpolation) are read by
+   * WebGL/DOM effects, not rendered by React. They notify this channel at most once per frame
+   * so scrolling never re-renders the component tree.
+   */
+  onFrame = (listener: () => void): (() => void) => {
+    this.frameListeners.add(listener);
+    return () => {
+      this.frameListeners.delete(listener);
+    };
+  };
+
+  private scheduleFrame() {
+    if (this.frameScheduled) return;
+    this.frameScheduled = true;
+    const flush = () => {
+      this.frameScheduled = false;
+      this.frameListeners.forEach((fn) => fn());
+    };
+    if (typeof window !== 'undefined') {
+      window.requestAnimationFrame(flush);
+    } else {
+      flush();
+    }
+  }
+
+  private emitFrame(name: NoomoActionName, args: unknown[], mutate: () => void) {
+    mutate();
+    this.actionListeners.forEach((fn) => fn({name, args}));
+    this.scheduleFrame();
+  }
+
   private emit(name: NoomoActionName, args: unknown[], mutate?: () => void) {
     if (mutate) {
       mutate();
       this.state = { ...this.state };
       this.listeners.forEach((fn) => fn());
     }
-    this.actionListeners.forEach((fn) => fn({ name, args }));
+    this.actionListeners.forEach((fn) => fn({name, args}));
   }
 
   getTotalScrollLength(): number {
@@ -219,7 +253,7 @@ class NoomoStore {
   };
 
   setScrollProgress = (progress: number) => {
-    this.emit('setScrollProgress', [progress], () => {
+    this.emitFrame('setScrollProgress', [progress], () => {
       this.state.scrollProgress = progress;
     });
   };
@@ -263,8 +297,9 @@ class NoomoStore {
   };
 
   setScrollSpeed = (speed: number) => {
-    this.state.scrollSpeed = speed;
-    this.listeners.forEach((fn) => fn());
+    this.emitFrame('setScrollSpeed', [speed], () => {
+      this.state.scrollSpeed = speed;
+    });
   };
 
   setSceneLoaded = (loaded: boolean) => {
@@ -274,23 +309,27 @@ class NoomoStore {
   };
 
   setContactTransition = (val: number) => {
-    this.state.contactTransition = val;
-    this.listeners.forEach((fn) => fn());
+    this.emitFrame('setContactTransition', [val], () => {
+      this.state.contactTransition = val;
+    });
   };
 
   setIceTransition = (val: number) => {
-    this.state.iceTransition = val;
-    this.listeners.forEach((fn) => fn());
+    this.emitFrame('setIceTransition', [val], () => {
+      this.state.iceTransition = val;
+    });
   };
 
   setVideoTransition = (val: number) => {
-    this.state.videoTransition = val;
-    this.listeners.forEach((fn) => fn());
+    this.emitFrame('setVideoTransition', [val], () => {
+      this.state.videoTransition = val;
+    });
   };
 
   setCursorTransition = (val: number) => {
-    this.state.cursorTransition = val;
-    this.listeners.forEach((fn) => fn());
+    this.emitFrame('setCursorTransition', [val], () => {
+      this.state.cursorTransition = val;
+    });
   };
 
   setCurrentPage = (page: NoomoPageType) => {
@@ -300,7 +339,7 @@ class NoomoStore {
   };
 
   setVideoElement = (el: HTMLVideoElement | null) => {
-    this.emit('setVideoElement', [el], () => {
+    this.emitFrame('setVideoElement', [el], () => {
       this.state.videoElement = el;
     });
   };
@@ -336,11 +375,12 @@ class NoomoStore {
 
   setIceCubePositionByIndex = (id: string, pos: CrystalPosition) => {
     if (Object.prototype.hasOwnProperty.call(this.state.iceCubesPosition, id)) {
-      this.state.iceCubesPosition = {
-        ...this.state.iceCubesPosition,
-        [id]: pos,
-      };
-      this.listeners.forEach((fn) => fn());
+      this.emitFrame('setIceCubePositionByIndex', [id, pos], () => {
+        this.state.iceCubesPosition = {
+          ...this.state.iceCubesPosition,
+          [id]: pos,
+        };
+      });
     }
   };
 

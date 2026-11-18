@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ReadingProgressProps {
   /** 进度条颜色，默认紫色渐变 */
@@ -16,11 +16,17 @@ export function ReadingProgress({
   height = 3,
   targetSelector,
 }: ReadingProgressProps) {
-  const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
+  const rafRef = useRef(0);
 
   useEffect(() => {
+    // The bar is updated straight on the DOM: a scroll handler that calls setState would
+    // re-render the article on every scroll event.
     const calculateProgress = () => {
+      rafRef.current = 0;
+
       let scrollTop: number;
       let scrollHeight: number;
       let clientHeight: number;
@@ -45,43 +51,54 @@ export function ReadingProgress({
       const maxScroll = scrollHeight - clientHeight;
       
       if (maxScroll <= 0) {
-        setProgress(0);
+        if (barRef.current) barRef.current.style.transform = "scaleX(0)";
         setIsVisible(false);
         return;
       }
 
-      const currentProgress = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
-      setProgress(currentProgress);
+      const currentProgress = Math.min(1, Math.max(0, scrollTop / maxScroll));
+      if (barRef.current) {
+        barRef.current.style.transform = `scaleX(${currentProgress})`;
+      }
+      if (containerRef.current) {
+        containerRef.current.setAttribute("aria-valuenow", String(Math.round(currentProgress * 100)));
+      }
       setIsVisible(scrollTop > 100);
     };
 
+    const schedule = () => {
+      if (rafRef.current !== 0) return;
+      rafRef.current = window.requestAnimationFrame(calculateProgress);
+    };
+
     calculateProgress();
-    window.addEventListener("scroll", calculateProgress, { passive: true });
-    window.addEventListener("resize", calculateProgress, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", calculateProgress);
-      window.removeEventListener("resize", calculateProgress);
+      if (rafRef.current !== 0) window.cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
   }, [targetSelector]);
 
-  if (!isVisible) return null;
-
   return (
     <div
+      ref={containerRef}
       className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
-      style={{ height: `${height}px` }}
+      style={{ height: `${height}px`, opacity: isVisible ? 1 : 0 }}
       role="progressbar"
-      aria-valuenow={Math.round(progress)}
+      aria-valuenow={0}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label="阅读进度"
     >
       <div
-        className="h-full transition-[width] duration-150 ease-out"
+        ref={barRef}
+        className="h-full w-full origin-left will-change-transform"
         style={{
-          width: `${progress}%`,
           background: color,
+          transform: "scaleX(0)",
         }}
       />
     </div>

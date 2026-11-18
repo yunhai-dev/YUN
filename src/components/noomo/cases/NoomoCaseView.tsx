@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { noomoStore, useNoomoStore } from '../noomo-store';
@@ -59,7 +59,7 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
   const state = useNoomoStore();
   const { navigateWithTransition } = useNoomoNavigation();
   const [ready, setReady] = useState(false);
-  const [vignetteOffset, setVignetteOffset] = useState(0);
+  const vignetteRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     noomoStore.setIceTransition(1);
@@ -89,16 +89,31 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
     img.src = data.image;
 
     const startTime = performance.now();
+    const w = canvas.width;
+    const h = canvas.height;
+    const bgGradient = ctx?.createLinearGradient(0, 0, w, h) ?? null;
+    if (bgGradient) {
+      bgGradient.addColorStop(0, data.accentGradient[0]);
+      bgGradient.addColorStop(1, data.accentGradient[1]);
+    }
+    const scrimGradient = ctx?.createLinearGradient(0, 0, 0, h) ?? null;
+    if (scrimGradient) {
+      scrimGradient.addColorStop(0, 'rgba(6, 11, 29, 0.28)');
+      scrimGradient.addColorStop(0.65, 'rgba(6, 11, 29, 0.38)');
+      scrimGradient.addColorStop(1, 'rgba(6, 11, 29, 0.72)');
+    }
+
     const drawFrame = () => {
       if (disposed) return;
-      if (ctx) {
+      // Hidden tabs only need the loop; skip the full-screen repaint and let the
+      // disabled video track stop encoding.
+      if (document.hidden) {
+        rafId = window.requestAnimationFrame(drawFrame);
+        return;
+      }
+      if (ctx && bgGradient && scrimGradient) {
         const elapsed = (performance.now() - startTime) * 0.001;
-        const w = canvas.width;
-        const h = canvas.height;
-        const grad = ctx.createLinearGradient(0, 0, w, h);
-        grad.addColorStop(0, data.accentGradient[0]);
-        grad.addColorStop(1, data.accentGradient[1]);
-        ctx.fillStyle = grad;
+        ctx.fillStyle = bgGradient;
         ctx.fillRect(0, 0, w, h);
 
         if (imgReady && img.naturalWidth > 0) {
@@ -121,11 +136,7 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
         }
 
         // Subtle dark vignette for crisp white typography contrast
-        const scrim = ctx.createLinearGradient(0, 0, 0, h);
-        scrim.addColorStop(0, 'rgba(6, 11, 29, 0.28)');
-        scrim.addColorStop(0.65, 'rgba(6, 11, 29, 0.38)');
-        scrim.addColorStop(1, 'rgba(6, 11, 29, 0.72)');
-        ctx.fillStyle = scrim;
+        ctx.fillStyle = scrimGradient;
         ctx.fillRect(0, 0, w, h);
       }
       rafId = window.requestAnimationFrame(drawFrame);
@@ -149,6 +160,14 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
     noomoStore.setVideoElement(video);
     video.play().catch(() => {});
 
+    const handleVisibility = () => {
+      const stream = video.srcObject as MediaStream | null;
+      stream?.getVideoTracks().forEach((track) => {
+        track.enabled = !document.hidden;
+      });
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     const tweenState = { iceValue: 1 };
     const tween = gsap.to(tweenState, {
       iceValue: 0.1,
@@ -161,6 +180,7 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
     return () => {
       disposed = true;
       window.cancelAnimationFrame(rafId);
+      document.removeEventListener('visibilitychange', handleVisibility);
       tween.kill();
       noomoStore.setVideoElement(null);
       const stream = video.srcObject as MediaStream | null;
@@ -172,11 +192,21 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
 
   useEffect(() => {
     if (!ready) return;
-    const clamped = Math.min(Math.max(state.scrollProgress / 0.8, 0), 1);
-    const iceVal = 0.1 + clamped * 0.7;
-    setVignetteOffset(clamped * 100);
-    noomoStore.setIceTransition(iceVal);
-  }, [ready, state.scrollProgress]);
+
+    const apply = () => {
+      const clamped = Math.min(Math.max(noomoStore.getSnapshot().scrollProgress / 0.8, 0), 1);
+      if (vignetteRef.current) {
+        vignetteRef.current.style.transform = `translateY(${clamped * 300}vh)`;
+      }
+      const nextIce = 0.1 + clamped * 0.7;
+      if (Math.abs(nextIce - noomoStore.getSnapshot().iceTransition) > 0.001) {
+        noomoStore.setIceTransition(nextIce);
+      }
+    };
+
+    apply();
+    return noomoStore.onFrame(apply);
+  }, [ready]);
 
   const handleNextOrBack = (e: React.MouseEvent, targetPath: string) => {
     e.preventDefault();
@@ -330,8 +360,8 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
 
       {/* Bottom vignette */}
       <div
+        ref={vignetteRef}
         className="vignette-bottom vignette-bottom-safari vignette fixed ease-in-out xs:top-[40vh] lg:top-[70vh] xs:h-[60vh] lg:h-[40vh] w-full left-0 pointer-events-none"
-        style={{ transform: `translateY(${vignetteOffset * 3}vh)` }}
       />
     </div>
   );
