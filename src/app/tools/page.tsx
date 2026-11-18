@@ -15,7 +15,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ToolsInstallButton } from "@/components/tools-install-button";
-import { ArrowRight, ArrowUpRight, Search } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Search, X } from "lucide-react";
 
 function ToolRow({ tool }: { tool: Tool }) {
     const { name, description, href, category } = tool;
@@ -143,31 +143,33 @@ const ToolsPage = () => {
     return (
         <main className="min-h-screen flex flex-col">
             <div className="page-container pt-28 md:pt-36 pb-24">
-                {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-border/60 mb-8">
-                    <div>
-                        <h1 className="font-serif-sc text-5xl sm:text-6xl font-medium tracking-tight mb-2">
-                            {selectedCategory === "全部" ? "工具" : selectedCategory}
-                        </h1>
-                        <p className="text-sm text-muted-foreground tabular-nums">
-                            精选开发工具与线上实用器 · {filteredTools.length} 项
-                        </p>
+                {/* Toolbar: search + install, styled after the blog list */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8">
+                    <div className="relative flex-1 min-w-0 max-w-sm">
+                        <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+                        <input
+                            type="search"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="检索工具名称或描述…"
+                            aria-label="搜索工具"
+                            className="w-full h-11 pl-10 pr-9 rounded-xl border border-white/55 bg-white/30 backdrop-blur-xl backdrop-saturate-150 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:outline-none focus-visible:outline-none focus:bg-white/45 transition-colors"
+                        />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                onClick={() => setSearchQuery("")}
+                                aria-label="清空搜索"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        )}
                     </div>
-
-                    <div className="flex items-center gap-3 flex-wrap">
-                        <label className="relative flex items-center h-10 px-3.5 rounded-xl border border-zinc-200/90 bg-zinc-50 focus-within:bg-zinc-100/70 focus-within:border-zinc-300 transition-colors">
-                            <Search className="w-4 h-4 text-muted-foreground mr-2 shrink-0" />
-                            <input
-                                type="search"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="检索工具…"
-                                className="bg-transparent text-sm w-44 sm:w-56 border-0 outline-none focus:outline-none focus-visible:outline-none ring-0 placeholder:text-muted-foreground/60"
-                            />
-                        </label>
+                    <div className="sm:ml-auto">
                         <ToolsInstallButton />
                     </div>
-                </header>
+                </div>
 
                 {/* Typographic Category Tabs */}
                 <nav className="flex flex-nowrap sm:flex-wrap gap-x-6 gap-y-2 overflow-x-auto pb-4 mb-6 border-b border-border/40">
@@ -192,6 +194,10 @@ const ToolsPage = () => {
                         );
                     })}
                 </nav>
+
+                <p className="text-xs text-muted-foreground mb-4 tabular-nums">
+                    当前显示 {currentTools.length} / 共 {filteredTools.length} 项
+                </p>
 
                 {/* 2-Column Architectural Index */}
                 {currentTools.length > 0 ? (
