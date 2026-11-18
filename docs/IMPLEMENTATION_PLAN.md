@@ -102,3 +102,15 @@
   - [x] Type-check, ESLint and production build pass
   - [ ] Browser regression pass (requires manual verification)
   - See `docs/plan/folia-visualizer.md`
+
+- [x] Frontend performance pass (bundle + scroll + build)
+  - [x] Lazy-load mermaid / mediapipe / tool export libs
+  - [x] Shrink and defer the search index
+  - [x] Decouple frame-rate store values from React rendering
+  - [x] Move storytelling routes into a route group (drop GSAP from other bundles)
+  - [x] Remove unused Noto Sans SC and trim serif weights
+  - [x] Defer BGM, DOM-drive reading progress, idle-park liquid cursor
+  - [x] Memoize blog index across build routes
+  - [x] Type-check + production build
+  - [ ] Browser regression pass (user)
+  - See `docs/plan/performance-optimization.md`

@@ -28,7 +28,7 @@ function convertChineseDateToNumber(dateStr: string) {
 }
 
 // 获取所有博客文章
-export async function getAllBlogPosts(): Promise<BlogPost[]> {
+async function readAllBlogPosts(): Promise<BlogPost[]> {
     try {
         // 确保目录存在
         if (!fs.existsSync(blogsDirectory)) {
@@ -79,6 +79,16 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
         console.error("获取博客文章列表出错:", error);
         return [];
     }
+}
+
+// Every route re-reads and re-parses all 160 posts for metadata + page rendering. The
+// content is immutable during a build, so keep the parsed list; dev keeps re-reading.
+let allPostsCache: Promise<BlogPost[]> | null = null;
+
+export function getAllBlogPosts(): Promise<BlogPost[]> {
+    if (process.env.NODE_ENV === 'development') return readAllBlogPosts();
+    allPostsCache ??= readAllBlogPosts();
+    return allPostsCache;
 }
 
 // 获取特定博客文章
