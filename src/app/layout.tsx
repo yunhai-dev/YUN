@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import localFont from "next/font/local";
-import { Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
+import { Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import {Navbar} from "@/components/navbar";
 import {Footer} from "@/components/footer";
@@ -15,21 +15,13 @@ import { BackToTop } from "@/components/back-to-top";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { WebVitals } from "@/components/web-vitals";
 import HandControlOverlay from "@/components/HandControlOverlay";
-import { NoomoExperienceShell } from "@/components/noomo/NoomoExperienceShell";
 
 
 const inter = localFont({src: './fonts/inter-latin.woff2', display: 'swap', weight: '100 900', fallback: ['Arial', 'sans-serif']});
 
-const notoSansSC = Noto_Sans_SC({
-    subsets: ['latin'],
-    weight: ['300', '400', '500'],
-    variable: '--font-noto-sans-sc',
-    display: 'swap',
-});
-
 const notoSerifSC = Noto_Serif_SC({
     subsets: ['latin'],
-    weight: ['300', '400', '500', '600'],
+    weight: ['400', '500'],
     variable: '--font-noto-serif-sc',
     display: 'swap',
 });
@@ -98,7 +90,7 @@ export default function RootLayout({
 }>) {
     return (
         <ViewTransitions>
-            <html lang="zh-CN" className={`${notoSansSC.variable} ${notoSerifSC.variable} light`} suppressHydrationWarning>
+            <html lang="zh-CN" className={`${notoSerifSC.variable} light`} suppressHydrationWarning>
             <head>
                 <link rel="preconnect" href="https://rustfs-endpoint.yhnotes.com" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://rustfs-endpoint.yhnotes.com" />
@@ -156,9 +148,7 @@ export default function RootLayout({
                     <Toaster/>
                     <main id="main-content" className="min-h-screen">
                         <ErrorBoundary>
-                            <NoomoExperienceShell>
-                                {children}
-                            </NoomoExperienceShell>
+                            {children}
                         </ErrorBoundary>
                     </main>
                     <Footer/>

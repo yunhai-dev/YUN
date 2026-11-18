@@ -7,7 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
 import { SplitText } from 'gsap/SplitText';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { noomoStore, useNoomoStore } from './noomo-store';
+import { noomoStore } from './noomo-store';
 import { Sweet3Canvas } from './webgl/Sweet3Canvas';
 import { NoomoHeader } from './NoomoHeader';
 import { NoomoPreloader } from './NoomoPreloader';
@@ -19,17 +19,6 @@ import '@/app/noomo-storytelling.css';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother, SplitText, ScrollToPlugin);
-}
-
-function isStorytellingRoute(pathname: string | null): boolean {
-  if (!pathname) return false;
-  return (
-    pathname === '/' ||
-    pathname.startsWith('/cases/') ||
-    pathname === '/cases' ||
-    pathname === '/contacts' ||
-    pathname.startsWith('/contacts/')
-  );
 }
 
 interface NoomoNavigationContextValue {
@@ -47,19 +36,11 @@ export function useNoomoNavigation() {
 export const NoomoExperienceShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const active = isStorytellingRoute(pathname);
-  useNoomoStore();
   const smootherRef = useRef<ScrollSmoother | null>(null);
   const speedResetTimerRef = useRef<number | null>(null);
 
   // Sync html/body .noomo-active and --app-vh before child effects run
   useLayoutEffect(() => {
-    if (!active) {
-      document.documentElement.classList.remove('noomo-active');
-      document.body.classList.remove('noomo-active');
-      return;
-    }
-
     document.documentElement.classList.add('noomo-active');
     document.body.classList.add('noomo-active');
 
@@ -78,17 +59,10 @@ export const NoomoExperienceShell: React.FC<{ children: React.ReactNode }> = ({ 
       document.documentElement.classList.remove('noomo-active');
       document.body.classList.remove('noomo-active');
     };
-  }, [active]);
+  }, []);
 
-  // Setup GSAP ScrollSmoother when active
+  // Setup GSAP ScrollSmoother
   useEffect(() => {
-    if (!active) {
-      smootherRef.current?.kill();
-      smootherRef.current = null;
-      noomoStore.setScroll(null);
-      return;
-    }
-
     const wrapper = document.getElementById('smooth-wrapper');
     const content = document.getElementById('smooth-content');
     if (!wrapper || !content) return;
@@ -170,16 +144,15 @@ export const NoomoExperienceShell: React.FC<{ children: React.ReactNode }> = ({ 
       smootherRef.current = null;
       noomoStore.setScroll(null);
     };
-  }, [active]);
+  }, []);
 
   // Refresh ScrollTrigger on route change inside Storytelling
   useEffect(() => {
-    if (!active) return;
     const t = window.setTimeout(() => {
       ScrollTrigger.refresh();
     }, 120);
     return () => window.clearTimeout(t);
-  }, [active, pathname]);
+  }, [pathname]);
 
   const navigateWithTransition = useCallback(
     (targetPath: string) => {
@@ -319,10 +292,6 @@ export const NoomoExperienceShell: React.FC<{ children: React.ReactNode }> = ({ 
     },
     [pathname, router]
   );
-
-  if (!active) {
-    return <>{children}</>;
-  }
 
   return (
     <NoomoNavigationContext.Provider value={{ navigateWithTransition }}>
