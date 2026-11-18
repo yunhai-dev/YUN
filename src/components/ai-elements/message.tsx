@@ -12,7 +12,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { FileUIPart, UIMessage } from "ai";
 import type { BundledTheme } from "shiki";
 import {
   ChevronLeftIcon,
@@ -24,8 +23,18 @@ import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
 import { createContext, memo, useContext, useEffect, useMemo, useState } from "react";
 import { Streamdown } from "streamdown";
 
+// These shapes used to come from the `ai` SDK, which was only imported for types.
+type MessageRole = "system" | "user" | "assistant" | "data";
+
+interface FileUIPart {
+  type: "file";
+  mediaType: string;
+  filename?: string;
+  url: string;
+}
+
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
-  from: UIMessage["role"];
+  from: MessageRole;
 };
 
 export const Message = ({ className, from, ...props }: MessageProps) => (
@@ -213,7 +222,7 @@ export const MessageBranchContent = ({
 };
 
 export type MessageBranchSelectorProps = HTMLAttributes<HTMLDivElement> & {
-  from: UIMessage["role"];
+  from: MessageRole;
 };
 
 export const MessageBranchSelector = ({
