@@ -30,7 +30,6 @@ export const siteMenuPrimaryItems: SiteMenuLink[] = [
 export const siteMenuExploreItems: SiteMenuLink[] = [
   { href: '/api/', label: 'API', zh: '接口' },
   { href: '/anniversary/', label: 'Days', zh: '纪念日' },
-  { href: '/chat/', label: 'Chat', zh: '对话' },
   { href: '/test/', label: 'Lab', zh: '测试' },
 ];
 

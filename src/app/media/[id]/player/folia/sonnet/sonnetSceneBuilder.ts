@@ -85,7 +85,7 @@ export const buildSonnetScene = (
     iconTextures: Map<string, import('pixi.js').Texture>,
     paragraph: SonnetParagraph,
 ): SceneView => {
-    const { Container, Graphics, Sprite } = pixi;
+    const { Container, Graphics } = pixi;
     const width = Math.max(options.host.clientWidth, 320);
     const height = Math.max(options.host.clientHeight, 240);
     const container = new Container();
@@ -236,7 +236,7 @@ export const buildSonnetScene = (
         postProcessFilters.push(...haloFilters);
         // Virtual instrumental lines can share one shot; the complete staff belongs to the shot, not each line.
         let staffViewAdded = false;
-        placements.forEach((placement, placementIndex) => {
+        placements.forEach((placement) => {
             const segment = segments[placement.segmentIndex];
             if (segment.text === '♪') {
                 if (staffViewAdded) return;

@@ -13,7 +13,6 @@ interface LyricLayoutUnit {
 }
 
 const CJK_REGEX = /[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/;
-const WESTERN_WORD_REGEX = /[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*/;
 
 const hasCjkText = (text: string) => CJK_REGEX.test(text);
 
@@ -233,19 +232,6 @@ class SentenceLayout implements LyricLayoutUnit {
         }
 
         return false;
-    }
-
-    private static splitWesternPhrase(text: string): string[] {
-        if (!hasCjkText(text) && text.length > 0) {
-            const splitRegex = /(?<=\w[.,;:!?。，；：！？])(?=\s+\w)/;
-            const parts = text.split(splitRegex);
-            
-            if (parts.length > 1) {
-                return parts.filter(p => p.length > 0);
-            }
-        }
-        
-        return [text];
     }
 
     private static splitByBracketsQuotes(text: string): string[] {

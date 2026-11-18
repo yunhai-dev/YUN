@@ -21,7 +21,7 @@ export function MediaFlightBridge() {
     }, [pathname]);
 
     useEffect(() => {
-        const fromPlayer = () => PLAYER_PATH.test(previousPath.current ?? '');
+        const fromPlayer = () => PLAYER_PATH.test(previousPath.current);
         const onPopState = () => {
             if (fromPlayer() && WALL_PATH.test(window.location.pathname)) beginReturnFlight();
         };

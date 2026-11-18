@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 import { MousePointer2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useHandControl } from '@/context/HandControlContext';
 
 export default function HandControlOverlay() {
-    const { isEnabled, isLoading, setIsLoading, setStatus, status } = useHandControl();
+    const { isEnabled, isLoading, setIsLoading, setStatus } = useHandControl();
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [isPinching, setIsPinching] = useState(false);
     

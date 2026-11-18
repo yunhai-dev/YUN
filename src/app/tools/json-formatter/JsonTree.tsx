@@ -26,8 +26,7 @@ const EditableInput = ({
                            value,
                            onChange,
                            className,
-                           autoFocus = false,
-                           placeholder
+                           autoFocus = false
                        }: {
     value: string;
     onChange: (val: string) => void;
@@ -58,7 +57,7 @@ const EditableInput = ({
     );
 };
 
-const JsonTree: React.FC<JsonTreeProps> = ({data, level = 0, onUpdate, isRoot = false, path = []}) => {
+const JsonTree: React.FC<JsonTreeProps> = ({data, level = 0, onUpdate, path = []}) => {
     const [collapsed, setCollapsed] = useState(false);
 
     // 处理基本类型值的更新

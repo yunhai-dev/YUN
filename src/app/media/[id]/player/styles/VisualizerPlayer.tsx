@@ -32,6 +32,7 @@ import { FoliaBackdrop } from '../folia/FoliaBackdrop';
 import { FoliaSubtitle } from '../folia/FoliaSubtitle';
 import { LyricTimeline } from './LyricTimeline';
 import { PlayerSettingsPanel } from './PlayerSettingsPanel';
+import { formatTime } from './formatTime';
 
 const FoliaSonnet = lazy(() => import('../folia/FoliaSonnet'));
 const FoliaDiorama = lazy(() => import('../folia/FoliaDiorama'));
@@ -69,13 +70,6 @@ const MODE_LABELS: Record<VisualizerMode, string> = {
     machi: '町景',
     still: '静止',
     pendolo: '时计',
-};
-
-const formatTime = (seconds: number) => {
-    const safe = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
-    const minutes = Math.floor(safe / 60);
-    const rest = Math.floor(safe % 60);
-    return `${minutes.toString().padStart(2, '0')}:${rest.toString().padStart(2, '0')}`;
 };
 
 export const VisualizerPlayer = ({

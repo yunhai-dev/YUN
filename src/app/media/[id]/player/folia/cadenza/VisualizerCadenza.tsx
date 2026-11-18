@@ -83,10 +83,8 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         lines,
         theme,
         audioPower,
-        audioBands,
         showText = true,
         cadenzaTuning = DEFAULT_CADENZA_TUNING,
-        lyricsFontScale = 1,
     } = props;
     // 文字画布的分辨率倍数（#929）：本样式没有全局挡位可跟随，按自己的默认叠上 tuning 里的覆盖。
     // 经 ref 交给绘制循环，每帧照原样按设备像素比算尺寸，倍数变了下一帧就地改画布尺寸，不重启循环。
@@ -433,7 +431,6 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
                     const overlayOffsetY = textY - measuredAscent;
                     const glyphs = placementText.glyphs;
                     const shouldSplitGlow = wordRevealMode === 'normal' && !placementText.cjk && glyphs.length > 1;
-                    const blurScale = 1 + energy * 0.22;
                     let overlayWord = overlayNodes.get(placement.id);
                     if (!overlayWord) {
                         overlayWord = createOverlayWordNodes();
@@ -471,13 +468,13 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
                                 placement.wordGraphemeTimings,
                             ) * clamp(animatedState.glowAlpha, 0, 1) * Math.max(tuning.glowIntensity, 0);
 
-                            writeOverlayGlyphShadow(overlayWord, glyphIndex, buildDomTextShadow(placement.color, intensity, blurScale));
+                            writeOverlayGlyphShadow(overlayWord, glyphIndex, buildDomTextShadow(placement.color, intensity));
                         }
                     } else if (overlayWord.glyphSpans[0]) {
                         const intensity = getClassicGlowEnvelope(time, lineTiming, placement.word)
                             * clamp(animatedState.glowAlpha, 0, 1)
                             * Math.max(tuning.glowIntensity, 0);
-                        writeOverlayGlyphShadow(overlayWord, 0, buildDomTextShadow(placement.color, intensity, blurScale));
+                        writeOverlayGlyphShadow(overlayWord, 0, buildDomTextShadow(placement.color, intensity));
                     }
 
                 }

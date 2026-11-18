@@ -114,7 +114,7 @@ export const drawChar = (ink: InkContext, c: LaidChar, T: number, clarityIn: num
     const g = c.glyph;
     const fadeIn = c.appearDur > 0;
     if (!g || T < (fadeIn ? c.t : c.wt)) return;
-    const { ctx, motion } = ink;
+    const { ctx } = ink;
     let clarity = clarityIn, beadV = beadIn;
     if (fadeIn) { const a = smooth(clamp((T - c.t) / c.appearDur)); clarity *= a; beadV *= a; }
     const wd = c.wd;

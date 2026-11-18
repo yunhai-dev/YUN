@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Link } from "next-view-transitions";
 import { FileText, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -5,8 +5,8 @@ export interface CaseStudyData {
   hero: {
     title: string;
     tags: string[];
-    caseLink: string;
-    buttonText: string;
+    caseLink?: string;
+    buttonText?: string;
     external?: boolean;
   };
   body: {
@@ -177,17 +177,13 @@ export const NOOMO_CASES: Record<string, CaseStudyData> = {
     hero: {
       title: 'Yun <span class="text-serif-66">Ch</span>at',
       tags: ['LLM Playground', '多模型对话', '流式交互'],
-      caseLink: '/chat/',
-      buttonText: '立即体验',
-      external: false,
     },
     body: {
       title:
-        '<span class="text-serif-50">一个</span> 简洁、高速、可直接运行在站内的全栈 AI 对话游乐场。',
+        '<span class="text-serif-50">一个</span> 简洁、高速的全栈 AI 对话游乐场。',
       texts: `
-        <p>Yun Chat 是云云亦海站内直接集成的 AI 对话实验空间，支持多模型切换、流式 Markdown/代码高亮输出以及上下文会话管理。</p>
+        <p>Yun Chat 是云云亦海的一次 AI 对话实验，支持多模型切换、流式 Markdown/代码高亮输出以及上下文会话管理。</p>
         <p>在设计它时，我刻意去掉了所有喧宾夺主的装饰，只保留流畅的打字机流式反馈、清晰的 Prompt 控制以及随时可复制的代码块体验。</p>
-        <p>你可以点击上方按钮直接在站内开启对话，也可以在 GitHub 上查阅完整源码。</p>
       `,
     },
     next: {

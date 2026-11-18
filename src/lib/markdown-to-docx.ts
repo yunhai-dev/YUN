@@ -304,7 +304,7 @@ function parseList(token: Tokens.List): Paragraph[] {
 }
 
 // 解析代码块
-function parseCodeBlock(text: string, lang?: string): Paragraph[] {
+function parseCodeBlock(text: string): Paragraph[] {
     const lines = text.split('\n');
     return lines.map((line, i) => new Paragraph({
         children: [new TextRun({text: line || ' ', font: fonts.code, size: sizes.code, color: colors.code})],
@@ -370,7 +370,7 @@ async function tokensToDocx(tokens: Token[]): Promise<DocxChild[]> {
                 break;
             }
             case 'code':
-                children.push(...parseCodeBlock(token.text, token.lang));
+                children.push(...parseCodeBlock(token.text));
                 break;
             case 'blockquote': {
                 // 引用块内容可能嵌套 paragraph

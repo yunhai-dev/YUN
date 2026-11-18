@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAllTools } from "@/data/tools";
 import { Tool } from "@/types/tools";
 import { cn } from "@/lib/utils";

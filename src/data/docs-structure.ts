@@ -40,7 +40,7 @@ const findDocNavigation = (docsDirectory = docsDirs) => {
     return docsTree.sort((a, b) => b.mtimeMs - a.mtimeMs)
 }
 
-export function getAllSlugs(docs: DocItem[]): string[] {
+function getAllSlugs(docs: DocItem[]): string[] {
     const result: string[] = [];
 
     function traverse(items: DocItem[]) {

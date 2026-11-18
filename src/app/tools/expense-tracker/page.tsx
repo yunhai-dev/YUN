@@ -1100,7 +1100,6 @@ function AllExpensesView({
 
 function FooterStats({ expenses, paydays }: { expenses: Expense[]; paydays: number[] }) {
     const ym = todayYm();
-    const ymThisYear = ym.slice(0, 4);
     let monthTotal = 0;
     let monthCount = 0;
     for (const e of expenses) {

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { LyricLine } from '../lyrics';
+import { formatTime } from './formatTime';
 
 interface LyricTimelineProps {
     lyrics: LyricLine[];
@@ -20,13 +21,6 @@ const TOP_PAD = 96;
 const BOTTOM_PAD = 160;
 const PX_PER_SECOND = 8;
 const MIN_GAP = 64;
-
-const formatTime = (seconds: number) => {
-    const safe = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
-    const minutes = Math.floor(safe / 60);
-    const rest = Math.floor(safe % 60);
-    return `${minutes.toString().padStart(2, '0')}:${rest.toString().padStart(2, '0')}`;
-};
 
 const TimelineLabel = ({text, active, align}: {text: string; active: boolean; align: 'left' | 'right'}) => (
     <span

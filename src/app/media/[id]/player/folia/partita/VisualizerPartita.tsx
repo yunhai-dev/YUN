@@ -212,7 +212,7 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
                                         className={`relative flex ${overlapSpacing ? '' : 'min-h-[24rem] '}min-w-[3.8rem] items-center justify-center px-3`}
                                     >
                                         <div className="relative z-10 flex flex-col items-center justify-start">
-                                            {column.words.map(({ chunkWords, displayWords, config, order, rowIndex }) => (
+                                            {column.words.map(({ chunkWords, displayWords, config, rowIndex }) => (
                                                 <PartitaChunk
                                                     key={`${config.id}`}
                                                     chunkWords={chunkWords}

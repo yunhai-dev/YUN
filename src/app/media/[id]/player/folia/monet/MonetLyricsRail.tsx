@@ -55,7 +55,6 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
     emptyText,
     subtitleContentMode = 'translation',
     audioPower,
-    audioBands,
     onLyricLineSeek,
     seekDisabled = false,
     layoutScale = 1,

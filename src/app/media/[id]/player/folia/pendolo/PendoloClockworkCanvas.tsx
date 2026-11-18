@@ -380,7 +380,7 @@ const PendoloClockworkCanvas: React.FC<PendoloClockworkCanvasProps> = ({
 
             // Between beats, with nothing lit or moving, the frame is drawn exactly as with the switch off.
             let fxFrame: PendoloBeatFxDrawFrame | null = null;
-            if (beatFx && !(beatFx.wave === null && isPendoloBeatFxIdle(beatFx.state, beatFx.now))) {
+            if (beatFx && !(beatFx.wave === null && isPendoloBeatFxIdle(beatFx.state))) {
                 fxFrame = beatFxFrameRef.current ?? {
                     jewelFlare: 0,
                     smallJewelFlare: 0,

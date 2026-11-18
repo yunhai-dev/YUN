@@ -23,6 +23,7 @@ const FOCUS_STORAGE_KEY = 'media-library-focus';
 const OVERSCAN = 420;
 const CULL_MARGIN = 150;
 const DRAG_THRESHOLD = 6;
+const MAX_POINTER_SAMPLES = 12;
 // Release momentum: the camera keeps the pointer's last velocity and decays with friction.
 const INERTIA_FRICTION = 0.94;      // fraction of velocity kept per 60 fps frame
 const INERTIA_MIN_SPEED = 0.02;     // world px per ms; below this the glide stops
@@ -35,6 +36,40 @@ const FIELD_SCALE = 1.18;
 const TILT_RADIANS = (FIELD_TILT_DEG * Math.PI) / 180;
 const TILT_COS = Math.cos(TILT_RADIANS);
 const TILT_SIN = Math.sin(TILT_RADIANS);
+
+const INITIAL_CAMERA = { x: 34, y: 80, scale: 0.76 };
+const INITIAL_VIEWPORT = { width: 1280, height: 720 };
+
+type PointerSample = { t: number; x: number; y: number };
+
+// Undo the field's rotation and scale: screen dx/dy become world-space camera motion.
+const toWorldDelta = (dx: number, dy: number) => ({
+    x: (dx * TILT_COS + dy * TILT_SIN) / FIELD_SCALE,
+    y: (-dx * TILT_SIN + dy * TILT_COS) / FIELD_SCALE,
+});
+
+// Only samples from the last moments of the drag count, so pausing before release does not fling.
+const releaseVelocity = (samples: PointerSample[]) => {
+    const newest = samples[samples.length - 1];
+    let oldest = newest;
+    for (let index = samples.length - 2; index >= 0; index -= 1) {
+        if (newest.t - samples[index].t > INERTIA_WINDOW_MS) break;
+        oldest = samples[index];
+    }
+    const elapsed = newest.t - oldest.t;
+    if (elapsed < 8) return { x: 0, y: 0 };
+    let x = (newest.x - oldest.x) / elapsed;
+    let y = (newest.y - oldest.y) / elapsed;
+    const speed = Math.hypot(x, y);
+    if (speed > INERTIA_MAX_SPEED) {
+        x *= INERTIA_MAX_SPEED / speed;
+        y *= INERTIA_MAX_SPEED / speed;
+    } else if (speed < INERTIA_MIN_SPEED) {
+        x = 0;
+        y = 0;
+    }
+    return { x, y };
+};
 
 type WallPlayback = { id: string | null; playing: boolean };
 const SERVER_PLAYBACK: WallPlayback = { id: null, playing: false };
@@ -51,7 +86,11 @@ const getPlaybackMark = (): WallPlayback => {
 const getServerPlaybackMark = () => SERVER_PLAYBACK;
 
 // Folia's wall camera zoom steps (Bravais and Lattice share them).
-const getScale = (width: number) => width < 640 ? 0.52 : width < 1100 ? 0.64 : 0.76;
+const getScale = (width: number) => {
+    if (width < 640) return 0.52;
+    if (width < 1100) return 0.64;
+    return 0.76;
+};
 
 const rememberFocus = (id: string) => {
     try {
@@ -187,21 +226,14 @@ function WallPoster({ item, rect, label, current, playing, focused, onOpen }: Wa
 export function MediaLibrary({ items }: { items: MediaItem[] }) {
     const viewportRef = useRef<HTMLDivElement>(null);
     const worldRef = useRef<HTMLDivElement>(null);
-    const cameraRef = useRef({ x: 34, y: 80, scale: 0.76 });
-    const viewportSizeRef = useRef({ width: 1280, height: 720 });
-    const dragRef = useRef<{
-        id: number;
-        x: number;
-        y: number;
-        originX: number;
-        originY: number;
-        moved: boolean;
-        samples: { t: number; x: number; y: number }[];
-    } | null>(null);
+    const cameraRef = useRef({ ...INITIAL_CAMERA });
+    const viewportSizeRef = useRef({ ...INITIAL_VIEWPORT });
     const dragAbortRef = useRef<AbortController | null>(null);
     const suppressClickRef = useRef(false);
     const tweenRef = useRef<number | null>(null);
-    const boundsRef = useRef<MediaWallBounds>(getWorldBounds(34, 80, 0.76, 1280, 720));
+    const boundsRef = useRef<MediaWallBounds>(
+        getWorldBounds(INITIAL_CAMERA.x, INITIAL_CAMERA.y, INITIAL_CAMERA.scale, INITIAL_VIEWPORT.width, INITIAL_VIEWPORT.height),
+    );
     const measuredRef = useRef(false);
     const centeredOnceRef = useRef(false);
     const queryRef = useRef('');
@@ -235,18 +267,20 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
         }
     }, []);
 
-    const refreshBounds = useCallback(() => {
+    const visibleBounds = () => {
         const { width, height } = viewportSizeRef.current;
         const camera = cameraRef.current;
-        const next = getWorldBounds(camera.x, camera.y, camera.scale, width, height);
+        return getWorldBounds(camera.x, camera.y, camera.scale, width, height);
+    };
+
+    const refreshBounds = useCallback(() => {
+        const next = visibleBounds();
         boundsRef.current = next;
         setBounds(next);
     }, []);
 
     const maybeRefreshBounds = useCallback(() => {
-        const { width, height } = viewportSizeRef.current;
-        const camera = cameraRef.current;
-        const visible = getWorldBounds(camera.x, camera.y, camera.scale, width, height);
+        const visible = visibleBounds();
         const culled = boundsRef.current;
         if (visible.left < culled.left + CULL_MARGIN || visible.right > culled.right - CULL_MARGIN
             || visible.top < culled.top + CULL_MARGIN || visible.bottom > culled.bottom - CULL_MARGIN) {
@@ -445,8 +479,8 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
 
     const moveFocus = useCallback((direction: 'left' | 'right' | 'up' | 'down') => {
         if (wallTiles.length === 0) return;
+        const center = viewCenter();
         const source = focusedTile ?? wallTiles.reduce((best, tile) => {
-            const center = viewCenter();
             const frame = frameOf(tile.rect);
             const bestFrame = frameOf(best.rect);
             const distance = (frame.centerX - center.x) ** 2 + (frame.centerY - center.y) ** 2;
@@ -474,7 +508,6 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
         }
         if (!best) return;
         const item = filteredItems[best.itemIndex];
-        if (!item) return;
         setFocusedId(item.id);
         centerTile(best.rect, true);
     }, [centerTile, filteredItems, focusedTile, viewCenter, wallTiles]);
@@ -509,9 +542,8 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
             originX: cameraRef.current.x,
             originY: cameraRef.current.y,
             moved: false,
-            samples: [] as { t: number; x: number; y: number }[],
+            samples: [] as PointerSample[],
         };
-        dragRef.current = drag;
         setDragging(true);
         // Window listeners rather than pointer capture: capturing on the field would retarget the
         // native click and stop a poster's Link from navigating after a plain press.
@@ -524,54 +556,26 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
             const dy = moveEvent.clientY - drag.y;
             if (!drag.moved && Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) drag.moved = true;
             if (!drag.moved) return;
-            // Undo the field's rotation and scale: screen dx/dy become world-space camera motion.
-            const worldX = (dx * TILT_COS + dy * TILT_SIN) / FIELD_SCALE;
-            const worldY = (-dx * TILT_SIN + dy * TILT_COS) / FIELD_SCALE;
-            drag.samples.push({ t: moveEvent.timeStamp, x: worldX, y: worldY });
-            if (drag.samples.length > 12) drag.samples.shift();
-            applyCamera({ x: drag.originX + worldX, y: drag.originY + worldY, scale: cameraRef.current.scale });
+            const world = toWorldDelta(dx, dy);
+            drag.samples.push({ t: moveEvent.timeStamp, ...world });
+            if (drag.samples.length > MAX_POINTER_SAMPLES) drag.samples.shift();
+            applyCamera({ x: drag.originX + world.x, y: drag.originY + world.y, scale: cameraRef.current.scale });
             maybeRefreshBounds();
         };
         const end = (endEvent: globalThis.PointerEvent) => {
             if (endEvent.pointerId !== drag.id) return;
-            let velocityX = 0;
-            let velocityY = 0;
             const canGlide = drag.moved
                 && endEvent.type === 'pointerup'
                 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let velocity = { x: 0, y: 0 };
             if (canGlide) {
-                const dx = endEvent.clientX - drag.x;
-                const dy = endEvent.clientY - drag.y;
-                drag.samples.push({
-                    t: endEvent.timeStamp,
-                    x: (dx * TILT_COS + dy * TILT_SIN) / FIELD_SCALE,
-                    y: (-dx * TILT_SIN + dy * TILT_COS) / FIELD_SCALE,
-                });
-                // Only the last 100ms count, so pausing before release does not fling.
-                const newest = drag.samples[drag.samples.length - 1];
-                let oldest = newest;
-                for (let index = drag.samples.length - 2; index >= 0; index -= 1) {
-                    if (newest.t - drag.samples[index].t > INERTIA_WINDOW_MS) break;
-                    oldest = drag.samples[index];
-                }
-                const elapsed = newest.t - oldest.t;
-                if (elapsed >= 8) {
-                    velocityX = (newest.x - oldest.x) / elapsed;
-                    velocityY = (newest.y - oldest.y) / elapsed;
-                    const speed = Math.hypot(velocityX, velocityY);
-                    if (speed > INERTIA_MAX_SPEED) {
-                        velocityX *= INERTIA_MAX_SPEED / speed;
-                        velocityY *= INERTIA_MAX_SPEED / speed;
-                    } else if (speed < INERTIA_MIN_SPEED) {
-                        velocityX = 0;
-                        velocityY = 0;
-                    }
-                }
+                const world = toWorldDelta(endEvent.clientX - drag.x, endEvent.clientY - drag.y);
+                drag.samples.push({ t: endEvent.timeStamp, ...world });
+                velocity = releaseVelocity(drag.samples);
             }
             suppressClickRef.current = drag.moved;
-            dragRef.current = null;
             setDragging(false);
-            if (velocityX !== 0 || velocityY !== 0) flingCamera(velocityX, velocityY);
+            if (velocity.x !== 0 || velocity.y !== 0) flingCamera(velocity.x, velocity.y);
             else refreshBounds();
             abort.abort();
             if (dragAbortRef.current === abort) dragAbortRef.current = null;
@@ -582,8 +586,8 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
     };
 
     const openFocused = () => {
+        if (filteredItems.length === 0) return;
         const item = filteredItems[focusedIndex >= 0 ? focusedIndex : 0];
-        if (!item) return;
         // Keyboard opens have no pointer target; fly from the tile the wall is focused on.
         const source = focusedTile
             ? document.querySelector<HTMLElement>(`[data-wall-tile="${focusedTile.rect.key}"]`)
@@ -648,9 +652,8 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
                         ref={worldRef}
                         className={`absolute inset-0 origin-top-left ${measured ? 'opacity-100' : 'opacity-0'}`}
                     >
-                        {filteredItems.length > 0 && wallTiles.map(tile => {
+                        {wallTiles.map(tile => {
                             const item = filteredItems[tile.itemIndex];
-                            if (!item) return null;
                             return (
                                 <WallPoster
                                     key={tile.rect.key}

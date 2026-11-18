@@ -7,7 +7,6 @@ export type MediaWallRect = {
     y: number;
     width: number;
     height: number;
-    area: number;
 };
 
 export type MediaWallTile = {
@@ -22,7 +21,7 @@ export type MediaWallBounds = {
     bottom: number;
 };
 
-export const MEDIA_WALL_METRICS = { cellSize: 128, gap: 8 } as const;
+const MEDIA_WALL_METRICS = { cellSize: 128, gap: 8 } as const;
 
 const BLOCK_COLS = 12;
 const BLOCK_ROWS = 8;
@@ -72,29 +71,26 @@ const hashBlock = (column: number, row: number) => {
     return (value ^ (value >>> 12)) >>> 0;
 };
 
+const mod = (value: number, divisor: number) => ((value % divisor) + divisor) % divisor;
+
 const getBlockTemplate = (column: number, row: number) => {
-    const template = ((column + row * 2) % TEMPLATES.length + TEMPLATES.length) % TEMPLATES.length;
+    const source = TEMPLATES[mod(column + row * 2, TEMPLATES.length)];
     const reflection = hashBlock(column, row) % 4;
-    const source = TEMPLATES[template];
     if (reflection === 1) return flipX(source);
     if (reflection === 2) return flipY(source);
     if (reflection === 3) return flipX(flipY(source));
     return source;
 };
 
-const mod = (value: number, divisor: number) => ((value % divisor) + divisor) % divisor;
-
 const getPeriod = (itemCount: number) => {
-    const blocks = Math.max(1, Math.ceil(Math.max(0, itemCount) / SLOTS_PER_BLOCK));
+    const blocks = Math.max(1, Math.ceil(itemCount / SLOTS_PER_BLOCK));
     const blocksPerRow = blocks <= 1
         ? 1
         : Math.max(1, Math.round(Math.sqrt(FIELD_ASPECT * blocks * BLOCK_ROWS / BLOCK_COLS)));
     return { blocksPerRow, blockRows: Math.ceil(blocks / blocksPerRow) };
 };
 
-export const getMediaWallBlockSize = () => ({ width: BLOCK_WIDTH, height: BLOCK_HEIGHT });
-
-export const getMediaWallSlots = (column: number, row: number): MediaWallRect[] => (
+const getMediaWallSlots = (column: number, row: number): MediaWallRect[] => (
     getBlockTemplate(column, row).map((slot, slotIndex) => ({
         key: `${column},${row},${slotIndex}`,
         column,
@@ -104,8 +100,12 @@ export const getMediaWallSlots = (column: number, row: number): MediaWallRect[] 
         y: row * BLOCK_HEIGHT + slot.y * PITCH,
         width: slot.cols * PITCH - MEDIA_WALL_METRICS.gap,
         height: slot.rows * PITCH - MEDIA_WALL_METRICS.gap,
-        area: slot.cols * slot.rows,
     }))
+);
+
+const intersects = (rect: MediaWallRect, bounds: MediaWallBounds) => (
+    rect.x < bounds.right && rect.x + rect.width > bounds.left
+    && rect.y < bounds.bottom && rect.y + rect.height > bounds.top
 );
 
 export const getMediaWallTiles = (
@@ -131,7 +131,7 @@ export const getMediaWallTiles = (
         for (let column = fromColumn; column <= toColumn; column += 1) {
             const blockIndex = mod(row, period.blockRows) * period.blocksPerRow + mod(column, period.blocksPerRow);
             for (const rect of getMediaWallSlots(column, row)) {
-                if (rect.x >= visible.right || rect.x + rect.width <= visible.left || rect.y >= visible.bottom || rect.y + rect.height <= visible.top) continue;
+                if (!intersects(rect, visible)) continue;
                 tiles.push({ rect, itemIndex: (blockIndex * SLOTS_PER_BLOCK + rect.slotIndex) % itemCount });
                 if (tiles.length >= MAX_RENDERED_TILES) return tiles;
             }

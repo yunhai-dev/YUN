@@ -73,33 +73,32 @@ const clearTimers = () => {
     timer = 0;
 };
 
-const dropOverlay = () => {
+const resetFlight = () => {
     token += 1;
     clearTimers();
     fade?.cancel();
     fade = null;
-    overlay?.remove();
-    overlay = null;
-    overlayImage = null;
     fading?.remove();
     fading = null;
     forward = null;
     returning = false;
+};
+
+const dropOverlay = () => {
+    resetFlight();
+    overlay?.remove();
+    overlay = null;
+    overlayImage = null;
     delete document.documentElement.dataset.mediaFlight;
 };
 
 const fadeOut = (duration: number) => {
-    if (!overlay) return;
     const node = overlay;
-    token += 1;
-    clearTimers();
+    if (!node) return;
+    resetFlight();
     overlay = null;
     overlayImage = null;
-    forward = null;
-    returning = false;
-    fading?.remove();
     fading = node;
-    fade?.cancel();
     const animation = node.animate([{opacity: 1}, {opacity: 0}], {duration, easing: 'ease-out', fill: 'forwards'});
     fade = animation;
     animation.onfinish = () => {
@@ -166,7 +165,7 @@ const animate = (from: FlightQuad, to: FlightQuad, duration: number, onDone: () 
 };
 
 /** Axis-aligned bounds → the poster's own size at a known field tilt. */
-export const measureTileQuad = (element: HTMLElement, angle: number): FlightQuad | null => {
+const measureTileQuad = (element: HTMLElement, angle: number): FlightQuad | null => {
     const rect = element.getBoundingClientRect();
     if (rect.width < 2 || rect.height < 2) return null;
     const cos = Math.abs(Math.cos(angle));

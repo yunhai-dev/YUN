@@ -122,7 +122,6 @@ const MonetWordSweep: React.FC<{
     fontSpec,
     fontsEpoch,
     isChorus,
-    audioPower,
     rtl,
 }) => {
         const isLineActive = lineStatus === 'active';

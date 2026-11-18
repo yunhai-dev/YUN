@@ -72,7 +72,6 @@ export const getPartitaOverlapSpacing = (rows: PartitaOverlapRow[]): PartitaRowS
     const reaches = rows.map(rowReach);
 
     return rows.map((row, rowIndex) => {
-        const direction = row.rtl ? 'rtl' : 'ltr';
         const words = row.wordConfigs.map((wordConfig, index): React.CSSProperties => {
             const next = row.wordConfigs[index + 1];
             if (!next) return { marginInlineEnd: WORD_GAP };

@@ -228,21 +228,25 @@ export const NoomoCaseView: React.FC<{ data: CaseStudyData }> = ({ data }) => {
                   </span>
                 ))}
               </div>
-              <div className="xs:block mt-20 lg:hidden">
+              {data.hero.caseLink && data.hero.buttonText && (
+                <div className="xs:block mt-20 lg:hidden">
+                  <ViewCaseButton
+                    link={data.hero.caseLink}
+                    text={data.hero.buttonText}
+                    external={data.hero.external}
+                  />
+                </div>
+              )}
+            </div>
+            {data.hero.caseLink && data.hero.buttonText && (
+              <div className="xs:hidden lg:block">
                 <ViewCaseButton
                   link={data.hero.caseLink}
                   text={data.hero.buttonText}
                   external={data.hero.external}
                 />
               </div>
-            </div>
-            <div className="xs:hidden lg:block">
-              <ViewCaseButton
-                link={data.hero.caseLink}
-                text={data.hero.buttonText}
-                external={data.hero.external}
-              />
-            </div>
+            )}
           </div>
         </div>
       </div>

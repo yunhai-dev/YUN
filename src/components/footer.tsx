@@ -22,7 +22,7 @@ export function Footer() {
         pathname === "/contacts" ||
         pathname.startsWith("/contacts/");
     const isMediaWallPage = pathname === "/media" || pathname === "/media/";
-    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || pathname === "/chat/" || isMediaWallPage || isStorytellingPage) {
+    if (/^\/(api|docs|media|tools)\/[^/]+\/.*?$/.test(pathname) || isMediaWallPage || isStorytellingPage) {
         return null;
     }
 

@@ -1,6 +1,5 @@
 "use client";
 
-import React from 'react';
 import {notFound} from 'next/navigation';
 import {MediaItem} from '@/types/media';
 import {getAllMediaItems} from "@/data/media";

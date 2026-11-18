@@ -1,11 +1,25 @@
 import { useState, useCallback, useEffect, RefObject } from 'react';
 
+// Vendor-prefixed fullscreen APIs are not part of lib.dom.
+type PrefixedDocument = Document & {
+  webkitFullscreenEnabled?: boolean;
+  mozFullScreenEnabled?: boolean;
+  msFullscreenEnabled?: boolean;
+  webkitFullscreenElement?: Element | null;
+  mozFullScreenElement?: Element | null;
+  msFullscreenElement?: Element | null;
+  webkitExitFullscreen?: () => Promise<void>;
+  mozCancelFullScreen?: () => Promise<void>;
+  msExitFullscreen?: () => Promise<void>;
+};
+
+type PrefixedElement = Element & {
+  webkitRequestFullscreen?: () => Promise<void>;
+  mozRequestFullScreen?: () => Promise<void>;
+  msRequestFullscreen?: () => Promise<void>;
+};
+
 interface UseFullscreenOptions {
-  /**
-   * 是否在按下 ESC 键退出全屏时触发 onExit 回调
-   * @default true
-   */
-  triggerOnEsc?: boolean;
   /**
    * 全屏状态变化时的回调函数
    */
@@ -74,27 +88,23 @@ export function useFullscreen(
   options: UseFullscreenOptions = {}
 ): UseFullscreenReturn {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const { triggerOnEsc = true, onFullscreenChange } = options;
+  const { onFullscreenChange } = options;
 
   // 检测浏览器是否支持全屏 API
-  const isSupported = typeof document !== 'undefined' && 
-    (document.fullscreenEnabled || 
-     // @ts-ignore - 兼容 webkit
-     document.webkitFullscreenEnabled || 
-     // @ts-ignore - 兼容 moz
-     document.mozFullScreenEnabled || 
-     // @ts-ignore - 兼容 ms
-     document.msFullscreenEnabled);
+  const isSupported = typeof document !== 'undefined' && !!(
+    document.fullscreenEnabled ||
+    (document as PrefixedDocument).webkitFullscreenEnabled ||
+    (document as PrefixedDocument).mozFullScreenEnabled ||
+    (document as PrefixedDocument).msFullscreenEnabled
+  );
 
   // 获取当前全屏元素
   const getFullscreenElement = useCallback((): Element | null => {
-    return document.fullscreenElement || 
-      // @ts-ignore - 兼容 webkit
-      document.webkitFullscreenElement || 
-      // @ts-ignore - 兼容 moz
-      document.mozFullScreenElement || 
-      // @ts-ignore - 兼容 ms
-      document.msFullscreenElement || 
+    const doc = document as PrefixedDocument;
+    return doc.fullscreenElement ||
+      doc.webkitFullscreenElement ||
+      doc.mozFullScreenElement ||
+      doc.msFullscreenElement ||
       null;
   }, []);
 
@@ -102,28 +112,16 @@ export function useFullscreen(
   const enterFullscreen = useCallback(async (): Promise<void> => {
     if (!isSupported) return;
 
-    const element = ref?.current || document.documentElement;
+    const element = (ref?.current || document.documentElement) as PrefixedElement;
 
     try {
       if (element.requestFullscreen) {
         await element.requestFullscreen();
-      } else if (
-        // @ts-ignore - 兼容 webkit
-        element.webkitRequestFullscreen
-      ) {
-        // @ts-ignore
+      } else if (element.webkitRequestFullscreen) {
         await element.webkitRequestFullscreen();
-      } else if (
-        // @ts-ignore - 兼容 moz
-        element.mozRequestFullScreen
-      ) {
-        // @ts-ignore
+      } else if (element.mozRequestFullScreen) {
         await element.mozRequestFullScreen();
-      } else if (
-        // @ts-ignore - 兼容 ms
-        element.msRequestFullscreen
-      ) {
-        // @ts-ignore
+      } else if (element.msRequestFullscreen) {
         await element.msRequestFullscreen();
       }
     } catch (error) {
@@ -135,27 +133,17 @@ export function useFullscreen(
   const exitFullscreen = useCallback(async (): Promise<void> => {
     if (!isSupported) return;
 
+    const doc = document as PrefixedDocument;
+
     try {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen();
-      } else if (
-        // @ts-ignore - 兼容 webkit
-        document.webkitExitFullscreen
-      ) {
-        // @ts-ignore
-        await document.webkitExitFullscreen();
-      } else if (
-        // @ts-ignore - 兼容 moz
-        document.mozCancelFullScreen
-      ) {
-        // @ts-ignore
-        await document.mozCancelFullScreen();
-      } else if (
-        // @ts-ignore - 兼容 ms
-        document.msExitFullscreen
-      ) {
-        // @ts-ignore
-        await document.msExitFullscreen();
+      if (doc.exitFullscreen) {
+        await doc.exitFullscreen();
+      } else if (doc.webkitExitFullscreen) {
+        await doc.webkitExitFullscreen();
+      } else if (doc.mozCancelFullScreen) {
+        await doc.mozCancelFullScreen();
+      } else if (doc.msExitFullscreen) {
+        await doc.msExitFullscreen();
       }
     } catch (error) {
       console.error('Failed to exit fullscreen mode:', error);

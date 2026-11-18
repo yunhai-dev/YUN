@@ -31,7 +31,7 @@ export const terminalPlayerExtension: TokenizerAndRendererExtension = {
   start(src) {
     return src.match(/```terminal\n/)?.index;
   },
-  tokenizer(src, tokens) {
+  tokenizer(src) {
     const rule = /^```terminal\n([\s\S]*?)```/;
     const match = rule.exec(src);
     if (match) {

@@ -97,7 +97,7 @@ class TypeAnalyzer {
             }
 
             // 推断数组元素类型（取第一个元素的类型，或者尝试合并所有元素类型）
-            const elementTypes = value.map((item, idx) =>
+            const elementTypes = value.map((item) =>
                 this.inferType(item, suggestedClassName + 'Item')
             );
 

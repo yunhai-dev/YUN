@@ -13,7 +13,7 @@ export const alertBlock: TokenizerAndRendererExtension = {
     start(src) {
         return src.match(/::: (info|warn|tip|danger)/)?.index;
     },
-    tokenizer(src, tokens) {
+    tokenizer(src) {
         const rule = /^::: (info|warn|tip|danger)([\s\S]*?)\n([\s\S]*?):::/;
         const match = rule.exec(src);
         if (match) {

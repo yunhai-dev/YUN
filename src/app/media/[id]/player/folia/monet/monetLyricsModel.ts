@@ -256,7 +256,7 @@ const getMonetVerticalMeasureContext = () => {
 };
 
 /** Measures the tallest painted glyph bounds so descenders remain inside Monet's clipped line box. */
-const measureMonetLineHeight = (text: string, fontSpec: string, fontPx: number, defaultLineHeightPx: number): number => {
+const measureMonetLineHeight = (text: string, fontSpec: string, defaultLineHeightPx: number): number => {
     const cacheKey = `${fontSpec}|${text}`;
     const cached = monetVerticalMetricsCache.get(cacheKey);
     if (cached !== undefined) {
@@ -558,7 +558,7 @@ const measureMonetSubtitleTrack = (
     const fontPx = isSecondary ? inputs.translationFontPx * SECONDARY_TRACK_SIZE_FACTOR : inputs.translationFontPx;
     const fontWeight = isSecondary ? inputs.secondaryTranslationFontWeight : inputs.translationFontWeight;
     const fontSpec = `${fontWeight} ${fontPx}px ${inputs.translationFontStack}`;
-    const lineHeightPx = measureMonetLineHeight(track.text, fontSpec, fontPx, fontPx * 1.28);
+    const lineHeightPx = measureMonetLineHeight(track.text, fontSpec, fontPx * 1.28);
     const paddingTopPx = isSecondary ? fontPx * SECONDARY_TRACK_GAP_EM : Math.max(fontPx * 0.45, 7);
     const paddingBottomPx = Math.max(fontPx * 0.18, 5);
     const rawLineCount = measureTextLineCount(track.text, fontSpec, inputs.maxWidthPx, lineHeightPx);
@@ -625,7 +625,7 @@ export const measureMonetLineLayout = ({
 }: MeasureMonetLineLayoutOptions): MonetMeasuredLineLayout => {
     const fontSpec = `${fontWeight} ${fontPx}px ${fontStack}`;
     const resolvedTranslationFontStack = translationFontStack ?? fontStack;
-    const lineHeightPx = measureMonetLineHeight(line.fullText, fontSpec, fontPx, fontPx * 1.18);
+    const lineHeightPx = measureMonetLineHeight(line.fullText, fontSpec, fontPx * 1.18);
     const textPaddingTopPx = Math.max(fontPx * 0.16, 8);
     const textPaddingBottomPx = Math.max(fontPx * 0.34, 14);
     const { lineCount: textLineCount, maxLineWidthPx } = measureLyricLineStats(line, fontSpec, maxWidthPx);
@@ -669,7 +669,7 @@ export const measureMonetLineLayout = ({
         visualHeightPx: textHeightPx + translationHeightPx,
         lineHeightPx,
         translationLineHeightPx: firstTrack?.lineHeightPx
-            ?? measureMonetLineHeight('', `${translationFontWeight} ${translationFontPx}px ${resolvedTranslationFontStack}`, translationFontPx, translationFontPx * 1.28),
+            ?? measureMonetLineHeight('', `${translationFontWeight} ${translationFontPx}px ${resolvedTranslationFontStack}`, translationFontPx * 1.28),
         isTextClipped: textLineCount > visibleTextLineCount,
         // A token wider than the column (a long compound word) overruns the text box and would be
         // sliced mid-glyph by `overflow: hidden`. The rail fades that edge out instead.

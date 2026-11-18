@@ -445,7 +445,7 @@ export const resolvePendoloShake = (state: PendoloBeatFxState, random: () => num
 };
 
 /** Whether anything is still moving or lit, so a renderer can skip the overlay pass entirely. */
-export const isPendoloBeatFxIdle = (state: PendoloBeatFxState, now: number): boolean => {
+export const isPendoloBeatFxIdle = (state: PendoloBeatFxState): boolean => {
     if (state.jewelFlare > 0.01 || state.smallJewelFlare > 0.01 || state.shake > 0.01) return false;
     if (state.tickDialLight > 0 || state.outerDialLight > 0) return false;
     if (state.waveStart >= 0) return false;

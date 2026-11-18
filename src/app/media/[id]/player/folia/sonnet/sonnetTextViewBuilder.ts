@@ -146,9 +146,6 @@ export const buildSonnetTextView = (
     // Parallax depth assignment
     const zDepth = resolveSonnetSegmentDepth(placement.role);
 
-    const blurAmount = Math.abs(zDepth) * fontSize * 0.12;
-    const isBlurry = blurAmount > 2;
-
     const hasGlow = options.glowEnabled && !isDecoration;
     const glowBlur = Math.max(12, fontSize * 0.18);
     let glowStrength = 0;

@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {jsonToCode, SupportedLanguage} from "@/lib/json-to-code";
+import {SUPPORTED_LANGUAGES, jsonToCode, SupportedLanguage} from "@/lib/json-to-code";
 
 // 注册语言
 hljs.registerLanguage('python', python);
@@ -553,7 +553,7 @@ const JsonFormatterPage = () => {
                                             <div className="flex items-center gap-2">
                                                 <span className="text-xs text-muted-foreground">目标语言：</span>
                                                 <div className="flex gap-1 flex-wrap">
-                                                    {(['python', 'typescript', 'java', 'go', 'rust'] as const).map((lang) => (
+                                                    {SUPPORTED_LANGUAGES.map(({value: lang, label}) => (
                                                         <Button
                                                             key={lang}
                                                             variant={codeLanguage === lang ? 'default' : 'outline'}
@@ -561,10 +561,7 @@ const JsonFormatterPage = () => {
                                                             className="h-7 text-xs"
                                                             onClick={() => setCodeLanguage(lang)}
                                                         >
-                                                            {lang === 'python' ? 'Python' :
-                                                                lang === 'typescript' ? 'TypeScript' :
-                                                                    lang === 'java' ? 'Java' :
-                                                                        lang === 'go' ? 'Go' : 'Rust'}
+                                                            {label}
                                                         </Button>
                                                     ))}
                                                 </div>

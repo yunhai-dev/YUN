@@ -277,7 +277,7 @@ export const resolveLineRenderTiming = (line: Line): ResolvedLineRenderTiming =>
     };
 };
 
-export const buildDomTextShadow = (color: string, intensity: number, blurScale = 1) => {
+export const buildDomTextShadow = (color: string, intensity: number) => {
     const glow = clamp(intensity, 0, 1.6);
     if (glow <= 0.01) {
         return 'none';

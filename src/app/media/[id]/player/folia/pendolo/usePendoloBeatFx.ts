@@ -14,7 +14,6 @@ import {
     resolvePendoloWave,
     stepPendoloBeatFx,
     type PendoloBeatFxState,
-    type PendoloBeatTriggers,
     type PendoloMeshPoint,
     type PendoloWaveFrame,
 } from './pendoloBeatFx';

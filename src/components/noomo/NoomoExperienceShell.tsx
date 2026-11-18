@@ -21,7 +21,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother, SplitText, ScrollToPlugin);
 }
 
-export function isStorytellingRoute(pathname: string | null): boolean {
+function isStorytellingRoute(pathname: string | null): boolean {
   if (!pathname) return false;
   return (
     pathname === '/' ||
@@ -48,9 +48,8 @@ export const NoomoExperienceShell: React.FC<{ children: React.ReactNode }> = ({ 
   const pathname = usePathname();
   const router = useRouter();
   const active = isStorytellingRoute(pathname);
-  const state = useNoomoStore();
+  useNoomoStore();
   const smootherRef = useRef<ScrollSmoother | null>(null);
-  const lastYRef = useRef(0);
   const speedResetTimerRef = useRef<number | null>(null);
 
   // Sync html/body .noomo-active and --app-vh before child effects run

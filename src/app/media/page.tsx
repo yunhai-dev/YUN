@@ -1,4 +1,3 @@
-import React from 'react';
 import {getAllMediaItems} from '@/data/media';
 import {MediaLibrary} from './MediaLibrary';
 

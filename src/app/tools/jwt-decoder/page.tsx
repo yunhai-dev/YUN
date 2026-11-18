@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import {Button} from "@/components/ui/button";
 import {useToast} from "@/hooks/use-toast";
 import {Copy as CopyIcon} from 'lucide-react';
