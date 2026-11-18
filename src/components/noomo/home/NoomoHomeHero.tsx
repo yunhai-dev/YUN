@@ -28,7 +28,7 @@ export const NoomoHomeHero: React.FC<{ onStartByClick?: () => void }> = ({ onSta
   const [hidden, setHidden] = useState(false);
 
   const handleMouseMove = () => {
-    if (state.mobileMenuOpen) return;
+    if (!isVisible || state.mobileMenuOpen) return;
     if (!state.experienceStarted && typeof window !== 'undefined' && window.innerWidth >= 1024) {
       const snap = noomoStore.getSnapshot();
       if (snap.cursorText !== '点击开启') {
@@ -118,7 +118,15 @@ export const NoomoHomeHero: React.FC<{ onStartByClick?: () => void }> = ({ onSta
       start: 'top top',
       end: 'top+=500 top',
       scrub: true,
-      onLeave: () => setIsVisible(false),
+      onLeave: () => {
+        setIsVisible(false);
+        // The hero owns the "click to start" prompt; once it scrolls away the cursor
+        // must fall back to its normal state instead of keeping the label.
+        const snap = noomoStore.getSnapshot();
+        if (!snap.experienceStarted && snap.cursorText === '点击开启') {
+          noomoStore.setCursorTextState(false);
+        }
+      },
       onEnterBack: () => setIsVisible(true),
     });
 
