@@ -460,7 +460,7 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
     if (!currentSlug && allDocs.length === 0) {
         return (
             <div className="flex-1 pt-28 md:pt-36 pb-24">
-                <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+                <div className="page-container">
                     <div className="text-red-500">
                         暂无文档内容。
                     </div>
@@ -471,7 +471,7 @@ export function DocsClient({allDocs, title, currentSlug, contentHtml, headings}:
 
     return (
         <div className="flex-1 min-h-screen">
-            <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 relative">
+            <div className="page-container relative">
                 {isMounted && (
                     <MobileControls
                         onToggleSidebar={handleToggleSidebar}

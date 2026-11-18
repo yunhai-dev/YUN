@@ -142,7 +142,7 @@ const ToolsPage = () => {
 
     return (
         <main className="min-h-screen flex flex-col">
-            <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 pt-28 md:pt-36 pb-24">
+            <div className="page-container pt-28 md:pt-36 pb-24">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-border/60 mb-8">
                     <div>

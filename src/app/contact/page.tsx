@@ -26,7 +26,7 @@ export default function Contact() {
         <main className="min-h-screen flex flex-col">
             <FAQStructuredData faqs={faqs} />
 
-            <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10 pt-28 md:pt-36 pb-24">
+            <div className="page-container pt-28 md:pt-36 pb-24">
                 {/* Editorial Invitation */}
                 <section className="pb-16 border-b border-border/60">
                     <h1 className="font-serif-sc text-5xl sm:text-6xl font-medium tracking-tight mb-6">

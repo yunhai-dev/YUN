@@ -75,7 +75,7 @@ export function Navbar() {
             inert={isOpen}
             aria-hidden={isOpen}
         >
-            {/* Same insets as the homepage: its .container adds 16px/20px, plus the header's own padding. */}
+            {/* Navbar keeps its own insets; only page content uses .page-container. */}
             <div className="flex w-full items-center justify-between px-9 pt-5 md:px-10 lg:items-start lg:px-[74px] lg:pt-[38px]">
                 {/* Brand: same as the storytelling header */}
                 <Link
@@ -112,7 +112,8 @@ export function Navbar() {
             </div>
         </header>
 
-        {/* Vertical wordmark along the left edge, hidden while the menu is open. */}
+        {/* Vertical wordmark along the left gutter; the page container reserves 10vw + 2rem
+            so it never sits under content. Hidden while the menu is open. */}
         <span
             aria-hidden="true"
             style={{ writingMode: "vertical-rl" }}

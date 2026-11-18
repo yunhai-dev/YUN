@@ -81,7 +81,7 @@ export function ClaudeResourcesBrowser({ allPosts }: ClaudeResourcesBrowserProps
 
   return (
     <section className="pt-12 md:pt-14 pb-24">
-      <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+      <div className="page-container">
         {/* Book-Spine Featured Carousel */}
         {!hasActiveFilter && <CategoryFeatureCarousel posts={carouselPosts} />}
 

@@ -232,7 +232,7 @@ export default async function BlogPost({params}: { params: Promise<{ id: string 
 
                     {/* More Insights Section */}
                     {relatedPosts.length > 0 && (
-                        <section className="max-w-[1440px] w-full mx-auto px-5 md:px-10 mt-24 pt-12 border-t border-border/60">
+                        <section className="page-container mt-24 pt-12 border-t border-border/60">
                             <div className="flex items-baseline justify-between mb-8">
                                 <h2 className="font-serif-sc text-2xl sm:text-3xl font-medium tracking-tight">
                                     更多文章

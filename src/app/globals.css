@@ -3237,3 +3237,14 @@ html:not(.noomo-active) body::before {
     opacity: 1;
     transform: scaleX(1);
 }
+
+/* Shared content gutter. The page reserves room for the fixed side wordmarks
+   (10vw + 2rem) and only subtracts the gutter already provided by centering the
+   1440px column, so content never runs under the vertical text. */
+.page-container {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: max(2.25rem, calc(10vw + 2rem - max(0px, (100vw - 1440px) / 2)));
+}
+

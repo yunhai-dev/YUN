@@ -14,7 +14,7 @@ export default async function APIPage() {
 
   return (
     <main className="flex-1 min-h-screen pt-28 md:pt-36 pb-24">
-      <div className="max-w-[1440px] w-full mx-auto px-5 md:px-10">
+      <div className="page-container">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-10 border-b border-border/60 mb-8">
           <h1 className="font-serif-sc text-5xl sm:text-6xl font-medium tracking-tight">
             API 文档
