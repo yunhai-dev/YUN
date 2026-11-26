@@ -28,6 +28,9 @@ The code in this directory is vendored from **Folia**:
   switch transition and song-hand-off shared props; `FoliaMetaphor.tsx` hosts the runtime with the
   local audio-signal bridge and line index. `utils/whenIdle.ts` is vendored as-is;
   `services/beatFx/beatEffects.ts` only gains the unused `metaphorAnnihilation` id.
+  The 0.8.2 fixes for Sonnet/Hanabi/Lumiere filter resolution and antialiasing, Sonnet's
+  viewport-based tear/halftone layout, and Monet's title shadow and cover pipeline are applied;
+  see `docs/plan/folia-0.8.2-visual-fixes.md` for the source commits.
   Two directories were renamed because Next.js treats their upstream names as route-special:
   `hanabi/text/` → `hanabi/textLayers/` (with `layout.ts` → `textLayout.ts`) and
   `lumiere/text/` → `lumiere/textLayers/`; the Machi scene `layout.ts` files became

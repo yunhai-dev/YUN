@@ -84,6 +84,7 @@ export const FoliaSonnet = ({
             antialias: TUNING.render.antialias === 'global'
                 ? !TUNING.postProcessEnabled
                 : TUNING.render.antialias === 'on',
+            antialiasMode: TUNING.render.antialias === 'global' ? 'auto' : TUNING.render.antialias,
             smartBeatEnabled: false,
             currentTime,
             audioPower,

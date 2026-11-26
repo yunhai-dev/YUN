@@ -47,6 +47,8 @@
       - [x] Static checks (tsc, ESLint)
       - [ ] Browser visual verification (user)
       - See `docs/plan/folia-metaphor.md`
+  - [x] 0.8.2 视觉修复（Sonnet/Hanabi/Lumiere 滤镜分辨率与抗锯齿、Monet 阴影与封面缓存）
+    - See `docs/plan/folia-0.8.2-visual-fixes.md`
   - [x] Player settings sheet (style, background, subtitle, idle chrome; localStorage)
   - [ ] Per-style visualizer tunings
   - [x] Smart transitions — equal-power crossfade (double deck, Web Audio; 1–12s preference)
