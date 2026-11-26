@@ -15,9 +15,12 @@
 		X-Frame-Options DENY
 		Referrer-Policy strict-origin-when-cross-origin
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
-		Cache-Control "public, max-age=600, stale-while-revalidate=86400"
 		-Server
 	}
+
+	# HTML and uncategorized paths. Specific asset rules below override this.
+	@default path /*
+	header @default Cache-Control "public, max-age=600, stale-while-revalidate=86400"
 
 	# Hashed Next.js assets and root-level fonts/scripts/styles never change in place.
 	@immutable path /_next/static/* /*.js /*.css /*.woff2 /*.svg
