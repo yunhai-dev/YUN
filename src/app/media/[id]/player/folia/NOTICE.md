@@ -3,7 +3,7 @@
 The code in this directory is vendored from **Folia**:
 
 - Project: Folia (https://github.com/chthollyphile/folia-major)
-- Version: 0.7.28
+- Version: 0.8.2
 - License: GNU Affero General Public License v3.0 (see `LICENSE` in this directory)
 - Modifications: removed application shell, settings panels, i18n and song-transition UI;
   rewrote import paths; replaced missing app-level services with neutral stubs
@@ -24,6 +24,10 @@ The code in this directory is vendored from **Folia**:
   `hanabi/*`, `lumiere/*`, `machi/*`, `pendolo/*` and `still/*` each drop the shell, subtitle
   overlay, settings panel, i18n and preview/first-frame markers, are hosted by their matching
   `Folia<Mode>.tsx`, and share the local font wrapper and props contract described above.
+  `metaphor/*` (added upstream in 0.8.0) drops the registry entry, settings panel, i18n, style
+  switch transition and song-hand-off shared props; `FoliaMetaphor.tsx` hosts the runtime with the
+  local audio-signal bridge and line index. `utils/whenIdle.ts` is vendored as-is;
+  `services/beatFx/beatEffects.ts` only gains the unused `metaphorAnnihilation` id.
   Two directories were renamed because Next.js treats their upstream names as route-special:
   `hanabi/text/` → `hanabi/textLayers/` (with `layout.ts` → `textLayout.ts`) and
   `lumiere/text/` → `lumiere/textLayers/`; the Machi scene `layout.ts` files became

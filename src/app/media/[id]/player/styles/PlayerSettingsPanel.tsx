@@ -34,6 +34,7 @@ const STYLE_OPTIONS: Array<{id: VisualizerMode; label: string}> = [
     {id: 'machi', label: '町景'},
     {id: 'still', label: '静止'},
     {id: 'pendolo', label: '时计'},
+    {id: 'metaphor', label: '隐喻'},
 ];
 
 const BACKGROUND_OPTIONS: Array<{id: BackgroundDisplayMode; label: string}> = [

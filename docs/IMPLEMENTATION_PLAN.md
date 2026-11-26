@@ -41,6 +41,12 @@
     - [x] 町景 Machi（three.js 街景引擎）
     - [x] Pendolo（摆锤排版）
     - [x] Still（静态极简）
+    - [x] 隐喻 Metaphor（上游 0.8.2 新增：three.js 墨场 / 半调网点）
+      - [x] Vendor `metaphor/*` runtime closure
+      - [x] `FoliaMetaphor` host + player mode wiring
+      - [x] Static checks (tsc, ESLint)
+      - [ ] Browser visual verification (user)
+      - See `docs/plan/folia-metaphor.md`
   - [x] Player settings sheet (style, background, subtitle, idle chrome; localStorage)
   - [ ] Per-style visualizer tunings
   - [x] Smart transitions — equal-power crossfade (double deck, Web Audio; 1–12s preference)

@@ -12,6 +12,7 @@ export const BEAT_EFFECT_IDS = {
     machiNeonPulse: 'machi.neonPulse',
     machiDrumRipple: 'machi.drumRipple',
     machiScreenFlash: 'machi.screenFlash',
+    metaphorAnnihilation: 'metaphor.annihilation',
 } as const;
 
 export interface SmartBeatSettings {

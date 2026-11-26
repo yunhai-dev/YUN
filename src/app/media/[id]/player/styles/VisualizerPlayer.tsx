@@ -51,6 +51,7 @@ const FoliaLumiere = lazy(() => import('../folia/FoliaLumiere'));
 const FoliaMachi = lazy(() => import('../folia/FoliaMachi'));
 const FoliaStill = lazy(() => import('../folia/FoliaStill'));
 const FoliaPendolo = lazy(() => import('../folia/FoliaPendolo'));
+const FoliaMetaphor = lazy(() => import('../folia/FoliaMetaphor'));
 
 const MODE_LABELS: Record<VisualizerMode, string> = {
     sonnet: '商籁',
@@ -70,6 +71,7 @@ const MODE_LABELS: Record<VisualizerMode, string> = {
     machi: '町景',
     still: '静止',
     pendolo: '时计',
+    metaphor: '隐喻',
 };
 
 export const VisualizerPlayer = ({
@@ -130,7 +132,7 @@ export const VisualizerPlayer = ({
 
     useEffect(() => {
         const saved = localStorage.getItem('visualizer-mode');
-        if (saved === 'sonnet' || saved === 'diorama' || saved === 'tilt' || saved === 'monet' || saved === 'tempera' || saved === 'partita' || saved === 'cadenza' || saved === 'cappella' || saved === 'claddagh' || saved === 'classic' || saved === 'nebbia' || saved === 'fume' || saved === 'hanabi' || saved === 'lumiere' || saved === 'machi' || saved === 'still' || saved === 'pendolo') setMode(saved);
+        if (saved === 'sonnet' || saved === 'diorama' || saved === 'tilt' || saved === 'monet' || saved === 'tempera' || saved === 'partita' || saved === 'cadenza' || saved === 'cappella' || saved === 'claddagh' || saved === 'classic' || saved === 'nebbia' || saved === 'fume' || saved === 'hanabi' || saved === 'lumiere' || saved === 'machi' || saved === 'still' || saved === 'pendolo' || saved === 'metaphor') setMode(saved);
     }, []);
 
     useEffect(() => {
@@ -335,6 +337,15 @@ export const VisualizerPlayer = ({
                                     seed={id}
                                     songTitle={title}
                                     songArtist={author}
+                                    isPlaying={isPlaying}
+                                />
+                            ) : mode === 'metaphor' ? (
+                                <FoliaMetaphor
+                                    audioRef={audioRef}
+                                    lines={foliaLines}
+                                    theme={foliaTheme}
+                                    seed={id}
+                                    songTitle={title}
                                     isPlaying={isPlaying}
                                 />
                             ) : mode === 'still' ? (

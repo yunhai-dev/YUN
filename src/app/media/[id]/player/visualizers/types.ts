@@ -1,1 +1,1 @@
-export type VisualizerMode = 'sonnet' | 'diorama' | 'tilt' | 'monet' | 'tempera' | 'partita' | 'cadenza' | 'cappella' | 'claddagh' | 'classic' | 'nebbia' | 'fume' | 'hanabi' | 'lumiere' | 'machi' | 'still' | 'pendolo';
+export type VisualizerMode = 'sonnet' | 'diorama' | 'tilt' | 'monet' | 'tempera' | 'partita' | 'cadenza' | 'cappella' | 'claddagh' | 'classic' | 'nebbia' | 'fume' | 'hanabi' | 'lumiere' | 'machi' | 'still' | 'pendolo' | 'metaphor';
