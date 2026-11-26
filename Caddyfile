@@ -29,6 +29,16 @@
 	@revalidate path /sw.js /index.json /tools/manifest.json
 	header @revalidate Cache-Control "public, max-age=0, must-revalidate"
 
+	# Geo hand-off: the cn host is for mainland visitors. Cloudflare sets
+	# CF-IPCountry when the domain is proxied (orange cloud); direct DNS traffic
+	# has no header, so this rule stays inactive. ACME challenges are exempt.
+	@overseas {
+		expression {http.request.header.CF-IPCountry} != "" && {http.request.header.CF-IPCountry} != "CN"
+		not path /.well-known/acme-challenge/*
+	}
+	header @overseas Cache-Control "no-store"
+	redir @overseas https://www.yhnotes.com{uri} 302
+
 	# trailingSlash: true emits directory/index.html for every route.
 	try_files {path} {path}/ {path}.html
 	file_server

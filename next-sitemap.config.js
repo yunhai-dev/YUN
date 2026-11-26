@@ -1,4 +1,4 @@
-const baseUrl = 'https://www.yhnotes.com';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yhnotes.com';
 
 /** @type {import('next-sitemap').IConfig} */
 

@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://cn.yhnotes.com}
     image: yun-web:latest
     container_name: yun-web
     restart: unless-stopped

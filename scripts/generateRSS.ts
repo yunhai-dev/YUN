@@ -8,7 +8,7 @@ async function markdownToHtml(content: string): Promise<{content: string}> {
 }
 
 const blogsDirectory = path.join(process.cwd(), 'src/content/blogs');
-const siteUrl = 'https://www.yhnotes.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yhnotes.com';
 const siteName = '云云亦海';
 
 interface BlogPostForRSS {

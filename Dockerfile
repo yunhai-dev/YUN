@@ -9,6 +9,11 @@ WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Canonical/sitemap/RSS origin for this image. www is built by Cloudflare Pages;
+# the Docker image serves cn.yhnotes.com with its own canonical URLs.
+ARG NEXT_PUBLIC_SITE_URL=https://cn.yhnotes.com
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+
 # libc6-compat keeps the prebuilt native binaries Next/Sharp pull in happy on Alpine.
 RUN apk add --no-cache libc6-compat
 

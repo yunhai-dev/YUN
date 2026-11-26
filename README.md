@@ -265,8 +265,9 @@ The static export in `out/` can be served by Caddy with automatic HTTPS:
 docker compose up -d --build
 ```
 
-Point `cn.yhnotes.com` at the host and open ports 80/443 first. See
-[docs/deploy-docker-caddy.md](docs/deploy-docker-caddy.md) for DNS, certificate and rollback details.
+Point `cn.yhnotes.com` at the host and open ports 80/443 first. The image builds with
+`NEXT_PUBLIC_SITE_URL=https://cn.yhnotes.com`; the www Cloudflare Pages build keeps the default.
+See [docs/deploy-docker-caddy.md](docs/deploy-docker-caddy.md) for DNS, geo routing, certificates and rollback.
 
 For more deployment details, refer to the [Next.js Deployment Documentation](https://nextjs.org/docs/app/building-your-application/deploying).
 

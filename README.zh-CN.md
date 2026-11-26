@@ -263,8 +263,9 @@ const commands: TerminalCommand[] = [
 docker compose up -d --build
 ```
 
-先把 `cn.yhnotes.com` 解析到服务器并放行 80/443。DNS、证书测试与回滚见
-[docs/deploy-docker-caddy.md](docs/deploy-docker-caddy.md)。
+先把 `cn.yhnotes.com` 解析到服务器并放行 80/443。镜像默认用
+`NEXT_PUBLIC_SITE_URL=https://cn.yhnotes.com` 构建，www 的 Cloudflare Pages 构建保持默认值。
+DNS、国内外分流、证书测试与回滚见 [docs/deploy-docker-caddy.md](docs/deploy-docker-caddy.md)。
 
 更多部署详情，请参考 [Next.js 部署文档](https://nextjs.org/docs/app/building-your-application/deploying)。
 
