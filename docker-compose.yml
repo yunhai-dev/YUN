@@ -1,0 +1,31 @@
+services:
+  web:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+    image: yun-web:latest
+    container_name: yun-web
+    restart: unless-stopped
+    environment:
+      # Override with SITE_ADDRESS=example.com docker compose up -d --build
+      SITE_ADDRESS: ${SITE_ADDRESS:-cn.yhnotes.com}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      # Certificates and ACME account stay across rebuilds.
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  caddy_data:
+  caddy_config:

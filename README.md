@@ -257,6 +257,17 @@ The project can be deployed to Vercel:
 
 After deployment, Vercel will automatically provide a domain for your project. You can configure a custom domain in the project settings.
 
+### Docker + Caddy (self-hosted HTTPS)
+
+The static export in `out/` can be served by Caddy with automatic HTTPS:
+
+```bash
+docker compose up -d --build
+```
+
+Point `cn.yhnotes.com` at the host and open ports 80/443 first. See
+[docs/deploy-docker-caddy.md](docs/deploy-docker-caddy.md) for DNS, certificate and rollback details.
+
 For more deployment details, refer to the [Next.js Deployment Documentation](https://nextjs.org/docs/app/building-your-application/deploying).
 
 ## Contributing

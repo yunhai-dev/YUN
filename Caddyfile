@@ -1,0 +1,41 @@
+# Optional staging ACME directory while testing DNS/ports:
+# {
+#     acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+# }
+
+# SITE_ADDRESS defaults to cn.yhnotes.com; docker-compose.yml passes it in.
+{$SITE_ADDRESS:cn.yhnotes.com} {
+	encode zstd gzip
+
+	root * /srv
+
+	# Keep the current Cloudflare Pages header contract (public/_headers).
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Cache-Control "public, max-age=600, stale-while-revalidate=86400"
+		-Server
+	}
+
+	# Hashed Next.js assets and root-level fonts/scripts/styles never change in place.
+	@immutable path /_next/static/* /*.js /*.css /*.woff2 /*.svg
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	@images path /*.png /*.jpg /*.jpeg /*.webp /*.avif
+	header @images Cache-Control "public, max-age=2592000, stale-while-revalidate=86400"
+
+	@revalidate path /sw.js /index.json /tools/manifest.json
+	header @revalidate Cache-Control "public, max-age=0, must-revalidate"
+
+	# trailingSlash: true emits directory/index.html for every route.
+	try_files {path} {path}/ {path}.html
+	file_server
+
+	handle_errors {
+		@notFound expression {http.error.status_code} == 404
+		rewrite @notFound /404.html
+		file_server
+	}
+}

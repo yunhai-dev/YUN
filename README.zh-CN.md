@@ -255,6 +255,17 @@ const commands: TerminalCommand[] = [
 
 部署完成后，Vercel 会自动为您的项目提供一个域名，您可以在项目设置中配置自定义域名。
 
+### Docker + Caddy（自托管 HTTPS）
+
+静态导出目录 `out/` 可以直接交给 Caddy 托管并自动签证书：
+
+```bash
+docker compose up -d --build
+```
+
+先把 `cn.yhnotes.com` 解析到服务器并放行 80/443。DNS、证书测试与回滚见
+[docs/deploy-docker-caddy.md](docs/deploy-docker-caddy.md)。
+
 更多部署详情，请参考 [Next.js 部署文档](https://nextjs.org/docs/app/building-your-application/deploying)。
 
 ## 贡献
