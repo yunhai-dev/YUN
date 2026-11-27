@@ -4,11 +4,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { LyricLine } from '../lyrics';
+import { usePlaybackSelector } from '../hooks/usePlaybackSelector';
 import { formatTime } from './formatTime';
 
 interface LyricTimelineProps {
     lyrics: LyricLine[];
-    currentTime: number;
     accentColor: string;
     onSelect: (time: number) => void;
     onClose: () => void;
@@ -36,7 +36,7 @@ const TimelineLabel = ({text, active, align}: {text: string; active: boolean; al
     </span>
 );
 
-export const LyricTimeline = ({lyrics, currentTime, accentColor, onSelect, onClose}: LyricTimelineProps) => {
+export const LyricTimeline = ({lyrics, accentColor, onSelect, onClose}: LyricTimelineProps) => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const activeRef = useRef<HTMLButtonElement>(null);
     const openedRef = useRef(false);
@@ -58,14 +58,22 @@ export const LyricTimeline = ({lyrics, currentTime, accentColor, onSelect, onClo
 
     const contentHeight = (nodes[nodes.length - 1]?.top ?? 0) + BOTTOM_PAD;
 
-    const activeIndex = useMemo(() => {
+    const activeIndex = usePlaybackSelector(({currentTime}) => {
+        let low = 0;
+        let high = nodes.length - 1;
         let index = -1;
-        for (let i = 0; i < nodes.length; i += 1) {
-            if (nodes[i].line.time <= currentTime) index = i;
-            else break;
+
+        while (low <= high) {
+            const middle = (low + high) >> 1;
+            if (nodes[middle].line.time <= currentTime) {
+                index = middle;
+                low = middle + 1;
+            } else {
+                high = middle - 1;
+            }
         }
         return index;
-    }, [nodes, currentTime]);
+    });
 
     useEffect(() => {
         // Jump straight to the active node on open, then glide along as playback advances —

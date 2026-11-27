@@ -10,10 +10,11 @@ interface FoliaCadenzaProps {
     audioRef: RefObject<HTMLAudioElement | null>;
     lines: Line[];
     theme: Theme;
+    isPlaying?: boolean;
 }
 
 /** Hosts Folia's Cadenza: pretext-measured fragments mirrored into DOM + canvas layers. */
-export const FoliaCadenza = ({audioRef, lines, theme}: FoliaCadenzaProps) => {
+export const FoliaCadenza = ({audioRef, lines, theme, isPlaying = true}: FoliaCadenzaProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
     const [lineIndex, setLineIndex] = useState(0);
     const lineIndexRef = useRef(0);
@@ -42,6 +43,7 @@ export const FoliaCadenza = ({audioRef, lines, theme}: FoliaCadenzaProps) => {
             theme={theme}
             audioPower={audioPower}
             audioBands={audioBands}
+            paused={!isPlaying}
             cadenzaTuning={DEFAULT_CADENZA_TUNING}
         />
     );

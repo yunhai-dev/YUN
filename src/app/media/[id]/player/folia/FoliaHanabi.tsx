@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import VisualizerHanabi from './hanabi/VisualizerHanabi';
 import { DEFAULT_HANABI_TUNING } from './hanabi/types';
 import { resolveLineIndex } from './lineIndex';
-import type { Line, Theme } from './types';
+import type { Line, LyricRenderScale, Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 
 interface FoliaHanabiProps {
@@ -15,6 +15,7 @@ interface FoliaHanabiProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    renderScale?: LyricRenderScale;
 }
 
 /** Hosts Folia's Hanabi: fireworks and lyric blocks rising over the night sky. */
@@ -26,10 +27,15 @@ export const FoliaHanabi = ({
     songTitle,
     songArtist,
     isPlaying,
+    renderScale = 1,
 }: FoliaHanabiProps) => {
     const {currentTime} = useAudioSignals(audioRef);
     const [lineIndex, setLineIndex] = useState(0);
     const lineIndexRef = useRef(0);
+    const hanabiTuning = useMemo(
+        () => ({...DEFAULT_HANABI_TUNING, render: {...DEFAULT_HANABI_TUNING.render, scale: renderScale}}),
+        [renderScale],
+    );
 
     useEffect(() => {
         lineIndexRef.current = 0;
@@ -57,7 +63,7 @@ export const FoliaHanabi = ({
             songTitle={songTitle}
             songArtist={songArtist}
             paused={!isPlaying}
-            hanabiTuning={DEFAULT_HANABI_TUNING}
+            hanabiTuning={hanabiTuning}
         />
     );
 };

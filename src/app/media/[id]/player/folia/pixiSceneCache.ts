@@ -65,11 +65,16 @@ export class PixiSceneCache<TScene> {
         this.scenes.set(index, scene);
     }
 
-    /** 销毁离 index 超过一段、且不在 keep 里的场景。 */
-    prune(index: number, keep?: ReadonlySet<number>) {
+    /** Evicts scenes outside the active neighbourhood, optionally deferring a bounded number of destroys. */
+    prune(index: number, keep?: ReadonlySet<number>, retireLimit = 0) {
         this.scenes.forEach((scene, sceneIndex) => {
             if (Math.abs(sceneIndex - index) <= 1 || keep?.has(sceneIndex)) return;
-            this.hooks.destroy(scene);
+            if (this.hooks.detach && this.retired.length < retireLimit) {
+                this.hooks.detach(scene);
+                this.retired.push(scene);
+            } else {
+                this.hooks.destroy(scene);
+            }
             this.scenes.delete(sceneIndex);
         });
     }
@@ -105,6 +110,10 @@ export class PixiSceneCache<TScene> {
     /** 运行时销毁：缓存与换下的场景全部释放。 */
     destroyAll() {
         this.clear();
+        this.clearRetired();
+    }
+
+    clearRetired() {
         this.retired.forEach(scene => this.hooks.destroy(scene));
         this.retired.length = 0;
     }

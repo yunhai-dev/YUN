@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { usePlaybackSelector } from '../hooks/usePlaybackSelector';
 import type { Line, Theme } from './types';
 import { colorWithAlpha } from './backgrounds/colorMix';
 
 interface FoliaSubtitleProps {
     lines: Line[];
-    currentTime: number;
     theme: Theme;
     /** True while the player chrome is expanded or a panel covers the stage: the subtitle yields to it. */
     hidden: boolean;
@@ -45,8 +44,8 @@ const resolveSubtitleLine = (lines: Line[], time: number): Line | null => {
  * Folia's shared bottom subtitle: the line on screen (or the one that just finished) under the
  * stage, above the player pill. Styles that draw their own lyrics keep it too, as upstream does.
  */
-export const FoliaSubtitle = ({lines, currentTime, theme, hidden}: FoliaSubtitleProps) => {
-    const line = useMemo(() => resolveSubtitleLine(lines, currentTime), [lines, currentTime]);
+export const FoliaSubtitle = ({lines, theme, hidden}: FoliaSubtitleProps) => {
+    const line = usePlaybackSelector(snapshot => resolveSubtitleLine(lines, snapshot.currentTime));
     const text = line?.fullText.trim() ?? '';
 
     return (

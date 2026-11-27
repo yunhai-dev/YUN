@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import type { MotionValue } from 'framer-motion';
+import type { PlayerFpsCap } from './fpsCap';
 import { compileSonnetProgram } from './sonnet/sonnetProgram';
-import type { SonnetProgram } from './sonnet/types';
-import { SonnetPixiRuntime } from './sonnet/createSonnetPixiRuntime';
+import { SonnetPixiRuntime, type SonnetSongContext } from './sonnet/createSonnetPixiRuntime';
+import { useVisualizerPixiHost } from './pixi/pixiRuntimeHost';
 import { resolveLineIndex } from './lineIndex';
-import { DEFAULT_SONNET_TUNING, type Line, type Theme } from './types';
+import { DEFAULT_SONNET_TUNING, type Line, type LyricRenderScale, type Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 import { resolveThemeFontStack, resolveThemeFontWeight } from './utils/fontStacks';
 
@@ -18,6 +19,8 @@ interface FoliaSonnetProps {
     title: string;
     author: string;
     isPlaying: boolean;
+    renderScale?: LyricRenderScale;
+    fpsCap?: PlayerFpsCap;
 }
 
 const TUNING = DEFAULT_SONNET_TUNING;
@@ -41,9 +44,10 @@ export const FoliaSonnet = ({
     title,
     author,
     isPlaying,
+    renderScale = 1,
+    fpsCap = 0,
 }: FoliaSonnetProps) => {
     const hostRef = useRef<HTMLDivElement>(null);
-    const runtimeRef = useRef<SonnetPixiRuntime | null>(null);
     const [ready, setReady] = useState(false);
     // Like the other Pixi hosts, a runtime that cannot start falls back to plain lyric text
     // instead of leaving the stage on the loading placeholder.
@@ -51,104 +55,92 @@ export const FoliaSonnet = ({
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
 
     const program = useMemo(() => compileSonnetProgram(lines, seed), [lines, seed]);
+    const song = useMemo<SonnetSongContext>(
+        () => ({seed, program, theme}),
+        [seed, program, theme],
+    );
 
-    // The create effect runs once per song; it reads the newest program/theme through this ref so
-    // lyrics or palette arriving during the async init are picked up by the first song swap.
-    const latestSongRef = useRef<{program: SonnetProgram; theme: Theme}>({program, theme});
-    latestSongRef.current = {program, theme};
-    const appliedSongRef = useRef<{program: SonnetProgram; theme: Theme} | null>(null);
+    // Live playback/metadata props read once `create` resolves so changes during async init apply.
+    const latestMetaRef = useRef({isPlaying, title, author, renderScale, fpsCap});
+    latestMetaRef.current = {isPlaying, title, author, renderScale, fpsCap};
 
-    useEffect(() => {
-        const host = hostRef.current;
-        if (!host) return;
-
-        const controller = new AbortController();
-        let disposed = false;
-        setReady(false);
-        setRuntimeFailed(false);
-        appliedSongRef.current = null;
-        // The exact song handed to `create`; the swap effect must compare against this, not the
-        // ref (lyrics may arrive while the runtime is still initialising).
-        const initialSong = latestSongRef.current;
-        const failureTimer = window.setTimeout(() => {
-            if (!disposed) setRuntimeFailed(true);
-        }, RUNTIME_READY_TIMEOUT_MS);
-
-        SonnetPixiRuntime.create({
-            host,
-            songSeed: seed,
-            program: initialSong.program,
-            theme: initialSong.theme,
-            tuning: TUNING,
-            renderScale: 1,
-            antialias: TUNING.render.antialias === 'global'
-                ? !TUNING.postProcessEnabled
-                : TUNING.render.antialias === 'on',
-            antialiasMode: TUNING.render.antialias === 'global' ? 'auto' : TUNING.render.antialias,
-            smartBeatEnabled: false,
-            currentTime,
-            audioPower,
-            audioBands,
-            lyricsFontScale: 1,
-            staticMode: false,
-            transparentBackground: true,
-            paused: !isPlaying,
-            songTitle: title,
-            songArtist: author,
-            songAlbum: null,
-            signal: controller.signal,
-        })
-            .then(runtime => {
-                window.clearTimeout(failureTimer);
-                if (disposed) {
-                    runtime.destroy();
-                    return;
-                }
-                runtimeRef.current = runtime;
-                appliedSongRef.current = initialSong;
+    const runtimeRef = useVisualizerPixiHost<SonnetPixiRuntime, SonnetSongContext>({
+        hostRef,
+        label: 'Sonnet',
+        // Keep the Pixi WebGL context, texture pool and scene cache alive across track changes.
+        rebuildKey: [currentTime, audioPower, audioBands],
+        song,
+        create: async (host, initialSong, signal) => {
+            setReady(false);
+            const meta = latestMetaRef.current;
+            const failureTimer = window.setTimeout(() => {
+                if (!signal.aborted) setRuntimeFailed(true);
+            }, RUNTIME_READY_TIMEOUT_MS);
+            try {
+                const runtime = await SonnetPixiRuntime.create({
+                    host,
+                    songSeed: initialSong.seed,
+                    program: initialSong.program,
+                    theme: initialSong.theme,
+                    tuning: TUNING,
+                    renderScale: meta.renderScale,
+                    fpsCap: meta.fpsCap,
+                    antialias: TUNING.render.antialias === 'global'
+                        ? !TUNING.postProcessEnabled
+                        : TUNING.render.antialias === 'on',
+                    antialiasMode: TUNING.render.antialias === 'global' ? 'auto' : TUNING.render.antialias,
+                    smartBeatEnabled: false,
+                    currentTime,
+                    audioPower,
+                    audioBands,
+                    lyricsFontScale: 1,
+                    staticMode: false,
+                    transparentBackground: true,
+                    paused: !meta.isPlaying,
+                    songTitle: meta.title,
+                    songArtist: meta.author,
+                    songAlbum: null,
+                    signal,
+                });
+                const current = latestMetaRef.current;
+                runtime.setRenderScale(current.renderScale);
+                runtime.setFpsCap(current.fpsCap);
+                runtime.setPaused(!current.isPlaying);
+                runtime.setSongMetadata({title: current.title, artist: current.author, album: null});
+                setRuntimeFailed(false);
                 setReady(true);
-            })
-            .catch((error: unknown) => {
+                return runtime;
+            } finally {
                 window.clearTimeout(failureTimer);
-                if (error instanceof DOMException && error.name === 'AbortError') return;
-                if (disposed) return;
-                console.error('[FoliaSonnet] failed to create runtime', error);
-                setRuntimeFailed(true);
-            });
+            }
+        },
+        swap: (runtime, nextSong) => runtime.swapSong(nextSong),
+        destroy: runtime => runtime.destroy(),
+        onFailedChange: setRuntimeFailed,
+    });
 
-        return () => {
-            disposed = true;
-            window.clearTimeout(failureTimer);
-            controller.abort();
-            runtimeRef.current?.destroy();
-            runtimeRef.current = null;
-        };
-        // The motion values are stable; the runtime is rebuilt only when the track changes.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [seed, currentTime, audioPower, audioBands]);
-
-    // Lyrics load after the player mounts, and the cover palette is extracted asynchronously:
-    // both arrive as a silent swap on the already-created runtime (no dissolve, same seed).
     useEffect(() => {
-        const runtime = runtimeRef.current;
-        if (!runtime || !ready) return;
+        if (ready) runtimeRef.current?.setRenderScale(renderScale);
+    }, [ready, renderScale, runtimeRef]);
 
-        const applied = appliedSongRef.current;
-        if (applied?.program === program && applied.theme === theme) return;
-
-        appliedSongRef.current = {program, theme};
-        void runtime.swapSong({seed, program, theme}).catch((error: unknown) => {
-            console.error('[FoliaSonnet] failed to swap song', error);
-        });
-    }, [ready, seed, program, theme]);
+    useEffect(() => {
+        if (ready) runtimeRef.current?.setFpsCap(fpsCap);
+    }, [ready, fpsCap, runtimeRef]);
 
     useEffect(() => {
         if (ready) runtimeRef.current?.setPaused(!isPlaying);
-    }, [ready, isPlaying]);
+    }, [ready, isPlaying, runtimeRef]);
+
+    useEffect(() => {
+        if (!ready || isPlaying) return;
+        return currentTime.on('change', () => {
+            if (!document.hidden) runtimeRef.current?.renderOnce();
+        });
+    }, [currentTime, isPlaying, ready, runtimeRef]);
 
     useEffect(() => {
         if (ready) runtimeRef.current?.setSongMetadata({title, artist: author, album: null});
-    }, [ready, title, author]);
+    }, [ready, title, author, runtimeRef]);
 
     return (
         <div className="absolute inset-0">

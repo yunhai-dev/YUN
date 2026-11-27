@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import { cancelNativeFrame, requestNativeFrame } from '../folia/fpsCap';
 import { clampCrossfadeSeconds, equalPowerGains, planOverlap } from './crossfade';
 
 /**
@@ -61,6 +62,7 @@ export class PlaybackEngine {
     private snapshot: PlaybackSnapshot = INITIAL_SNAPSHOT;
 
     private readonly listeners = new Set<() => void>();
+    private readonly activeElementListeners = new Set<() => void>();
     private advanceHandler: AdvanceHandler | null = null;
     private errorHandler: ErrorHandler | null = null;
     private settings: TransitionSettings = {enabled: true, seconds: 5};
@@ -98,6 +100,15 @@ export class PlaybackEngine {
     };
 
     getSnapshot = (): PlaybackSnapshot => this.snapshot;
+
+    getServerSnapshot = (): PlaybackSnapshot => INITIAL_SNAPSHOT;
+
+    subscribeToActiveElement = (listener: () => void): (() => void) => {
+        this.activeElementListeners.add(listener);
+        return () => {
+            this.activeElementListeners.delete(listener);
+        };
+    };
 
     getActiveRefObject(): RefObject<HTMLAudioElement | null> {
         return this.activeRef;
@@ -149,6 +160,7 @@ export class PlaybackEngine {
             this.pendingTrack = null;
             this.loadTrack(pending);
         }
+        this.notifyActiveElementChange();
         this.ensureRaf();
     }
 
@@ -160,6 +172,7 @@ export class PlaybackEngine {
         }
         this.stopRaf();
         this.decks = null;
+        this.notifyActiveElementChange();
         this.fading = false;
         this.fadeOverlap = 0;
         this.setSnapshot({isPlaying: false});
@@ -408,6 +421,7 @@ export class PlaybackEngine {
             this.cancelFade();
         });
 
+        this.notifyActiveElementChange();
         this.setSnapshot({
             trackId: nextId,
             currentTime: 0,
@@ -525,9 +539,19 @@ export class PlaybackEngine {
         }
     }
 
+    private notifyActiveElementChange(): void {
+        for (const listener of this.activeElementListeners) {
+            try {
+                listener();
+            } catch (error) {
+                console.error('Active audio element subscriber failed:', error);
+            }
+        }
+    }
+
     private ensureRaf(): void {
         if (typeof window === 'undefined' || this.raf !== 0) return;
-        this.raf = window.requestAnimationFrame(() => {
+        this.raf = requestNativeFrame(() => {
             this.raf = 0;
             this.tick();
         });
@@ -535,7 +559,7 @@ export class PlaybackEngine {
 
     private stopRaf(): void {
         if (!this.raf || typeof window === 'undefined') return;
-        window.cancelAnimationFrame(this.raf);
+        cancelNativeFrame(this.raf);
         this.raf = 0;
     }
 

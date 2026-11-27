@@ -2,6 +2,7 @@ import { useEffect, useRef, type RefObject } from 'react';
 import { drawFumeBackground } from './FumeBackground';
 import { isGlowBlurQuantized } from '../utils/glowBlurQuantize';
 import { resolveLyricPixelRatio } from '../utils/lyricRenderQuality';
+import { cancelNativeFrame, createFrameGate, requestNativeFrame, type PlayerFpsCap } from '../fpsCap';
 import type { LyricRenderScale } from '../types';
 import type { StaticBlockSnapshot } from './fumeTypes';
 import { resolveFumeBackgroundView, stepFumeCamera, syncFumeCameraToArticle } from './fumeCameraStep';
@@ -27,6 +28,7 @@ import { readFumeAudioLevels, type FumeStageDriver, type FumeStageScene } from '
 
 /** A snapshot unused this long is released; it is cheap to draw again. */
 const SNAPSHOT_IDLE_MS = 15_000;
+const CACHE_SWEEP_INTERVAL_MS = 500;
 
 export const useFumeCanvasStage = (
     canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -34,13 +36,16 @@ export const useFumeCanvasStage = (
     driver: FumeStageDriver,
     paused: boolean,
     renderScale: LyricRenderScale = 1,
+    fpsCap: PlayerFpsCap = 0,
 ) => {
     const staticBlockSnapshotCacheRef = useRef<Map<string, { snapshot: StaticBlockSnapshot; lastUsed: number }>>(new Map());
     const liveRasterRef = useRef<FumeLiveRaster | null>(null);
-    const { article, theme } = scene;
+    const { article, lines, theme } = scene;
+
+    // Resize can reuse the live backing canvases; a different lyric set releases them.
+    useEffect(() => () => liveRasterRef.current?.clear(), [lines]);
 
     useEffect(() => () => {
-        liveRasterRef.current?.clear();
         releaseSnapshots(staticBlockSnapshotCacheRef.current, Number.POSITIVE_INFINITY);
     }, []);
 
@@ -97,6 +102,7 @@ export const useFumeCanvasStage = (
         syncFumeCameraToArticle(cameraState, article);
         let frameId = 0;
         let lastFrameAt: number | null = null;
+        let nextCacheSweepAt = 0;
 
         const draw = () => {
             const now = performance.now();
@@ -140,9 +146,6 @@ export const useFumeCanvasStage = (
                     context.restore();
                 }
 
-                if (!paused) {
-                    frameId = window.requestAnimationFrame(draw);
-                }
                 return;
             }
 
@@ -280,20 +283,25 @@ export const useFumeCanvasStage = (
                 }
             }
             context.restore();
-            liveRaster.sweep(now);
-            releaseSnapshots(staticBlockSnapshotCacheRef.current, now);
-
-            if (!paused) {
-                frameId = window.requestAnimationFrame(draw);
+            if (now >= nextCacheSweepAt) {
+                nextCacheSweepAt = now + CACHE_SWEEP_INTERVAL_MS;
+                liveRaster.sweep(now);
+                releaseSnapshots(staticBlockSnapshotCacheRef.current, now);
             }
         };
 
-        draw();
-        return () => {
-            window.cancelAnimationFrame(frameId);
-            lastFrameAt = null;
+        const shouldDraw = createFrameGate(fpsCap);
+        const animate = (frameAt: number) => {
+            if (shouldDraw(frameAt)) draw();
+            frameId = requestNativeFrame(animate);
         };
-    }, [article, canvasRef, driver, paused, renderScale, scene, theme]);
+
+        draw();
+        if (!paused) frameId = requestNativeFrame(animate);
+        return () => {
+            if (frameId) cancelNativeFrame(frameId);
+        };
+    }, [article, canvasRef, driver, fpsCap, paused, renderScale, scene, theme]);
 };
 
 /** Releases snapshots idle for longer than SNAPSHOT_IDLE_MS (all of them for `now` = Infinity). */

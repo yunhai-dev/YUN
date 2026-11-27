@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
+import type { MotionValue } from 'framer-motion';
 import CameraRig from './diorama/CameraRig';
 import DioramaScene from './diorama/DioramaScene';
 import { resolveDioramaMotionParams } from './diorama/cameraPath';
@@ -13,7 +14,7 @@ import {
     type SequencerState,
 } from './diorama/dioramaSequencer';
 import { resolveLineIndex } from './lineIndex';
-import { DEFAULT_DIORAMA_TUNING, type Line, type Theme } from './types';
+import { DEFAULT_DIORAMA_TUNING, type Line, type LyricRenderScale, type Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 
 interface FoliaDioramaProps {
@@ -21,9 +22,39 @@ interface FoliaDioramaProps {
     lines: Line[];
     theme: Theme;
     seed: string;
+    isPlaying?: boolean;
+    renderScale?: LyricRenderScale;
 }
 
 const TUNING = DEFAULT_DIORAMA_TUNING;
+
+/** Triggers a single WebGL frame when paused and the user seeks, changes track, or changes theme. */
+const DioramaDemandInvalidator = ({
+    currentTime,
+    globalIndex,
+    seed,
+    theme,
+    isPlaying,
+}: {
+    currentTime: MotionValue<number>;
+    globalIndex: number;
+    seed: string;
+    theme: Theme;
+    isPlaying: boolean;
+}) => {
+    const invalidate = useThree(state => state.invalidate);
+
+    useEffect(() => {
+        if (!isPlaying) invalidate();
+    }, [globalIndex, invalidate, isPlaying, seed, theme]);
+
+    useEffect(() => {
+        if (isPlaying) return undefined;
+        return currentTime.on('change', () => invalidate());
+    }, [currentTime, invalidate, isPlaying]);
+
+    return null;
+};
 
 /**
  * Hosts Folia's Diorama corridor. One sequencer segment per song is enough here: the player
@@ -34,6 +65,8 @@ export const FoliaDiorama = ({
     lines,
     theme,
     seed,
+    isPlaying = true,
+    renderScale = 1,
 }: FoliaDioramaProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
 
@@ -90,15 +123,25 @@ export const FoliaDiorama = ({
     const segment = activeSegment(sequencer);
     const globalIndex = (segment?.globalStart ?? 0) + Math.min(lineIndex, Math.max(0, (segment?.span ?? 1) - 1));
 
+    const maxDpr = Math.max(0.75, Math.min(1.5, 1.5 * renderScale));
+
     return (
         <div className="absolute inset-0">
             <Canvas
                 camera={{position: [0, 0.6, 9], fov: 55}}
-                dpr={[1, 2]}
-                gl={{alpha: true, antialias: true}}
+                dpr={[Math.min(1, maxDpr), maxDpr]}
+                frameloop={isPlaying ? 'always' : 'demand'}
+                gl={{alpha: true, antialias: true, powerPreference: 'high-performance'}}
                 resize={{offsetSize: true}}
                 style={{background: 'transparent'}}
             >
+                <DioramaDemandInvalidator
+                    currentTime={currentTime}
+                    globalIndex={globalIndex}
+                    seed={seed}
+                    theme={theme}
+                    isPlaying={isPlaying}
+                />
                 <CameraRig
                     currentTime={currentTime}
                     sequencer={sequencer}

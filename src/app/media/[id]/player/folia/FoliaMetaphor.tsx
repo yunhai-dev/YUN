@@ -5,7 +5,7 @@ import { resolveLineIndex } from './lineIndex';
 import { DEFAULT_METAPHOR_TUNING } from './metaphor/types';
 import { MetaphorRuntime, type MetaphorSong } from './metaphor/createMetaphorRuntime';
 import { useVisualizerPixiHost } from './pixi/pixiRuntimeHost';
-import type { Line, Theme } from './types';
+import type { Line, LyricRenderScale, Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 import { resolveThemeFontStack, resolveThemeFontWeight } from './utils/fontStacks';
 
@@ -16,6 +16,7 @@ interface FoliaMetaphorProps {
     seed?: string;
     songTitle?: string;
     isPlaying: boolean;
+    renderScale?: LyricRenderScale;
 }
 
 const TUNING = DEFAULT_METAPHOR_TUNING;
@@ -32,6 +33,7 @@ export const FoliaMetaphor = ({
     seed,
     songTitle,
     isPlaying,
+    renderScale = 1,
 }: FoliaMetaphorProps) => {
     const hostRef = useRef<HTMLDivElement>(null);
     const {currentTime, audioPower} = useAudioSignals(audioRef);
@@ -64,8 +66,8 @@ export const FoliaMetaphor = ({
 
     // Inputs the runtime reads through the create closure; a change while it is still starting
     // is applied once `create` resolves instead of waiting for the next prop effect.
-    const latestRef = useRef({theme, paused: !isPlaying, tuning: TUNING});
-    latestRef.current = {theme, paused: !isPlaying, tuning: TUNING};
+    const latestRef = useRef({theme, paused: !isPlaying, tuning: TUNING, renderScale});
+    latestRef.current = {theme, paused: !isPlaying, tuning: TUNING, renderScale};
 
     const runtimeRef = useVisualizerPixiHost<MetaphorRuntime, MetaphorSong>({
         hostRef,
@@ -79,7 +81,7 @@ export const FoliaMetaphor = ({
                 song: initialSong,
                 theme: latest.theme,
                 tuning: latest.tuning,
-                renderScale: latest.tuning.render.scale === 'global' ? 1 : latest.tuning.render.scale,
+                renderScale: latest.renderScale,
                 currentTime,
                 audioPower,
                 paused: latest.paused,
@@ -92,6 +94,7 @@ export const FoliaMetaphor = ({
             const current = latestRef.current;
             runtime.setTheme(current.theme);
             runtime.setTuning(current.tuning);
+            runtime.setRenderScale(current.renderScale);
             runtime.setPlayback(current.paused, false);
             return runtime;
         },
@@ -99,6 +102,10 @@ export const FoliaMetaphor = ({
         destroy: runtime => runtime.destroy(),
         onFailedChange: setRuntimeFailed,
     });
+
+    useEffect(() => {
+        runtimeRef.current?.setRenderScale(renderScale);
+    }, [renderScale, runtimeRef]);
 
     useEffect(() => {
         runtimeRef.current?.setTheme(theme);

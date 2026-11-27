@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import type { PaperShaderElement } from '@paper-design/shaders';
 import { Dithering, MeshGradient } from '@paper-design/shaders-react';
 import type { MotionValue } from 'framer-motion';
+import { createFrameGate } from '../fpsCap';
 import type { AudioBands, Theme } from '../types';
 import { beatImpact, downbeatImpact } from '../stores/motionSignals';
 import { getBeatEffectStrength, isBeatFxReady } from '../services/beatFx/beatFxLive';
@@ -35,8 +36,11 @@ interface LatentBackgroundProps {
     blendMs?: number;
 }
 
-const MAX_SHADER_PIXELS = 1280 * 720;
-const PAUSED_SPEED_SCALE = 0.12;
+// Soft full-screen mesh/dithering backgrounds do not need full 720p+ pixel density;
+// capping at 960x540 cuts fragment shader pixel load by ~44% with no visible loss.
+const MAX_SHADER_PIXELS = 960 * 540;
+// The slow decorative layers share a 30 Hz clock independently of the lyric renderer.
+const BACKGROUND_FPS = 30;
 // How fast the speed goes from playing to paused or back, as a time constant: settled in about a second.
 const PAUSE_EASE_MS = 300;
 const normalizeAudio = (value: number) => Math.min(1, Math.max(0, value / 255));
@@ -90,7 +94,7 @@ export const resolveLatentShaderSpeed = (
     paused: boolean,
 ) => clampShaderSpeed(
     paused
-        ? baseSpeed * PAUSED_SPEED_SCALE
+        ? 0
         : easeTowards(baseSpeed, audioSpeed, audioAmount),
 );
 export const resolveLatentShaderColors = (
@@ -162,14 +166,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
     );
 
     useEffect(() => {
-        const ditheringMount = ditheringRef.current?.paperShaderMount;
-        const meshMount = meshRef.current?.paperShaderMount;
-
-        if (staticMode) {
-            ditheringMount?.setSpeed(0);
-            meshMount?.setSpeed(0);
-            return;
-        }
+        if (staticMode) return;
 
         let animationFrame = 0;
         // The full-screen layers' last written styles: once the smoothed audio settles (paused,
@@ -194,6 +191,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
         let latentOnsetPulse = 0;
         // A pause slows the fluid over about a second and play speeds it up the same way.
         let lastFrameAt: number | null = null;
+        const shouldDraw = createFrameGate(BACKGROUND_FPS);
         const speedOf = (baseSpeed: number, audioSpeed: number) => easeTowards(
             resolveLatentShaderSpeed(baseSpeed, audioSpeed, smoothedBeatSpeed, true),
             resolveLatentShaderSpeed(baseSpeed, audioSpeed, smoothedBeatSpeed, false),
@@ -202,29 +200,34 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
 
         // Keep audio-rate changes inside the shader/DOM layer so React only rerenders on palette changes.
         const updateAudioResponse = (frameAt: number) => {
-            // Asked for first, so that in the next frame this runs ahead of the shader mounts' own
-            // frame callbacks: the uniforms written below are then in the frame that loop draws.
-            animationFrame = requestAnimationFrame(updateAudioResponse);
-
+            if (!shouldDraw(frameAt)) {
+                animationFrame = requestAnimationFrame(updateAudioResponse);
+                return;
+            }
             const isPaused = pausedRef.current;
+            const targetPlaying = isPaused ? 0 : 1;
             // By the time since the last frame: as fast at any frame rate.
-            const pauseStep = lastFrameAt === null ? 0 : 1 - Math.exp((lastFrameAt - frameAt) / PAUSE_EASE_MS);
+            const elapsed = lastFrameAt === null ? 0 : frameAt - lastFrameAt;
+            const pauseStep = 1 - Math.exp(-elapsed / PAUSE_EASE_MS);
             lastFrameAt = frameAt;
-            playingRef.current = easeTowards(playingRef.current, isPaused ? 0 : 1, pauseStep);
-            const targetPower = isPaused ? 0 : normalizeAudio(audioPower.get());
-            const targetBass = isPaused ? 0 : normalizeAudio(audioBands.bass.get());
+            playingRef.current = easeTowards(playingRef.current, targetPlaying, pauseStep);
+            const rawPower = audioPower.get();
+            const rawBass = audioBands.bass.get();
+            const rawLowMid = audioBands.lowMid.get();
+            const rawMid = audioBands.mid.get();
+            const rawVocal = audioBands.vocal.get();
+            const rawTreble = audioBands.treble.get();
+            const hasLiveAudio = !isPaused && (
+                rawPower > 0 || rawBass > 0 || rawLowMid > 0 || rawMid > 0 || rawVocal > 0 || rawTreble > 0 || isBeatFxReady()
+            );
+            const targetPower = isPaused ? 0 : normalizeAudio(rawPower);
+            const targetBass = isPaused ? 0 : normalizeAudio(rawBass);
             const targetBeatEnergy = isPaused
                 ? 0
-                : resolveLatentBroadbandEnergy(
-                    audioBands.bass.get(),
-                    audioBands.lowMid.get(),
-                    audioBands.mid.get(),
-                    audioBands.vocal.get(),
-                    audioBands.treble.get(),
-                );
+                : resolveLatentBroadbandEnergy(rawBass, rawLowMid, rawMid, rawVocal, rawTreble);
             const targetMid = isPaused
                 ? 0
-                : normalizeAudio(Math.max(audioBands.mid.get(), audioBands.vocal.get()));
+                : normalizeAudio(Math.max(rawMid, rawVocal));
             smoothedPower = easeTowards(smoothedPower, targetPower, 0.12);
             smoothedBass = easeTowards(smoothedBass, targetBass, 0.16);
             smoothedMid = easeTowards(
@@ -260,23 +263,45 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
                 beatSpeedTarget > smoothedBeatSpeed ? 0.42 : 0.14,
             );
 
+            // When no live audio signal is present and the play/pause ease has settled, snap to
+            // steady state and stop scheduling rAF frames until `paused` or `tuning` changes.
+            const settled = !hasLiveAudio
+                && Math.abs(playingRef.current - targetPlaying) < 0.001
+                && smoothedPower < 0.0005
+                && smoothedBass < 0.0005
+                && smoothedMid < 0.0005
+                && smoothedBeatSpeed < 0.0005
+                && latentOnsetPulse < 0.0005;
+
+            if (settled) {
+                playingRef.current = targetPlaying;
+                smoothedPower = 0;
+                smoothedBass = 0;
+                smoothedMid = 0;
+                smoothedBeatSpeed = 0;
+                latentOnsetPulse = 0;
+            }
+            if (!isPaused || !settled) {
+                animationFrame = requestAnimationFrame(updateAudioResponse);
+            }
+
             const currentDitheringMount = ditheringRef.current?.paperShaderMount;
             const currentMeshMount = meshRef.current?.paperShaderMount;
 
             if (currentDitheringMount) {
                 const ditheringSpeed = speedOf(tuning.ditheringSpeed, tuning.ditheringAudioSpeed);
-                currentDitheringMount.setSpeed(ditheringSpeed);
                 updatePaperShaderUniforms(currentDitheringMount, {
                     u_pxSize: Math.max(0.5, tuning.ditheringSize - smoothedBass * tuning.ditheringSize * 0.34),
-                }, ditheringSpeed !== 0);
+                }, true);
+                currentDitheringMount.setFrame(currentDitheringMount.getCurrentFrame() + elapsed * ditheringSpeed);
             }
             if (currentMeshMount) {
                 const meshSpeed = speedOf(tuning.meshSpeed, tuning.meshAudioSpeed);
-                currentMeshMount.setSpeed(meshSpeed);
                 updatePaperShaderUniforms(currentMeshMount, {
                     u_distortion: tuning.meshDistortion + smoothedPower * 0.62,
                     u_swirl: tuning.meshSwirl + smoothedMid * 0.38,
-                }, meshSpeed !== 0);
+                }, true);
+                currentMeshMount.setFrame(currentMeshMount.getCurrentFrame() + elapsed * meshSpeed);
             }
 
             if (ditheringLayerRef.current) {
@@ -293,10 +318,10 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
 
         animationFrame = requestAnimationFrame(updateAudioResponse);
         return () => cancelAnimationFrame(animationFrame);
-    }, [audioBands, audioPower, showMesh, staticMode, tuning]);
+    }, [audioBands, audioPower, paused, showMesh, staticMode, tuning]);
 
-    // The shaders' `speed` prop is only where they start, and 0 where static: the frame loop sets
-    // the speed from there and eases a pause in. A prop that followed `paused` would set it at once.
+    // The Paper mounts draw on demand. Keeping their internal loops stopped also leaves the
+    // final frame on screen once the pause ease completes.
     return (
         <div
             className="absolute inset-0 z-0 overflow-hidden"
@@ -317,7 +342,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
                         swirl={tuning.meshSwirl}
                         grainMixer={0}
                         grainOverlay={0.01}
-                        speed={staticMode ? 0 : tuning.meshSpeed}
+                        speed={0}
                         minPixelRatio={1}
                         maxPixelCount={MAX_SHADER_PIXELS}
                         webGlContextAttributes={PAPER_SHADER_CONTEXT_ATTRIBUTES}
@@ -345,7 +370,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
                         shape="warp"
                         type="4x4"
                         size={tuning.ditheringSize}
-                        speed={staticMode ? 0 : tuning.ditheringSpeed}
+                        speed={0}
                         minPixelRatio={1}
                         maxPixelCount={MAX_SHADER_PIXELS}
                         webGlContextAttributes={PAPER_SHADER_CONTEXT_ATTRIBUTES}

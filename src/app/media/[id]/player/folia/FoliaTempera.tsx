@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { resolveLineIndex } from './lineIndex';
 import VisualizerTempera from './tempera/VisualizerTempera';
-import { DEFAULT_TEMPERA_TUNING, type Line, type Theme } from './types';
+import { DEFAULT_TEMPERA_TUNING, type Line, type LyricRenderScale, type Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 
 interface FoliaTemperaProps {
@@ -15,6 +15,7 @@ interface FoliaTemperaProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    renderScale?: LyricRenderScale;
 }
 
 /** Hosts Folia's Tempera director: 15 Pixi compositions, scene cache and song cuts. */
@@ -27,10 +28,15 @@ export const FoliaTempera = ({
     songTitle,
     songArtist,
     isPlaying,
+    renderScale = 1,
 }: FoliaTemperaProps) => {
     const {currentTime} = useAudioSignals(audioRef);
     const [lineIndex, setLineIndex] = useState(0);
     const lineIndexRef = useRef(0);
+    const temperaTuning = useMemo(
+        () => ({...DEFAULT_TEMPERA_TUNING, render: {...DEFAULT_TEMPERA_TUNING.render, scale: renderScale}}),
+        [renderScale],
+    );
 
     useEffect(() => {
         lineIndexRef.current = 0;
@@ -59,7 +65,7 @@ export const FoliaTempera = ({
             songTitle={songTitle}
             songArtist={songArtist}
             paused={!isPlaying}
-            temperaTuning={DEFAULT_TEMPERA_TUNING}
+            temperaTuning={temperaTuning}
         />
     );
 };

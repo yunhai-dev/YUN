@@ -45,6 +45,7 @@ interface VisualizerMonetProps {
     audioPower: MotionValue<number>;
     audioBands: AudioBands;
     showText?: boolean;
+    paused?: boolean;
     monetTuning?: MonetTuning;
     onLyricLineSeek?: (lyricTimeSec: number) => void;
 }
@@ -78,6 +79,7 @@ const VisualizerMonet: React.FC<VisualizerMonetProps> = ({
     audioPower,
     audioBands,
     showText = true,
+    paused = false,
     monetTuning = DEFAULT_MONET_TUNING,
     onLyricLineSeek,
 }) => {
@@ -238,7 +240,7 @@ const VisualizerMonet: React.FC<VisualizerMonetProps> = ({
                     animate={{ opacity: 1 }}
                     transition={{ duration: 2.2, ease: 'easeOut' }}
                 >
-                    <MonetFloatingDecor theme={theme} staticMode={false} />
+                    <MonetFloatingDecor theme={theme} staticMode={paused} />
                 </motion.div>
             )}
 
@@ -617,7 +619,7 @@ const VisualizerMonet: React.FC<VisualizerMonetProps> = ({
                             audioBands={audioBands}
                             theme={theme}
                             mode={monetTuning.audioStyle}
-                            staticMode={false}
+                            staticMode={paused}
                             renderScale={audioRenderScale}
                         />
                     </div>

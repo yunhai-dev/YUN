@@ -9,6 +9,7 @@ import { resolveThemeFontStack, resolveThemeFontWeight } from '../utils/fontStac
 import { DEFAULT_LYRIC_RENDER_QUALITY, resolveLyricAntialias, resolveLyricRenderQuality } from '../utils/lyricRenderQuality';
 import { getLineRenderEndTime } from '../utils/lyrics/renderHints';
 import { DEFAULT_TEMPERA_TUNING, type Line, type TemperaTuning, type Theme } from '../types';
+import { useVisualizerPixiHost } from '../pixi/pixiRuntimeHost';
 import { useVisualizerRuntime } from '../runtime';
 import type {
     TemperaPixiRuntime,
@@ -83,7 +84,6 @@ const VisualizerTempera: React.FC<VisualizerTemperaProps> = (props) => {
         artist: songArtist,
         album: songAlbum,
     };
-    const runtimeRef = useRef<TemperaPixiRuntime | null>(null);
     const [ready, setReady] = useState(false);
     const [runtimeFailed, setRuntimeFailed] = useState(false);
 
@@ -128,25 +128,16 @@ const VisualizerTempera: React.FC<VisualizerTemperaProps> = (props) => {
         () => ({ seed, program, theme, coverColors }),
         [seed, program, coverColors, theme],
     );
-    // The create effect runs once per song; it reads the newest song through this ref so lyrics
-    // or the cover palette arriving during async init are picked up by the first swap.
-    const latestSongRef = useRef(songContext);
-    latestSongRef.current = songContext;
-    const appliedSongRef = useRef<TemperaSongContext | null>(null);
-
-    useEffect(() => {
-        const host = hostRef.current;
-        if (!host) return;
-
-        const controller = new AbortController();
-        let disposed = false;
-        setReady(false);
-        setRuntimeFailed(false);
-        appliedSongRef.current = null;
-        const initialSong = latestSongRef.current;
-
-        void import('./createTemperaPixiRuntime')
-            .then(({ TemperaPixiRuntime }) => TemperaPixiRuntime.create({
+    // Reuse a single Pixi WebGL context across track changes; only canvas-wide settings rebuild it.
+    const runtimeRef = useVisualizerPixiHost<TemperaPixiRuntime, TemperaSongContext>({
+        hostRef,
+        label: 'Tempera',
+        rebuildKey: [currentTime, lyricsFontScale, staticMode, antialias],
+        song: songContext,
+        create: async (host, initialSong, signal) => {
+            setReady(false);
+            const { TemperaPixiRuntime } = await import('./createTemperaPixiRuntime');
+            const runtime = await TemperaPixiRuntime.create({
                 host,
                 songSeed: initialSong.seed,
                 program: initialSong.program,
@@ -163,59 +154,21 @@ const VisualizerTempera: React.FC<VisualizerTemperaProps> = (props) => {
                 songTitle: latestSongMetadataRef.current.title,
                 songArtist: latestSongMetadataRef.current.artist,
                 songAlbum: latestSongMetadataRef.current.album,
-                signal: controller.signal,
-            }))
-            .then(runtime => {
-                if (disposed) {
-                    runtime.destroy();
-                    return;
-                }
-                runtimeRef.current = runtime;
-                appliedSongRef.current = initialSong;
-                // The tuning, resolution, pause state and metadata may have moved on while Pixi
-                // was importing or initializing.
-                runtime.setSongMetadata(latestSongMetadataRef.current);
-                runtime.setTuning(temperaTuningRef.current);
-                runtime.setRenderScale(renderScaleRef.current);
-                runtime.setPaused(pausedRef.current);
-                setReady(true);
-            })
-            .catch((error: unknown) => {
-                if (error instanceof DOMException && error.name === 'AbortError') return;
-                if (disposed) return;
-                console.error('[FoliaTempera] failed to create runtime', error);
-                setRuntimeFailed(true);
+                signal,
             });
-
-        return () => {
-            disposed = true;
-            controller.abort();
-            runtimeRef.current?.destroy();
-            runtimeRef.current = null;
-        };
-        // The motion value is stable; the runtime is rebuilt only for inputs fixed when the
-        // WebGL context is made (seed, antialias, font scale, static mode).
-    }, [seed, currentTime, lyricsFontScale, staticMode, antialias]);
-
-    // Lyrics load after the player mounts, and the cover palette is extracted asynchronously:
-    // both arrive as a silent swap on the already-created runtime (no dissolve, same seed).
-    useEffect(() => {
-        const runtime = runtimeRef.current;
-        if (!runtime || !ready) return;
-
-        const applied = appliedSongRef.current;
-        if (
-            applied?.program === songContext.program
-            && applied.theme === songContext.theme
-            && applied.seed === songContext.seed
-            && applied.coverColors.join('|') === songContext.coverColors.join('|')
-        ) return;
-
-        appliedSongRef.current = songContext;
-        void runtime.swapSong(songContext).catch((error: unknown) => {
-            console.error('[FoliaTempera] failed to swap song', error);
-        });
-    }, [ready, songContext]);
+            // The tuning, resolution, pause state and metadata may have moved on while Pixi
+            // was importing or initializing.
+            runtime.setSongMetadata(latestSongMetadataRef.current);
+            runtime.setTuning(temperaTuningRef.current);
+            runtime.setRenderScale(renderScaleRef.current);
+            runtime.setPaused(pausedRef.current);
+            setReady(true);
+            return runtime;
+        },
+        swap: (runtime, nextSong) => runtime.swapSong(nextSong),
+        destroy: runtime => runtime.destroy(),
+        onFailedChange: setRuntimeFailed,
+    });
 
     // Tuning is pushed into the live renderer rather than rebuilding it. A rebuild per pointer
     // move re-initialises WebGL, re-measures every line and re-decodes placed images.

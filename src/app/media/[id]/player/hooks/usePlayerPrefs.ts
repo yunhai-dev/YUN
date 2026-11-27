@@ -2,6 +2,8 @@
 
 import { useCallback, useSyncExternalStore } from 'react';
 import type { BackgroundType } from '../folia/backgrounds/definition';
+import type { PlayerFpsCap } from '../folia/fpsCap';
+import type { LyricRenderScale } from '../folia/types';
 import { clampCrossfadeSeconds, CROSSFADE_DEFAULT_SEC } from '../playback/crossfade';
 
 // The player page's own preferences. Folia keeps these in its settings store with an app-wide
@@ -11,6 +13,8 @@ import { clampCrossfadeSeconds, CROSSFADE_DEFAULT_SEC } from '../playback/crossf
 // the same values — including the smart-transition preferences.
 
 export type BackgroundDisplayMode = 'both' | 'mesh' | 'dithering';
+export type PlayerRenderScale = Extract<LyricRenderScale, 0.5 | 0.75 | 1>;
+export type { PlayerFpsCap };
 
 export interface PlayerPrefs {
     /** Which shell background is drawn under the lyric styles. */
@@ -19,6 +23,10 @@ export interface PlayerPrefs {
     backgroundMode: BackgroundDisplayMode;
     /** False freezes the shell background (Folia's background static mode). */
     backgroundMotion: boolean;
+    /** Global render resolution multiplier for WebGL/Canvas lyric modes. */
+    renderScale: PlayerRenderScale;
+    /** Global FPS cap for rAF-driven visualizers (0 = uncapped / display native). */
+    fpsCap: PlayerFpsCap;
     /** The single embedded page the url background shows; empty renders nothing. */
     urlBackgroundUrl: string;
     /** Show the shared bottom subtitle. */
@@ -35,6 +43,8 @@ export const DEFAULT_PLAYER_PREFS: PlayerPrefs = {
     backgroundType: 'latent',
     backgroundMode: 'both',
     backgroundMotion: true,
+    renderScale: 1,
+    fpsCap: 60,
     urlBackgroundUrl: '',
     subtitle: true,
     autoHideChrome: true,
@@ -45,6 +55,8 @@ export const DEFAULT_PLAYER_PREFS: PlayerPrefs = {
 const STORAGE_KEY = 'folia-player-prefs';
 const BACKGROUND_MODES: readonly BackgroundDisplayMode[] = ['both', 'mesh', 'dithering'];
 const BACKGROUND_TYPES: readonly BackgroundType[] = ['common', 'latent', 'monet', 'nomand', 'sora', 'url'];
+const RENDER_SCALES: readonly PlayerRenderScale[] = [0.5, 0.75, 1];
+const FPS_CAPS: readonly PlayerFpsCap[] = [0, 30, 60];
 
 const sanitize = (value: Record<string, unknown>): Partial<PlayerPrefs> => {
     const patch: Partial<PlayerPrefs> = {};
@@ -55,6 +67,12 @@ const sanitize = (value: Record<string, unknown>): Partial<PlayerPrefs> => {
         patch.backgroundMode = value.backgroundMode as BackgroundDisplayMode;
     }
     if (typeof value.backgroundMotion === 'boolean') patch.backgroundMotion = value.backgroundMotion;
+    if (RENDER_SCALES.includes(value.renderScale as PlayerRenderScale)) {
+        patch.renderScale = value.renderScale as PlayerRenderScale;
+    }
+    if (FPS_CAPS.includes(value.fpsCap as PlayerFpsCap)) {
+        patch.fpsCap = value.fpsCap as PlayerFpsCap;
+    }
     if (typeof value.urlBackgroundUrl === 'string') patch.urlBackgroundUrl = value.urlBackgroundUrl;
     if (typeof value.subtitle === 'boolean') patch.subtitle = value.subtitle;
     if (typeof value.autoHideChrome === 'boolean') patch.autoHideChrome = value.autoHideChrome;
@@ -85,7 +103,26 @@ const hydrate = () => {
     hydrated = true;
     try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
+        if (!raw) {
+            const firstVisitPatch: Partial<PlayerPrefs> = {};
+            // Respect OS reduced-motion preference on first visit before the user saves custom prefs.
+            if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+                firstVisitPatch.backgroundMotion = false;
+            }
+            // Touch / low-core devices default to single-layer mesh backdrop and 0.75x render scale
+            // to avoid dual full-screen WebGL + soft-light blend overhead.
+            const isCoarsePointer = window.matchMedia?.('(hover: none)').matches ?? false;
+            const isLowCore = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4;
+            if (isCoarsePointer || isLowCore) {
+                firstVisitPatch.backgroundMode = 'mesh';
+                firstVisitPatch.renderScale = 0.75;
+            }
+            if (Object.keys(firstVisitPatch).length > 0) {
+                snapshot = {...snapshot, ...firstVisitPatch};
+                emit();
+            }
+            return;
+        }
         const parsed: unknown = JSON.parse(raw);
         if (typeof parsed !== 'object' || parsed === null) return;
         snapshot = {...snapshot, ...sanitize(parsed as Record<string, unknown>)};

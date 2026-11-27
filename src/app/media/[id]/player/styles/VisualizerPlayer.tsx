@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, lazy, useEffect, useMemo, useRef, useState, type FocusEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FocusEvent } from 'react';
 import { Link } from 'next-view-transitions';
 import { useHotkeys } from 'react-hotkeys-hook';
 import {
@@ -21,6 +21,7 @@ import { getMediaTheme } from '@/data/mediaThemes';
 import { cn } from '@/lib/utils';
 import { useFullscreen } from '@/hooks/use-fullscreen';
 import { useIdleChrome } from '../hooks/useIdleChrome';
+import { usePlaybackSelector } from '../hooks/usePlaybackSelector';
 import { usePlayerPrefs } from '../hooks/usePlayerPrefs';
 import { getCachedPalette, loadPalette } from '../playback/mediaCache';
 import { PlayerStyleProps } from '../types';
@@ -28,50 +29,33 @@ import { DEFAULT_PALETTE } from '../visualizers/palette';
 import type { VisualizerMode } from '../visualizers/types';
 import { getLyricsPlaceholder, toFoliaLines, toFoliaTheme } from '../folia/adapters';
 import { DEFAULT_LATENT_BACKGROUND_TUNING } from '../folia/backgrounds/types';
-import { FoliaBackdrop } from '../folia/FoliaBackdrop';
 import { FoliaSubtitle } from '../folia/FoliaSubtitle';
 import { LyricTimeline } from './LyricTimeline';
 import { PlayerSettingsPanel } from './PlayerSettingsPanel';
+import { VisualizerStage, useVisualizerStageHost, type VisualizerStageProps } from './VisualizerStageProvider';
 import { formatTime } from './formatTime';
 
-const FoliaSonnet = lazy(() => import('../folia/FoliaSonnet'));
-const FoliaDiorama = lazy(() => import('../folia/FoliaDiorama'));
-const FoliaTilt = lazy(() => import('../folia/FoliaTilt'));
-const FoliaMonet = lazy(() => import('../folia/FoliaMonet'));
-const FoliaTempera = lazy(() => import('../folia/FoliaTempera'));
-const FoliaPartita = lazy(() => import('../folia/FoliaPartita'));
-const FoliaCadenza = lazy(() => import('../folia/FoliaCadenza'));
-const FoliaCappella = lazy(() => import('../folia/FoliaCappella'));
-const FoliaCladdagh = lazy(() => import('../folia/FoliaCladdagh'));
-const FoliaClassic = lazy(() => import('../folia/FoliaClassic'));
-const FoliaNebbia = lazy(() => import('../folia/FoliaNebbia'));
-const FoliaFume = lazy(() => import('../folia/FoliaFume'));
-const FoliaHanabi = lazy(() => import('../folia/FoliaHanabi'));
-const FoliaLumiere = lazy(() => import('../folia/FoliaLumiere'));
-const FoliaMachi = lazy(() => import('../folia/FoliaMachi'));
-const FoliaStill = lazy(() => import('../folia/FoliaStill'));
-const FoliaPendolo = lazy(() => import('../folia/FoliaPendolo'));
-const FoliaMetaphor = lazy(() => import('../folia/FoliaMetaphor'));
+// Fullscreen opaque 3D/WebGL modes cover the entire stage with their own sky/paper canvas;
+// skipping FoliaBackdrop avoids keeping 2 extra hidden WebGL shader contexts alive underneath.
+const OPAQUE_STAGE_MODES = new Set<VisualizerMode>(['machi', 'metaphor']);
 
-const MODE_LABELS: Record<VisualizerMode, string> = {
-    sonnet: '商籁',
-    diorama: '镜台',
-    tilt: '倾诉',
-    monet: '莫奈',
-    tempera: '凝彩',
-    partita: '云阶',
-    cadenza: 'Mindscape',
-    cappella: 'Cappella',
-    claddagh: 'Claddagh',
-    classic: 'Luminous',
-    nebbia: '雾笺',
-    fume: '浮名',
-    hanabi: '花火',
-    lumiere: '绘光',
-    machi: '町景',
-    still: '静止',
-    pendolo: '时计',
-    metaphor: '隐喻',
+const ElapsedTime = ({className}: {className: string}) => {
+    const seconds = usePlaybackSelector(snapshot => Math.floor(snapshot.currentTime));
+    return <span className={className}>{formatTime(seconds)}</span>;
+};
+
+const PlaybackProgressBar = ({duration, onSeek}: {duration: number; onSeek: (time: number) => void}) => {
+    const currentTime = usePlaybackSelector(snapshot => snapshot.currentTime);
+    return (
+        <AudioProgressBar
+            currentTime={currentTime}
+            duration={duration}
+            onSeek={onSeek}
+            formatTime={formatTime}
+            variant="minimal"
+            className="min-w-0 flex-1"
+        />
+    );
 };
 
 export const VisualizerPlayer = ({
@@ -84,7 +68,7 @@ export const VisualizerPlayer = ({
     lyrics,
 }: PlayerStyleProps) => {
     const {id, title, imageUrl, author} = musicItem;
-    const {isPlaying, currentTime, duration, autoPlay} = audioState;
+    const {isPlaying, duration, autoPlay} = audioState;
     const {togglePlay, seek, play, setAutoPlay: toggleAutoPlay, clearState} = controls;
 
     const stageRef = useRef<HTMLDivElement>(null);
@@ -101,7 +85,17 @@ export const VisualizerPlayer = ({
     const [hoveredSkip, setHoveredSkip] = useState<'backward' | 'forward' | null>(null);
     const [timelineOpen, setTimelineOpen] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [pageHidden, setPageHidden] = useState(false);
     const {prefs, updatePrefs} = usePlayerPrefs();
+
+    useEffect(() => {
+        const syncVisibility = () => setPageHidden(document.hidden);
+        syncVisibility();
+        document.addEventListener('visibilitychange', syncVisibility);
+        return () => document.removeEventListener('visibilitychange', syncVisibility);
+    }, []);
+
+    const effectiveIsPlaying = isPlaying && !pageHidden;
 
     const foliaLines = useMemo(() => toFoliaLines(lyrics, duration), [lyrics, duration]);
     const foliaTheme = useMemo(() => toFoliaTheme(palette, presetTheme), [palette, presetTheme]);
@@ -110,6 +104,7 @@ export const VisualizerPlayer = ({
         [prefs.backgroundMode],
     );
     const lyricsPlaceholder = getLyricsPlaceholder(lyrics);
+    const showBackdrop = Boolean(lyricsPlaceholder) || !OPAQUE_STAGE_MODES.has(mode);
 
     const skipTitles = useMemo(() => {
         const items = getAllMediaItems();
@@ -125,7 +120,8 @@ export const VisualizerPlayer = ({
             ? skipTitles.forward
             : title;
 
-    const {isFullscreen, toggleFullscreen} = useFullscreen(stageRef);
+    const stageHost = useVisualizerStageHost();
+    const {isFullscreen, toggleFullscreen} = useFullscreen(stageHost?.fullscreenRef ?? stageRef);
 
     useHotkeys('f11', toggleFullscreen, {preventDefault: true});
     useHotkeys('space', togglePlay, {preventDefault: true});
@@ -183,196 +179,73 @@ export const VisualizerPlayer = ({
         }
     };
 
+    const stageProps = useMemo<VisualizerStageProps>(() => ({
+        mode,
+        id,
+        title,
+        author,
+        imageUrl,
+        audioRef,
+        foliaLines,
+        foliaTheme,
+        palette,
+        backgroundType: prefs.backgroundType,
+        urlBackgroundUrl: prefs.urlBackgroundUrl,
+        backdropTuning,
+        backgroundMotion: prefs.backgroundMotion,
+        renderScale: prefs.renderScale,
+        fpsCap: prefs.fpsCap,
+        effectiveIsPlaying,
+        pageHidden,
+        showBackdrop,
+        chromeHidden,
+        lyricsPlaceholder,
+        onSeek: seek,
+    }), [
+        audioRef,
+        author,
+        backdropTuning,
+        chromeHidden,
+        effectiveIsPlaying,
+        foliaLines,
+        foliaTheme,
+        id,
+        imageUrl,
+        lyricsPlaceholder,
+        mode,
+        pageHidden,
+        palette,
+        prefs.backgroundMotion,
+        prefs.backgroundType,
+        prefs.fpsCap,
+        prefs.renderScale,
+        prefs.urlBackgroundUrl,
+        seek,
+        showBackdrop,
+        title,
+    ]);
+
+    useEffect(() => {
+        stageHost?.setStageProps(stageProps);
+    }, [stageHost, stageProps]);
+
     return (
-        <main className="min-h-screen w-full bg-[#05070d] text-white overflow-hidden">
+        <main className={cn(
+            'min-h-screen w-full text-white overflow-hidden',
+            stageHost ? 'bg-transparent pointer-events-none' : 'bg-[#05070d]',
+        )}>
             <div
                 ref={stageRef}
-                className={cn('relative h-screen w-full overflow-hidden', chromeHidden && 'cursor-none')}
+                className={cn(
+                    'relative h-screen w-full overflow-hidden',
+                    stageHost ? 'pointer-events-none' : chromeHidden && 'cursor-none',
+                )}
             >
-                <div className="absolute inset-0" style={{backgroundColor: foliaTheme.backgroundColor}}>
-                    <FoliaBackdrop
-                        audioRef={audioRef}
-                        theme={foliaTheme}
-                        coverColors={palette}
-                        coverUrl={imageUrl}
-                        backgroundType={prefs.backgroundType}
-                        urlBackgroundUrl={prefs.urlBackgroundUrl}
-                        seed={id}
-                        paused={!isPlaying}
-                        tuning={backdropTuning}
-                        staticMode={!prefs.backgroundMotion}
-                    />
-                    {lyricsPlaceholder ? (
-                        <div className="flex h-full w-full items-center justify-center px-8 text-center text-sm tracking-[0.3em] text-white/45">
-                            {lyricsPlaceholder}
-                        </div>
-                    ) : (
-                        <Suspense fallback={
-                            <div className="flex h-full w-full items-center justify-center text-xs tracking-[0.4em] text-white/40">
-                                {MODE_LABELS[mode]} · 载入中
-                            </div>
-                        }>
-                            {mode === 'sonnet' ? (
-                                <FoliaSonnet
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    title={title}
-                                    author={author}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'diorama' ? (
-                                <FoliaDiorama
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                />
-                            ) : mode === 'tilt' ? (
-                                <FoliaTilt
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                />
-                            ) : mode === 'monet' ? (
-                                <FoliaMonet
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    coverUrl={imageUrl}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    seed={id}
-                                    onSeek={seek}
-                                />
-                            ) : mode === 'tempera' ? (
-                                <FoliaTempera
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    coverColors={palette}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'partita' ? (
-                                <FoliaPartita
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                />
-                            ) : mode === 'cadenza' ? (
-                                <FoliaCadenza
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                />
-                            ) : mode === 'cappella' ? (
-                                <FoliaCappella
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    songTitle={title}
-                                    coverUrl={imageUrl}
-                                    seed={id}
-                                />
-                            ) : mode === 'claddagh' ? (
-                                <FoliaCladdagh
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'classic' ? (
-                                <FoliaClassic
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                />
-                            ) : mode === 'nebbia' ? (
-                                <FoliaNebbia
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'fume' ? (
-                                <FoliaFume
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'hanabi' ? (
-                                <FoliaHanabi
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'lumiere' ? (
-                                <FoliaLumiere
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'machi' ? (
-                                <FoliaMachi
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'metaphor' ? (
-                                <FoliaMetaphor
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    songTitle={title}
-                                    isPlaying={isPlaying}
-                                />
-                            ) : mode === 'still' ? (
-                                <FoliaStill
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                />
-                            ) : (
-                                <FoliaPendolo
-                                    audioRef={audioRef}
-                                    lines={foliaLines}
-                                    theme={foliaTheme}
-                                    seed={id}
-                                    songTitle={title}
-                                    songArtist={author}
-                                    isPlaying={isPlaying}
-                                />
-                            )}
-                        </Suspense>
-                    )}
-                </div>
+                {!stageHost && <VisualizerStage {...stageProps} />}
 
                 {!lyricsPlaceholder && prefs.subtitle && (
                     <FoliaSubtitle
                         lines={foliaLines}
-                        currentTime={currentTime}
                         theme={foliaTheme}
                         hidden={controlsExpanded || timelineOpen || chromeHidden}
                     />
@@ -381,7 +254,7 @@ export const VisualizerPlayer = ({
                 <header
                     inert={chromeHidden}
                     className={cn(
-                        'absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-4 px-4 md:px-8 py-4 bg-gradient-to-b from-black/55 to-transparent transition-opacity duration-500',
+                        'pointer-events-auto absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-4 px-4 md:px-8 py-4 bg-gradient-to-b from-black/55 to-transparent transition-opacity duration-500',
                         chromeHidden && 'opacity-0',
                     )}
                 >
@@ -490,20 +363,11 @@ export const VisualizerPlayer = ({
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <span className={cn(
+                                <ElapsedTime className={cn(
                                     'shrink-0 text-right font-mono tracking-wide text-white/45 tabular-nums transition-all duration-300',
                                     controlsExpanded ? 'w-8 text-[10px]' : 'w-7 text-[9px]',
-                                )}>
-                                    {formatTime(currentTime)}
-                                </span>
-                                <AudioProgressBar
-                                    currentTime={currentTime}
-                                    duration={duration}
-                                    onSeek={seek}
-                                    formatTime={formatTime}
-                                    variant="minimal"
-                                    className="min-w-0 flex-1"
-                                />
+                                )}/>
+                                <PlaybackProgressBar duration={duration} onSeek={seek}/>
                                 <span className={cn(
                                     'shrink-0 font-mono tracking-wide text-white/45 tabular-nums transition-all duration-300',
                                     controlsExpanded ? 'w-8 text-[10px]' : 'w-7 text-[9px]',
@@ -562,27 +426,30 @@ export const VisualizerPlayer = ({
                 </footer>
 
                 {timelineOpen && (
-                    <LyricTimeline
-                        lyrics={lyrics}
-                        currentTime={currentTime}
-                        accentColor={foliaTheme.accentColor}
-                        onSelect={(time) => {
-                            seek(time);
-                            void play();
-                            setTimelineOpen(false);
-                        }}
-                        onClose={() => setTimelineOpen(false)}
-                    />
+                    <div className="pointer-events-auto">
+                        <LyricTimeline
+                            lyrics={lyrics}
+                            accentColor={foliaTheme.accentColor}
+                            onSelect={(time) => {
+                                seek(time);
+                                void play();
+                                setTimelineOpen(false);
+                            }}
+                            onClose={() => setTimelineOpen(false)}
+                        />
+                    </div>
                 )}
 
                 {settingsOpen && (
-                    <PlayerSettingsPanel
-                        prefs={prefs}
-                        mode={mode}
-                        onChange={updatePrefs}
-                        onModeChange={changeMode}
-                        onClose={() => setSettingsOpen(false)}
-                    />
+                    <div className="pointer-events-auto">
+                        <PlayerSettingsPanel
+                            prefs={prefs}
+                            mode={mode}
+                            onChange={updatePrefs}
+                            onModeChange={changeMode}
+                            onClose={() => setSettingsOpen(false)}
+                        />
+                    </div>
                 )}
             </div>
         </main>

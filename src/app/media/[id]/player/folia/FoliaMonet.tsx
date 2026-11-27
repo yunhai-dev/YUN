@@ -14,6 +14,7 @@ interface FoliaMonetProps {
     songTitle?: string;
     songArtist?: string;
     seed?: string;
+    isPlaying?: boolean;
     onSeek?: (time: number) => void;
 }
 
@@ -26,6 +27,7 @@ export const FoliaMonet = ({
     songTitle,
     songArtist,
     seed,
+    isPlaying = true,
     onSeek,
 }: FoliaMonetProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
@@ -61,6 +63,7 @@ export const FoliaMonet = ({
             audioPower={audioPower}
             audioBands={audioBands}
             monetTuning={DEFAULT_MONET_TUNING}
+            paused={!isPlaying}
             onLyricLineSeek={onSeek}
         />
     );

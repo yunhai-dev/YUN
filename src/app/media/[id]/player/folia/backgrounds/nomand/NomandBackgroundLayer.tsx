@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import type { PaperShaderElement } from '@paper-design/shaders';
 import {
     FlutedGlass,
@@ -17,7 +17,7 @@ import {
     resolveDaylightInversion,
     resolveHalftoneInversion,
 } from './nomandShaderAdjustments';
-import { PAPER_SHADER_CONTEXT_ATTRIBUTES } from '../paperShaderContext';
+import { createPaperShaderReleaseRef, PAPER_SHADER_CONTEXT_ATTRIBUTES } from '../paperShaderContext';
 
 // src/components/visualizer/backgrounds/nomand/NomandBackgroundLayer.tsx
 // Renders the selected Paper image shader with the current theme palette.
@@ -41,6 +41,8 @@ const NomandBackgroundLayer: React.FC<NomandBackgroundLayerProps> = ({
     const tuning = { ...DEFAULT_NOMAND_BACKGROUND_TUNING, ...tuningOverride };
     const sourceUrl = coverUrl ?? null;
     const shaderRef = useRef<PaperShaderElement | null>(null);
+    // Explicitly lose the WebGL context whenever track/effect changes unmount a shader canvas.
+    const releaseShaderRef = useMemo(() => createPaperShaderReleaseRef(shaderRef), []);
 
     if (!sourceUrl) {
         return (
@@ -56,11 +58,11 @@ const NomandBackgroundLayer: React.FC<NomandBackgroundLayerProps> = ({
         const commonProps = {
             width: '100%' as const,
             height: '100%' as const,
-            ref: shaderRef,
+            ref: releaseShaderRef,
             image: sourceUrl,
             fit: 'cover' as const,
             minPixelRatio: 1,
-            maxPixelCount: 1920 * 1080,
+            maxPixelCount: 1280 * 720,
             webGlContextAttributes: PAPER_SHADER_CONTEXT_ATTRIBUTES,
             style: { width: '100%', height: '100%' },
         };

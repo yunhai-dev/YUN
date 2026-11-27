@@ -4,7 +4,6 @@ import { LyricLine } from './hooks/useLyrics';
 
 export interface AudioState {
     isPlaying: boolean;
-    currentTime: number;
     duration: number;
     autoPlay: boolean;
 }

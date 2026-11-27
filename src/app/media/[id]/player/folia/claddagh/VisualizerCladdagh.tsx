@@ -147,7 +147,12 @@ const VisualizerCladdagh: React.FC<VisualizerCladdaghProps> = (props) => {
                 lineEl.style.filter = 'none';
             }
 
-            frameId = requestAnimationFrame(updateColors);
+            // Stop scheduling rAF once paused (or silent) and glow intensity has reached steady state.
+            const settled = (paused || (bassPower < 0.001 && vocalPower < 0.001))
+                && Math.abs(targetIntensity - glowIntensityRef.current) <= 0.01;
+            if (!settled) {
+                frameId = requestAnimationFrame(updateColors);
+            }
         };
 
         frameId = requestAnimationFrame(updateColors);

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Hourglass } from 'lucide-react';
 import type { MotionValue } from 'framer-motion';
+import type { PlayerFpsCap } from '../fpsCap';
 import { DEFAULT_FUME_TUNING, type AudioBands, type FumeTuning, type Line, type Theme } from '../types';
 import { getLineRenderEndTime } from '../utils/lyrics/renderHints';
 import { DEFAULT_LYRIC_RENDER_QUALITY, resolveLyricRenderQuality } from '../utils/lyricRenderQuality';
@@ -41,6 +42,7 @@ interface VisualizerProps {
     staticMode?: boolean;
     lyricsFontScale?: number;
     paused?: boolean;
+    fpsCap?: PlayerFpsCap;
     fumeTuning?: FumeTuning;
 }
 
@@ -74,6 +76,7 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
         lyricsFontScale = 1,
         fumeTuning,
         paused = false,
+        fpsCap = 0,
     } = props;
     const viewportRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -299,7 +302,7 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
         () => resolveLyricRenderQuality(DEFAULT_LYRIC_RENDER_QUALITY, fumeTuning?.render),
         [fumeTuning?.render],
     );
-    useFumeCanvasStage(canvasRef, stageScene, stageDriver, paused, renderQuality.scale);
+    useFumeCanvasStage(canvasRef, stageScene, stageDriver, paused, renderQuality.scale, fpsCap);
 
     const fontClassName = theme.fontStyle === 'mono'
         ? 'font-mono'

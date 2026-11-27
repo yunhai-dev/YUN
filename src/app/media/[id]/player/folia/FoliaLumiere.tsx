@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import VisualizerLumiere from './lumiere/VisualizerLumiere';
 import { resolveLineIndex } from './lineIndex';
-import { DEFAULT_LUMIERE_TUNING, type Line, type Theme } from './types';
+import { DEFAULT_LUMIERE_TUNING, type Line, type LyricRenderScale, type Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 
 interface FoliaLumiereProps {
@@ -14,6 +14,7 @@ interface FoliaLumiereProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    renderScale?: LyricRenderScale;
 }
 
 /** Hosts Folia's Lumiere: line-art and light-field stage with lyrics traced in beams. */
@@ -25,10 +26,15 @@ export const FoliaLumiere = ({
     songTitle,
     songArtist,
     isPlaying,
+    renderScale = 1,
 }: FoliaLumiereProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
     const [lineIndex, setLineIndex] = useState(0);
     const lineIndexRef = useRef(0);
+    const lumiereTuning = useMemo(
+        () => ({...DEFAULT_LUMIERE_TUNING, render: {...DEFAULT_LUMIERE_TUNING.render, scale: renderScale}}),
+        [renderScale],
+    );
 
     useEffect(() => {
         lineIndexRef.current = 0;
@@ -58,7 +64,7 @@ export const FoliaLumiere = ({
             songTitle={songTitle}
             songArtist={songArtist}
             paused={!isPlaying}
-            lumiereTuning={DEFAULT_LUMIERE_TUNING}
+            lumiereTuning={lumiereTuning}
         />
     );
 };

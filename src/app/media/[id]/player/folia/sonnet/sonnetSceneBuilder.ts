@@ -53,7 +53,8 @@ export interface ShotView {
 export interface SceneView {
     paragraph: SonnetParagraph;
     container: import('pixi.js').Container;
-    shots: ShotView[];
+    shots: (ShotView | undefined)[];
+    ensureShot: (index: number) => ShotView | undefined;
     shotTimeline: SonnetShot[];
     postProcessFilters: import('pixi.js').Filter[];
     /** The antialiasing every filter on the scene container asks for (see resolveSonnetSceneFilterAntialias). */
@@ -211,8 +212,15 @@ export const buildSonnetScene = (
         if (showOuterMetadata) sceneBackgroundLayer.addChild(descText);
     }
     container.addChild(sceneBackgroundLayer);
-    const shots = paragraph.shots.map((shot, shotIndex) => {
+    const shots: SceneView['shots'] = new Array(paragraph.shots.length);
+    const ensureShot = (shotIndex: number) => {
+        const shot = paragraph.shots[shotIndex];
+        if (!shot) return undefined;
+        const cached = shots[shotIndex];
+        if (cached) return cached;
+
         const shotContainer = new Container();
+        shotContainer.visible = false;
         const compiledLines = shot.lineIndices
             .map(lineIndex => paragraph.lines.find(item => item.sourceIndex === lineIndex))
             .filter(Boolean) as SonnetParagraph['lines'];
@@ -246,12 +254,19 @@ export const buildSonnetScene = (
             shotSeed,
             iconTextures,
             options.smartBeatEnabled,
-        );
+        ) as import('pixi.js').Container & {
+            bgLayer?: import('pixi.js').Container;
+            geoLayer?: import('pixi.js').Container;
+            particleLayer?: import('pixi.js').Container;
+            fixedGeoLayer?: import('pixi.js').Container;
+        };
         shotContainer.addChild(mgLayer);
-        const mgBackgroundLayer = (mgLayer as any).bgLayer as import('pixi.js').Container | undefined;
-        const mgGeoLayer = (mgLayer as any).geoLayer as import('pixi.js').Container | undefined;
-        const mgParticleLayer = (mgLayer as any).particleLayer as import('pixi.js').Container | undefined;
-        const mgFixedGeoLayer = (mgLayer as any).fixedGeoLayer as import('pixi.js').Container | undefined;
+        const {
+            bgLayer: mgBackgroundLayer,
+            geoLayer: mgGeoLayer,
+            particleLayer: mgParticleLayer,
+            fixedGeoLayer: mgFixedGeoLayer,
+        } = mgLayer;
         mgLayer.visible = showBackgroundMg || showFixedGeo || showBackgroundDecor;
         if (mgBackgroundLayer) mgBackgroundLayer.visible = showBackgroundMg;
         if (mgGeoLayer) mgGeoLayer.visible = showBackgroundMg;
@@ -345,7 +360,7 @@ export const buildSonnetScene = (
                 : 0.48 + shot.camera.y + (shotIndex % 2 ? 0.025 : -0.025)),
         );
         container.addChild(shotContainer);
-        return {
+        const view: ShotView = {
             shot,
             container: shotContainer,
             segments: views,
@@ -362,7 +377,9 @@ export const buildSonnetScene = (
             mgParticleLayer,
             mgFixedGeoLayer,
         };
-    });
+        shots[shotIndex] = view;
+        return view;
+    };
 
 
     if (!showOnlyText) {
@@ -386,7 +403,11 @@ export const buildSonnetScene = (
             postProcessFilters.push(...sceneFilters);
         }
     }
-    const filterAntialias = resolveSonnetSceneFilterAntialias(options.antialiasMode, postProcessFilters.length > 0);
+    // Halo filters used to be in postProcessFilters before this choice. Account for the halos
+    // even though their shot views are now built on demand.
+    const hasPostProcess = postProcessFilters.length > 0
+        || (paragraph.shots.length > 0 && postProcessProfile.glowStrength > 0);
+    const filterAntialias = resolveSonnetSceneFilterAntialias(options.antialiasMode, hasPostProcess);
     const transitionBlurFilter = options.tuning.enableTransitions && !options.staticMode
         ? new pixi.BlurFilter({
             strength: 0,
@@ -431,7 +452,8 @@ export const buildSonnetScene = (
         paragraph,
         container,
         shots,
-        shotTimeline: shots.map(shot => shot.shot),
+        ensureShot,
+        shotTimeline: paragraph.shots,
         postProcessFilters,
         filterAntialias,
         transitionBlurFilter,

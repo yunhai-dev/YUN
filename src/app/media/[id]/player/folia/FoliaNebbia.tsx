@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import VisualizerNebbia from './nebbia/VisualizerNebbia';
 import { resolveLineIndex } from './lineIndex';
 import { DEFAULT_NEBBIA_TUNING } from './nebbia/types';
-import type { Line, Theme } from './types';
+import type { Line, LyricRenderScale, Theme } from './types';
 import { useAudioSignals } from './useAudioSignals';
 
 interface FoliaNebbiaProps {
@@ -15,6 +15,7 @@ interface FoliaNebbiaProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    renderScale?: LyricRenderScale;
 }
 
 /** Hosts Folia's Nebbia: rain on a window with lyrics fogging the glass. */
@@ -26,10 +27,15 @@ export const FoliaNebbia = ({
     songTitle,
     songArtist,
     isPlaying,
+    renderScale = 1,
 }: FoliaNebbiaProps) => {
     const {currentTime, audioBands} = useAudioSignals(audioRef);
     const [lineIndex, setLineIndex] = useState(0);
     const lineIndexRef = useRef(0);
+    const nebbiaTuning = useMemo(
+        () => ({...DEFAULT_NEBBIA_TUNING, render: {...DEFAULT_NEBBIA_TUNING.render, scale: renderScale}}),
+        [renderScale],
+    );
 
     useEffect(() => {
         lineIndexRef.current = 0;
@@ -58,7 +64,7 @@ export const FoliaNebbia = ({
             seed={seed}
             songTitle={songTitle}
             songArtist={songArtist}
-            nebbiaTuning={DEFAULT_NEBBIA_TUNING}
+            nebbiaTuning={nebbiaTuning}
         />
     );
 };

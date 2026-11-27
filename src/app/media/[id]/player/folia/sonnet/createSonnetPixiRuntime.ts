@@ -1,4 +1,5 @@
 import type { MotionValue } from 'framer-motion';
+import type { PlayerFpsCap } from '../fpsCap';
 import type { AudioBands, LyricAntialias, LyricRenderScale, SonnetTuning, Theme } from '../types';
 import { resolveLyricPixelRatio } from '../utils/lyricRenderQuality';
 import type { SonnetProgram } from './types';
@@ -66,6 +67,7 @@ export const SONNET_SONG_SWAP_MS = 560;
  * most of the way opaque, early enough to leave headroom before the swap at the halfway point.
  */
 const SONNET_SWAP_STAGE_PROGRESS = 0.35;
+const MAX_RETIRED_SCENES = 3;
 
 export interface SonnetRuntimeOptions {
     host: HTMLDivElement;
@@ -79,6 +81,7 @@ export interface SonnetRuntimeOptions {
      * 就地改，见 setRenderScale。
      */
     renderScale: LyricRenderScale;
+    fpsCap?: PlayerFpsCap;
     /** 画布开不开 MSAA（#929）：「自动」时就是原来的 `!postProcessEnabled`。只在建上下文时定，变了由外壳重建。 */
     antialias: boolean;
     /**
@@ -128,6 +131,7 @@ export class SonnetPixiRuntime {
             return scene;
         },
         destroy: scene => this.destroyScene(scene),
+        detach: scene => this.detachScene(scene),
     });
     private readonly iconTextures = new Map<string, import('pixi.js').Texture>();
     private readonly iconUrls = new Set<string>();
@@ -197,6 +201,7 @@ export class SonnetPixiRuntime {
             preference: 'webgl',
         });
         const runtime = new SonnetPixiRuntime(pixi, options, app);
+        runtime.setFpsCap(options.fpsCap ?? 0);
         runtime.sceneContainer = new pixi.Container();
         runtime.creditsContainer = new pixi.Container();
         runtime.overlayContainer = new pixi.Container();
@@ -329,16 +334,20 @@ export class SonnetPixiRuntime {
 
     private clearScenes() {
         this.outroBlur.clear();
-        this.sceneCache.clear();
+        this.sceneCache.destroyAll();
         this.activeParagraphIndex = -1;
     }
-    private destroyScene(scene: SceneView) {
+    private detachScene(scene: SceneView) {
         if (this.outroBlur.isOn(scene)) this.outroBlur.clear();
-        this.sceneContainer.removeChild(scene.container);
+        scene.container.removeFromParent();
+    }
+
+    private destroyScene(scene: SceneView) {
+        this.detachScene(scene);
         unloadSonnetDisplayTree(scene.container);
         scene.container.filters = null;
         scene.shots.forEach(shot => {
-            shot.haloLayer.filters = null;
+            if (shot) shot.haloLayer.filters = null;
         });
         scene.postProcessFilters.forEach(filter => filter.destroy());
         // 逐节点销毁：destroy({ children: true }) 会留下每个 Graphics 自建的 GraphicsContext 与它的 GPU 缓冲。
@@ -346,9 +355,8 @@ export class SonnetPixiRuntime {
     }
 
     /**
-     * Builds one paragraph scene. This is the expensive call in the whole runtime: it runs the
-     * typography layout over every grapheme and then creates a `pixi.Text` per glyph. Nothing
-     * here should ever run more than once per frame.
+     * Builds the paragraph's common layers. Typography and per-glyph Pixi objects are built
+     * one shot at a time as the runtime needs them.
      */
     private buildScene(
         song: SonnetSongContext,
@@ -378,6 +386,19 @@ export class SonnetPixiRuntime {
         };
     }
 
+    private prewarmNextShot(scene: SceneView, paragraphIndex: number) {
+        const nextShotIndex = scene.activeShotIndex + 1;
+        if (nextShotIndex < scene.shotTimeline.length && !scene.shots[nextShotIndex]) {
+            scene.ensureShot(nextShotIndex);
+            return;
+        }
+
+        // Normal playback enters the next paragraph at its first shot. A seek can ask for
+        // any shot directly, independently of what has been built here.
+        const nextParagraph = this.sceneCache.ensure(paragraphIndex + 1);
+        if (nextParagraph) nextParagraph.ensureShot(0);
+    }
+
     private renderFrame = () => {
         if (this.destroyed) return;
         // Advanced before the paragraph lookup so a commit lands on this frame's scene selection
@@ -390,22 +411,12 @@ export class SonnetPixiRuntime {
         }
         const time = this.options.currentTime.get();
         const paragraphIndex = findSonnetParagraphIndexAtTime(this.options.program, time);
-        if (paragraphIndex !== this.activeParagraphIndex) {
+        const paragraphChanged = paragraphIndex !== this.activeParagraphIndex;
+        if (paragraphChanged) {
             this.activeParagraphIndex = paragraphIndex;
             this.sceneCache.ensure(paragraphIndex);
-            this.sceneCache.prune(paragraphIndex);
-        } else if (!this.songSwap) {
-            // Neighbours are pre-rolls for a boundary that is still ahead, so at most one is built
-            // per frame rather than piling three onto the frame that just changed paragraph.
-            // A scene build runs the layout over every grapheme and creates a pixi.Text per glyph;
-            // three at once is a dropped frame.
-            const next = paragraphIndex + 1;
-            const previous = paragraphIndex - 1;
-            if (next < this.options.program.paragraphs.length && !this.sceneCache.has(next)) {
-                this.sceneCache.ensure(next);
-            } else if (previous >= 0 && !this.sceneCache.has(previous)) {
-                this.sceneCache.ensure(previous);
-            }
+            const retireLimit = this.options.paused ? 0 : MAX_RETIRED_SCENES;
+            this.sceneCache.prune(paragraphIndex, undefined, retireLimit);
         }
         // The size the renderer was last fitted to. Reading the host here instead would force a
         // synchronous layout every frame, and the ResizeObserver refits both together anyway.
@@ -429,20 +440,31 @@ export class SonnetPixiRuntime {
             beatFx,
         };
 
+        let builtActiveShot = false;
         this.sceneCache.forEach((scene, index) => {
             const isActive = index === paragraphIndex;
 
             // Strict visibility: only the active scene is ever drawn. Zero overlap between scenes.
             scene.container.visible = isActive;
-            if (!isActive) {
+            const visibleShotIndex = isActive ? findSonnetActiveShotIndex(scene, time) : -1;
+            if (scene.activeShotIndex !== visibleShotIndex) {
                 const previousShot = scene.shots[scene.activeShotIndex];
-                if (previousShot) unloadSonnetDisplayTree(previousShot.container);
-                scene.activeShotIndex = -1;
-                return;
+                if (previousShot) {
+                    previousShot.container.visible = false;
+                    unloadSonnetDisplayTree(previousShot.container);
+                }
+                scene.activeShotIndex = visibleShotIndex;
             }
+            if (!isActive) return;
 
             const transitionsEnabled = this.options.tuning.enableTransitions && !this.options.staticMode;
-            const visibleShotIndex = findSonnetActiveShotIndex(scene, time);
+            const cachedShot = scene.shots[visibleShotIndex];
+            const visibleShot = cachedShot ?? scene.ensureShot(visibleShotIndex);
+            if (visibleShot) {
+                builtActiveShot = !cachedShot;
+                visibleShot.container.visible = true;
+                updateSonnetShot(visibleShot, time, width, height, 0, shotFrameContext);
+            }
             const transitionFrame = resolveSonnetSceneTransitionFrame(
                 this.options.program,
                 scene,
@@ -451,19 +473,8 @@ export class SonnetPixiRuntime {
                 time,
                 transitionsEnabled,
             );
-            scene.shots.forEach((shot, shotIndex) => {
-                const isShotActive = shotIndex === visibleShotIndex;
-                shot.container.visible = isShotActive;
-                if (!isShotActive) return;
-                updateSonnetShot(shot, time, width, height, 0, shotFrameContext);
-            });
-            if (scene.activeShotIndex !== visibleShotIndex) {
-                const previousShot = scene.shots[scene.activeShotIndex];
-                if (previousShot) unloadSonnetDisplayTree(previousShot.container);
-                scene.activeShotIndex = visibleShotIndex;
-            }
             // Publish the active shot so the dev overlay's Sonnet tab can inspect it.
-            sonnetDebugState.activeShot = scene.shots[visibleShotIndex]?.debugInfo ?? null;
+            sonnetDebugState.activeShot = visibleShot?.debugInfo ?? null;
             sonnetDebugState.paragraphIndex = index;
 
             const isFinalScene = index === this.options.program.paragraphs.length - 1;
@@ -510,6 +521,11 @@ export class SonnetPixiRuntime {
             height / 2 + creditsFrame.posterOffsetY * height,
         );
         this.creditsContainer.scale.set(creditsFrame.posterScale);
+
+        if (!paragraphChanged && !builtActiveShot && !this.songSwap && !this.options.paused) {
+            const scene = this.sceneCache.get(paragraphIndex);
+            if (!this.sceneCache.drainRetired() && scene) this.prewarmNextShot(scene, paragraphIndex);
+        }
     };
 
     renderOnce() {
@@ -643,7 +659,7 @@ export class SonnetPixiRuntime {
             );
             if (index >= 0 && index < swap.pending.program.paragraphs.length) {
                 const scene = this.buildScene(swap.pending, swap.pendingIcons.textures, index);
-                scene.container.visible = false;
+                scene.ensureShot(findSonnetActiveShotIndex(scene, this.options.currentTime.get()));
                 this.sceneContainer.addChild(scene.container);
                 swap.staged = { scene, index };
             }
@@ -735,6 +751,10 @@ export class SonnetPixiRuntime {
         if (this.options.paused) this.renderOnce();
     }
 
+    setFpsCap(fpsCap: PlayerFpsCap) {
+        if (!this.destroyed) this.app.ticker.maxFPS = fpsCap;
+    }
+
     /** Hot-swaps the modulation map every time a mod slider moves, without recreating the Pixi context. */
     setModulation(modulation: Record<string, number>) {
         if (this.destroyed) return;
@@ -747,6 +767,7 @@ export class SonnetPixiRuntime {
         this.options.paused = paused;
         if (paused) {
             this.app.stop();
+            this.sceneCache.clearRetired();
             this.renderOnce();
         } else {
             this.app.start();

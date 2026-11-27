@@ -14,8 +14,8 @@ import type { SceneView } from './sonnetSceneBuilder';
 /** Strictly determine the single active shot within this scene to avoid intra-scene residues. */
 export const findSonnetActiveShotIndex = (scene: SceneView, time: number) => {
     let activeShotIndex = 0;
-    for (let i = scene.shots.length - 1; i >= 0; i--) {
-        if (time >= scene.shots[i].shot.startTime) {
+    for (let i = scene.shotTimeline.length - 1; i >= 0; i--) {
+        if (time >= scene.shotTimeline[i].startTime) {
             activeShotIndex = i;
             break;
         }

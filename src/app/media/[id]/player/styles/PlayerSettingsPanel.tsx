@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { BackgroundDisplayMode, PlayerPrefs } from '../hooks/usePlayerPrefs';
+import type { BackgroundDisplayMode, PlayerFpsCap, PlayerPrefs, PlayerRenderScale } from '../hooks/usePlayerPrefs';
 import { BACKGROUND_TYPE_OPTIONS } from '../folia/backgrounds/definition';
 import { CROSSFADE_MAX_SEC, CROSSFADE_MIN_SEC } from '../playback/crossfade';
 import type { VisualizerMode } from '../visualizers/types';
@@ -41,6 +41,18 @@ const BACKGROUND_OPTIONS: Array<{id: BackgroundDisplayMode; label: string}> = [
     {id: 'both', label: '网格 + 颗粒'},
     {id: 'mesh', label: '仅网格'},
     {id: 'dithering', label: '仅颗粒'},
+];
+
+const RENDER_SCALE_OPTIONS: Array<{value: PlayerRenderScale; label: string}> = [
+    {value: 0.5, label: '节能 0.5×'},
+    {value: 0.75, label: '标准 0.75×'},
+    {value: 1, label: '高清 1×'},
+];
+
+const FPS_CAP_OPTIONS: Array<{value: PlayerFpsCap; label: string}> = [
+    {value: 0, label: '不限'},
+    {value: 60, label: '60 fps'},
+    {value: 30, label: '30 fps'},
 ];
 
 const SettingRow = ({label, description, children}: {
@@ -192,6 +204,48 @@ export const PlayerSettingsPanel = ({prefs, mode, onChange, onModeChange, onClos
                         onToggle={() => onChange({backgroundMotion: !prefs.backgroundMotion})}
                     />
                 </SettingRow>
+
+                <SectionTitle>性能与画质</SectionTitle>
+                <div className="mt-1">
+                    <p className="mb-1.5 text-[11px] text-white/45">特效渲染分辨率（调低可显著降低 GPU 占用）</p>
+                    <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-1">
+                        {RENDER_SCALE_OPTIONS.map(item => (
+                            <button
+                                key={item.value}
+                                onClick={() => onChange({renderScale: item.value})}
+                                aria-pressed={prefs.renderScale === item.value}
+                                className={cn(
+                                    'flex-1 rounded-full px-2 py-1.5 text-[11px] transition-colors',
+                                    prefs.renderScale === item.value
+                                        ? 'bg-white text-black'
+                                        : 'text-white/60 hover:text-white',
+                                )}
+                            >
+                                {item.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="mt-3">
+                    <p className="mb-1.5 text-[11px] text-white/45">特效帧率上限（限帧可降低高刷屏上的 GPU 占用）</p>
+                    <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-1">
+                        {FPS_CAP_OPTIONS.map(item => (
+                            <button
+                                key={item.value}
+                                onClick={() => onChange({fpsCap: item.value})}
+                                aria-pressed={prefs.fpsCap === item.value}
+                                className={cn(
+                                    'flex-1 rounded-full px-2 py-1.5 text-[11px] transition-colors',
+                                    prefs.fpsCap === item.value
+                                        ? 'bg-white text-black'
+                                        : 'text-white/60 hover:text-white',
+                                )}
+                            >
+                                {item.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
                 <SectionTitle>歌词</SectionTitle>
                 <SettingRow label="底部字幕" description="在播放器上方显示当前歌词行">

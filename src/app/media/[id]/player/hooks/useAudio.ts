@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getAllMediaItems } from '@/data/media';
 import { getMediaTheme } from '@/data/mediaThemes';
@@ -8,6 +8,7 @@ import type { MediaItem } from '@/types/media';
 import { playbackEngine } from '../playback/playbackEngine';
 import { preloadLyrics, preloadPalette } from '../playback/mediaCache';
 import { usePlayerPrefs } from './usePlayerPrefs';
+import { usePlaybackSelector } from './usePlaybackSelector';
 
 /**
  * Adapter between the player UI and the shared PlaybackEngine.
@@ -22,11 +23,9 @@ export const useAudio = (
     backwardId: string
 ) => {
     const {id, title, author, imageUrl, musicUrl} = musicItem;
-    const snapshot = useSyncExternalStore(
-        playbackEngine.subscribe,
-        playbackEngine.getSnapshot,
-        playbackEngine.getSnapshot
-    );
+    const isPlaying = usePlaybackSelector(snapshot => snapshot.isPlaying);
+    const duration = usePlaybackSelector(snapshot => snapshot.duration);
+    const autoPlay = usePlaybackSelector(snapshot => snapshot.autoPlay);
     const {toast} = useToast();
     const {prefs} = usePlayerPrefs();
     const upcomingToast = useRef(false);
@@ -57,22 +56,28 @@ export const useAudio = (
     // The old "up next" hint only belongs to the hard-cut path; with smart transitions the fade
     // itself is the cue. Reset the guard whenever the track changes or a seek moves out of range.
     useEffect(() => {
-        if (lastTrackId.current !== snapshot.trackId) {
-            lastTrackId.current = snapshot.trackId;
-            upcomingToast.current = false;
-        }
-        if (!snapshot.autoPlay || prefs.smartTransition || snapshot.duration <= 0) return;
+        const checkUpcomingTrack = () => {
+            const snapshot = playbackEngine.getSnapshot();
+            if (lastTrackId.current !== snapshot.trackId) {
+                lastTrackId.current = snapshot.trackId;
+                upcomingToast.current = false;
+            }
+            if (!snapshot.autoPlay || prefs.smartTransition || snapshot.duration <= 0) return;
 
-        const remaining = snapshot.duration - snapshot.currentTime;
-        if (remaining > 10) {
-            upcomingToast.current = false;
-            return;
-        }
-        if (!upcomingToast.current && remaining > 0) {
-            upcomingToast.current = true;
-            toast({title: '即将播放下一首', duration: 3000});
-        }
-    }, [prefs.smartTransition, snapshot.autoPlay, snapshot.currentTime, snapshot.duration, snapshot.trackId, toast]);
+            const remaining = snapshot.duration - snapshot.currentTime;
+            if (remaining > 10) {
+                upcomingToast.current = false;
+                return;
+            }
+            if (!upcomingToast.current && remaining > 0) {
+                upcomingToast.current = true;
+                toast({title: '即将播放下一首', duration: 3000});
+            }
+        };
+
+        checkUpcomingTrack();
+        return playbackEngine.subscribe(checkUpcomingTrack);
+    }, [prefs.smartTransition, toast]);
 
     const toggleAutoPlay = useCallback(() => {
         const next = !playbackEngine.getAutoPlay();
@@ -94,12 +99,7 @@ export const useAudio = (
 
     return {
         audioRef,
-        audioState: {
-            isPlaying: snapshot.isPlaying,
-            currentTime: snapshot.currentTime,
-            duration: snapshot.duration,
-            autoPlay: snapshot.autoPlay,
-        },
+        audioState: {isPlaying, duration, autoPlay},
         controls,
     };
 };

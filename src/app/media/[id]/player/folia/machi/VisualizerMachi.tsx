@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { MotionValue } from 'framer-motion';
 import { DEFAULT_LYRIC_RENDER_QUALITY } from '../utils/lyricRenderQuality';
-import type { AudioBands, Line, LyricRenderQuality, Theme } from '../types';
+import type { AudioBands, Line, LyricRenderQuality, LyricRenderScale, Theme } from '../types';
 import { loadLucideIcons } from '../services/lucideIconResolver';
 import { resolveThemeFontStack, resolveThemeFontWeight } from '../utils/fontStacks';
 import { getLineRenderEndTime } from '../utils/lyrics/renderHints';
@@ -42,6 +42,7 @@ interface VisualizerMachiProps {
     lyricsFontScale?: number;
     staticMode?: boolean;
     paused?: boolean;
+    renderScale?: LyricRenderScale;
     seed?: string | number;
     songTitle?: string;
     songArtist?: string;
@@ -60,14 +61,18 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
         lyricsFontScale = 1,
         staticMode = false,
         paused = false,
+        renderScale = 1,
         seed = 'machi',
         songTitle,
         songArtist,
     } = props;
     const hostRef = useRef<HTMLDivElement>(null);
     const [runtimeFailed, setRuntimeFailed] = useState(false);
-    // 歌词画布的分辨率与抗锯齿挡位：本移植固定为默认挡位。
-    const renderQuality: LyricRenderQuality = DEFAULT_LYRIC_RENDER_QUALITY;
+    // 歌词画布的分辨率与抗锯齿挡位：跟随播放器全局画质档位。
+    const renderQuality = useMemo<LyricRenderQuality>(
+        () => ({...DEFAULT_LYRIC_RENDER_QUALITY, scale: renderScale}),
+        [renderScale],
+    );
     const [contextEpoch, setContextEpoch] = useState(0);
     const shownTuning = machiTuning;
 

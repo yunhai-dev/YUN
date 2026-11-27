@@ -69,6 +69,7 @@ interface VisualizerProps {
     audioPower: MotionValue<number>;
     audioBands: AudioBands;
     showText?: boolean;
+    paused?: boolean;
     cadenzaTuning?: CadenzaTuning;
     lyricsFontScale?: number;
 }
@@ -84,6 +85,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         theme,
         audioPower,
         showText = true,
+        paused = false,
         cadenzaTuning = DEFAULT_CADENZA_TUNING,
     } = props;
     // 文字画布的分辨率倍数（#929）：本样式没有全局挡位可跟随，按自己的默认叠上 tuning 里的覆盖。
@@ -286,7 +288,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
                 lineLayer.style.transform = 'scale(1)';
                 lineLayer.style.perspective = '1000px';
                 clearOverlayWordNodes(overlayNodesRef.current);
-                frameId = window.requestAnimationFrame(draw);
+                if (!paused) frameId = window.requestAnimationFrame(draw);
                 return;
             }
 
@@ -487,12 +489,25 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
                 }
             });
 
-            frameId = window.requestAnimationFrame(draw);
+            if (!paused) {
+                frameId = window.requestAnimationFrame(draw);
+            }
         };
 
         draw();
+        const unsubscribeTime = paused
+            ? currentTime.on('change', () => {
+                if (frameId === 0) {
+                    frameId = window.requestAnimationFrame(() => {
+                        frameId = 0;
+                        draw();
+                    });
+                }
+            })
+            : undefined;
         return () => {
             window.cancelAnimationFrame(frameId);
+            unsubscribeTime?.();
             fontSet?.removeEventListener('loadingdone', forgetAscents);
             lastFrameTimeRef.current = null;
             clearOverlayWordNodes(overlayNodesRef.current);
@@ -501,6 +516,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         audioPower,
         currentTime,
         activeLine,
+        paused,
         preparedState,
         showText,
         theme,
