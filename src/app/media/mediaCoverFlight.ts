@@ -66,11 +66,49 @@ let token = 0;
 let forward: { atFullscreen: boolean; finishRequested: boolean } | null = null;
 let returning = false;
 
+type FlightPhase = 'idle' | 'forward' | 'forward-ready' | 'return';
+let flightPhase: FlightPhase = 'idle';
+const flightListeners = new Set<() => void>();
+const setFlightPhase = (next: FlightPhase) => {
+    if (flightPhase === next) return;
+    flightPhase = next;
+    flightListeners.forEach(listener => listener());
+};
+export const subscribeFlightPhase = (listener: () => void) => {
+    flightListeners.add(listener);
+    return () => { flightListeners.delete(listener); };
+};
+export const getFlightPhase = (): FlightPhase => flightPhase;
+export const getServerFlightPhase = (): FlightPhase => 'idle';
+
+// The forward cover lifts only once the incoming stage has painted. The stage is built while the
+// cover already covers the viewport, so the reveal lands on a ready scene instead of a loading
+// label, and the stage never competes with the entrance animation for frames.
+const STAGE_READY_MAX_MS = 1800;
+let stageReady = false;
+let stageReadyTimer = 0;
+const stageReadyWaiters: Array<() => void> = [];
+export const notifyStageReady = () => {
+    if (stageReady) return;
+    stageReady = true;
+    const waiters = stageReadyWaiters.splice(0, stageReadyWaiters.length);
+    waiters.forEach(waiter => waiter());
+};
+const whenStageReady = (onReady: () => void) => {
+    if (stageReady) {
+        onReady();
+        return;
+    }
+    stageReadyWaiters.push(onReady);
+};
+
 const clearTimers = () => {
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
     if (timer) window.clearTimeout(timer);
     timer = 0;
+    if (stageReadyTimer) window.clearTimeout(stageReadyTimer);
+    stageReadyTimer = 0;
 };
 
 const resetFlight = () => {
@@ -82,6 +120,10 @@ const resetFlight = () => {
     fading = null;
     forward = null;
     returning = false;
+    // A dropped flight must not leave the stage waiting for a cover that never arrives.
+    setFlightPhase('idle');
+    stageReady = false;
+    stageReadyWaiters.length = 0;
 };
 
 const dropOverlay = () => {
@@ -96,6 +138,7 @@ const fadeOut = (duration: number) => {
     const node = overlay;
     if (!node) return;
     resetFlight();
+    setFlightPhase('idle');
     overlay = null;
     overlayImage = null;
     fading = node;
@@ -196,18 +239,35 @@ export const flyCardToPage = (source: HTMLElement, imageUrl: string, angle: numb
     dropOverlay();
     ensureOverlay(imageUrl);
     document.documentElement.dataset.mediaFlight = 'true';
+    setFlightPhase('forward');
     forward = {atFullscreen: false, finishRequested: false};
     setQuad(from, 0);
     animate(from, fullscreenQuad(), OUT_MS, () => {
         if (!forward) return;
         forward.atFullscreen = true;
-        // If the player page has already mounted, reveal it shortly; otherwise hold the cover
-        // only long enough for a slow route, never indefinitely.
-        timer = window.setTimeout(
-            () => fadeOut(300),
-            forward.finishRequested ? OUT_HOLD_MS : SAFETY_MS,
-        );
+        setFlightPhase('forward-ready');
+        // If the player page has already mounted, reveal it once the stage has painted;
+        // otherwise hold the cover only long enough for a slow route, never indefinitely.
+        if (!forward.finishRequested) {
+            timer = window.setTimeout(() => fadeOut(300), SAFETY_MS);
+            return;
+        }
+        revealWhenStageReady();
     });
+};
+
+/** Reveals the player under the full-screen cover once the stage has painted. */
+const revealWhenStageReady = () => {
+    let revealed = false;
+    const reveal = () => {
+        if (revealed) return;
+        revealed = true;
+        clearTimers();
+        timer = window.setTimeout(() => fadeOut(300), OUT_HOLD_MS);
+    };
+    whenStageReady(reveal);
+    // A stage that never reports in must not hold the cover for good.
+    stageReadyTimer = window.setTimeout(reveal, STAGE_READY_MAX_MS);
 };
 
 /** Player mount: once the cover is full-screen, fade it out to reveal the player. */
@@ -216,7 +276,7 @@ export const finishForwardFlight = () => {
     forward.finishRequested = true;
     if (!forward.atFullscreen) return;
     clearTimers();
-    timer = window.setTimeout(() => fadeOut(300), OUT_HOLD_MS);
+    revealWhenStageReady();
 };
 
 /** Back link / popstate from the player: cover the page before the route swaps. */
@@ -227,6 +287,7 @@ export const beginReturnFlight = () => {
     dropOverlay();
     ensureOverlay(handoff.imageUrl);
     document.documentElement.dataset.mediaFlight = 'true';
+    setFlightPhase('return');
     returning = true;
     setQuad(fullscreenQuad(), 0);
     timer = window.setTimeout(() => {

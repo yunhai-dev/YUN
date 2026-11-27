@@ -19,6 +19,8 @@ interface FoliaSonnetProps {
     title: string;
     author: string;
     isPlaying: boolean;
+    /** The stage is covered and hidden: no frame may be drawn, not even a paused repaint. */
+    concealed?: boolean;
     renderScale?: LyricRenderScale;
     fpsCap?: PlayerFpsCap;
 }
@@ -44,6 +46,7 @@ export const FoliaSonnet = ({
     title,
     author,
     isPlaying,
+    concealed = false,
     renderScale = 1,
     fpsCap = 0,
 }: FoliaSonnetProps) => {
@@ -132,11 +135,11 @@ export const FoliaSonnet = ({
     }, [ready, isPlaying, runtimeRef]);
 
     useEffect(() => {
-        if (!ready || isPlaying) return;
+        if (!ready || isPlaying || concealed) return undefined;
         return currentTime.on('change', () => {
             if (!document.hidden) runtimeRef.current?.renderOnce();
         });
-    }, [currentTime, isPlaying, ready, runtimeRef]);
+    }, [concealed, currentTime, isPlaying, ready, runtimeRef]);
 
     useEffect(() => {
         if (ready) runtimeRef.current?.setSongMetadata({title, artist: author, album: null});

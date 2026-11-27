@@ -70,6 +70,7 @@ interface VisualizerProps {
     audioBands: AudioBands;
     showText?: boolean;
     paused?: boolean;
+    concealed?: boolean;
     cadenzaTuning?: CadenzaTuning;
     lyricsFontScale?: number;
 }
@@ -86,6 +87,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         audioPower,
         showText = true,
         paused = false,
+        concealed = false,
         cadenzaTuning = DEFAULT_CADENZA_TUNING,
     } = props;
     // 文字画布的分辨率倍数（#929）：本样式没有全局挡位可跟随，按自己的默认叠上 tuning 里的覆盖。
@@ -226,6 +228,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
     }, [activeLine, preparedStateContext, upcomingLine, showText, viewport.height, viewport.width]);
 
     useEffect(() => {
+        if (concealed) return undefined;
         const textCanvas = textCanvasRef.current;
         const lineLayer = lineLayerRef.current;
         const overlay = overlayRef.current;
@@ -516,6 +519,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         audioPower,
         currentTime,
         activeLine,
+        concealed,
         paused,
         preparedState,
         showText,

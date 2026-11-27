@@ -813,6 +813,6 @@ export class TemperaPixiRuntime {
         this.overlay.release();
         this.inkFlash.destroy();
         this.imageTextures.destroy();
-        this.app.destroy({ removeView: true }, { children: true, texture: true });
+        this.app.destroy({ removeView: true }, { children: true });
     }
 }

@@ -15,6 +15,8 @@ interface FoliaHanabiProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    /** The stage is covered and hidden: no frame may be drawn, not even a paused repaint. */
+    concealed?: boolean;
     renderScale?: LyricRenderScale;
 }
 
@@ -27,6 +29,7 @@ export const FoliaHanabi = ({
     songTitle,
     songArtist,
     isPlaying,
+    concealed = false,
     renderScale = 1,
 }: FoliaHanabiProps) => {
     const {currentTime} = useAudioSignals(audioRef);
@@ -63,6 +66,7 @@ export const FoliaHanabi = ({
             songTitle={songTitle}
             songArtist={songArtist}
             paused={!isPlaying}
+            concealed={concealed}
             hanabiTuning={hanabiTuning}
         />
     );

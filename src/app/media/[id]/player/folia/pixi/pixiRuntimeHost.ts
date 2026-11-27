@@ -91,6 +91,9 @@ export const useVisualizerPixiHost = <TRuntime, TSong>({
                 // it was built against the current song already.
                 if (runtimeRef.current !== runtime || signal.aborted) break;
                 appliedSongRef.current = next;
+                // A cached runtime announces no new first frame on a song swap; the forward
+                // cover flight still needs to know the handed-over scene is on screen.
+                firstFrameDrawnRef.current();
             }
         } catch (error) {
             if (!isAbort(error)) {

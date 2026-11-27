@@ -790,6 +790,7 @@ export class SonnetPixiRuntime {
         destroySonnetContainerChildren(this.creditsContainer);
         this.iconTextures.clear();
         this.releaseIconUrls(this.iconUrls);
-        this.app.destroy({ removeView: true }, { children: true, texture: true });
+        // Icon textures are refcounted by the shared pool; stage.destroy must not destroy them here.
+        this.app.destroy({ removeView: true }, { children: true });
     }
 }

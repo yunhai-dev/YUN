@@ -275,6 +275,9 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
 
     const refreshBounds = useCallback(() => {
         const next = visibleBounds();
+        const previous = boundsRef.current;
+        if (previous.left === next.left && previous.right === next.right
+            && previous.top === next.top && previous.bottom === next.bottom) return;
         boundsRef.current = next;
         setBounds(next);
     }, []);
@@ -349,6 +352,13 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
         return { x: (width / 2 - camera.x) / camera.scale, y: (height / 2 - camera.y) / camera.scale };
     }, []);
 
+    const resolveRestoreIndex = useCallback(() => {
+        const stored = readFocus();
+        const storedIndex = stored ? filteredItems.findIndex(item => item.id === stored) : -1;
+        const index = currentIndex >= 0 ? currentIndex : storedIndex;
+        return index >= 0 ? index : null;
+    }, [currentIndex, filteredItems]);
+
     const centerTile = useCallback((rect: MediaWallRect, smooth: boolean) => {
         const { width, height } = viewportSizeRef.current;
         const { scale } = cameraRef.current;
@@ -361,7 +371,8 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
         }
     }, [applyCamera, refreshBounds, tweenCamera]);
 
-    // Measure the field; the first measure opens the wall at Folia's home corner (34, 80).
+    // Measure the field; the first measure opens on the restored tile when there is one, so the
+    // wall never paints the home corner and then jumps (and rebuilds its visible tiles) on return.
     useEffect(() => {
         const viewport = viewportRef.current;
         if (!viewport) return;
@@ -370,15 +381,24 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
             const height = viewport.clientHeight;
             if (width === 0 || height === 0) return;
             const scale = getScale(width);
+            viewportSizeRef.current = { width, height };
             if (!measuredRef.current) {
-                const next = { x: width < 640 ? 12 : 34, y: width < 640 ? 56 : 80, scale };
-                applyCamera(next);
+                const home = { x: width < 640 ? 12 : 34, y: width < 640 ? 56 : 80, scale };
+                const restoreIndex = resolveRestoreIndex();
+                const target = restoreIndex === null
+                    ? null
+                    : getMediaWallItemRect(filteredItems.length, restoreIndex, {
+                        x: (width / 2 - home.x) / scale,
+                        y: (height / 2 - home.y) / scale,
+                    });
+                applyCamera(target
+                    ? { x: width / 2 - scale * frameOf(target).centerX, y: height / 2 - scale * frameOf(target).centerY, scale }
+                    : home);
             } else {
                 // Keep the same world point under the view centre on a resize.
                 const center = viewCenter();
                 applyCamera({ x: width / 2 - scale * center.x, y: height / 2 - scale * center.y, scale });
             }
-            viewportSizeRef.current = { width, height };
             measuredRef.current = true;
             refreshBounds();
             setMeasured(true);
@@ -391,27 +411,27 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
             stopTween();
             dragAbortRef.current?.abort();
         };
-    }, [applyCamera, refreshBounds, stopTween, viewCenter]);
+    }, [applyCamera, refreshBounds, stopTween, viewCenter, resolveRestoreIndex, filteredItems.length]);
 
     // Restore the playing song (or the last opened one) after the first measure; otherwise start
-    // on the first song. When a reverse cover flight is waiting, collapse it onto that tile.
+    // on the first song. The camera is already centred on that tile, so this only lands the
+    // reverse cover flight.
     useEffect(() => {
         if (!measured || centeredOnceRef.current || filteredItems.length === 0) return;
         centeredOnceRef.current = true;
-        const stored = readFocus();
-        const storedIndex = stored ? filteredItems.findIndex(item => item.id === stored) : -1;
-        const index = currentIndex >= 0 ? currentIndex : storedIndex >= 0 ? storedIndex : 0;
-        const item = filteredItems[index];
+        const restoreIndex = resolveRestoreIndex();
+        const item = filteredItems[restoreIndex ?? 0];
         setFocusedId(item.id);
-        let target: MediaWallRect | null = null;
-        if (currentIndex >= 0 || storedIndex >= 0) {
-            target = getMediaWallItemRect(filteredItems.length, index, viewCenter());
-            if (target) centerTile(target, false);
+        if (restoreIndex === null) {
+            cancelReturnFlight();
+            return;
         }
+        const target = getMediaWallItemRect(filteredItems.length, restoreIndex, viewCenter());
         if (!target) {
             cancelReturnFlight();
             return;
         }
+        centerTile(target, false);
         const { width, height } = viewportSizeRef.current;
         const { scale } = cameraRef.current;
         landReturnFlight({
@@ -421,7 +441,7 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
             height: target.height * scale * FIELD_SCALE,
             angle: TILT_RADIANS,
         }, item.imageUrl);
-    }, [measured, filteredItems, currentIndex, centerTile, viewCenter]);
+    }, [measured, filteredItems, resolveRestoreIndex, centerTile, viewCenter]);
 
     // A new search starts at its first match; clearing the search keeps the current focus.
     useEffect(() => {

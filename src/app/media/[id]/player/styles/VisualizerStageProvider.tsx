@@ -5,11 +5,13 @@ import {
     createContext,
     lazy,
     memo,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
     useRef,
     useState,
+    useSyncExternalStore,
     type ReactNode,
     type RefObject,
 } from 'react';
@@ -20,6 +22,7 @@ import type { BackgroundType } from '../folia/backgrounds/definition';
 import type { LatentBackgroundTuning } from '../folia/backgrounds/types';
 import { FoliaBackdrop } from '../folia/FoliaBackdrop';
 import { applyGlobalFpsCap, type PlayerFpsCap } from '../folia/fpsCap';
+import { getFlightPhase, getServerFlightPhase, notifyStageReady, subscribeFlightPhase } from '../../../mediaCoverFlight';
 import type { Line, LyricRenderScale, Theme } from '../folia/types';
 
 const FoliaSonnet = lazy(() => import('../folia/FoliaSonnet'));
@@ -40,6 +43,9 @@ const FoliaMachi = lazy(() => import('../folia/FoliaMachi'));
 const FoliaStill = lazy(() => import('../folia/FoliaStill'));
 const FoliaPendolo = lazy(() => import('../folia/FoliaPendolo'));
 const FoliaMetaphor = lazy(() => import('../folia/FoliaMetaphor'));
+
+// Modes whose runtime owns a Pixi or three.js context and announces its first frame itself.
+const PIXI_HOSTED_MODES = new Set<VisualizerMode>(['sonnet', 'tempera', 'hanabi', 'lumiere', 'machi', 'metaphor', 'diorama']);
 
 export const MODE_LABELS: Record<VisualizerMode, string> = {
     sonnet: '商籁',
@@ -146,6 +152,7 @@ export const VisualizerStage = memo(({
                         title={title}
                         author={author}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                         renderScale={renderScale}
                         fpsCap={fpsCap}
                     />
@@ -156,6 +163,7 @@ export const VisualizerStage = memo(({
                         theme={foliaTheme}
                         seed={id}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                         renderScale={renderScale}
                     />
                 ) : mode === 'tilt' ? (
@@ -186,6 +194,7 @@ export const VisualizerStage = memo(({
                         songTitle={title}
                         songArtist={author}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                         renderScale={renderScale}
                     />
                 ) : mode === 'partita' ? (
@@ -200,6 +209,7 @@ export const VisualizerStage = memo(({
                         lines={foliaLines}
                         theme={foliaTheme}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                     />
                 ) : mode === 'cappella' ? (
                     <FoliaCappella
@@ -253,6 +263,7 @@ export const VisualizerStage = memo(({
                         songTitle={title}
                         songArtist={author}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                         renderScale={renderScale}
                     />
                 ) : mode === 'lumiere' ? (
@@ -264,6 +275,7 @@ export const VisualizerStage = memo(({
                         songTitle={title}
                         songArtist={author}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                         renderScale={renderScale}
                     />
                 ) : mode === 'machi' ? (
@@ -285,6 +297,7 @@ export const VisualizerStage = memo(({
                         seed={id}
                         songTitle={title}
                         isPlaying={effectiveIsPlaying}
+                        concealed={pageHidden}
                         renderScale={renderScale}
                     />
                 ) : mode === 'still' ? (
@@ -330,16 +343,33 @@ export const VisualizerStageProvider = ({children}: {children: ReactNode}) => {
     const isTrackRoute = Boolean(pathname && pathname.startsWith('/media/') && pathname !== '/media/');
     const [stageProps, setStageProps] = useState<VisualizerStageProps | null>(null);
     const fullscreenRef = useRef<HTMLDivElement>(null);
+    const flightPhase = useSyncExternalStore(subscribeFlightPhase, getFlightPhase, getServerFlightPhase);
+    // While the cover is still growing over the viewport, the incoming track must not run: its
+    // scene would be built, its shaders compiled and its frames drawn during the animation.
+    const flightInProgress = flightPhase === 'forward';
+    const deferredPropsRef = useRef<VisualizerStageProps | null>(null);
 
+    const publishStageProps = useCallback((next: VisualizerStageProps) => {
+        deferredPropsRef.current = next;
+        if (flightInProgress) return;
+        setStageProps(next);
+    }, [flightInProgress]);
+
+    // Once the cover is full-screen the deferred props become the live ones.
     useEffect(() => {
-        if (!isTrackRoute) {
-            setStageProps(null);
-        }
-    }, [isTrackRoute]);
+        if (flightInProgress) return;
+        const deferred = deferredPropsRef.current;
+        if (!deferred || deferred === stageProps) return;
+        setStageProps(deferred);
+    }, [flightInProgress, stageProps]);
+
+    // The live props: during the flight the previous stage keeps rendering (paused), afterwards
+    // the deferred ones take over.
+    const activeProps = flightInProgress ? stageProps : (deferredPropsRef.current ?? stageProps);
 
     // Sonnet and Fume cap actual draws in their runtimes. Other styles still use the shared cap.
-    const activeFpsCap: PlayerFpsCap = isTrackRoute && stageProps && stageProps.mode !== 'sonnet' && stageProps.mode !== 'fume'
-        ? stageProps.fpsCap
+    const activeFpsCap: PlayerFpsCap = isTrackRoute && activeProps && activeProps.mode !== 'sonnet' && activeProps.mode !== 'fume'
+        ? activeProps.fpsCap
         : 0;
     useEffect(() => {
         applyGlobalFpsCap(activeFpsCap);
@@ -347,27 +377,56 @@ export const VisualizerStageProvider = ({children}: {children: ReactNode}) => {
     useEffect(() => () => applyGlobalFpsCap(0), []);
 
     const value = useMemo<VisualizerStageHostContextValue>(
-        () => ({setStageProps, fullscreenRef}),
-        [],
+        () => ({setStageProps: publishStageProps, fullscreenRef}),
+        [publishStageProps],
     );
 
-    const showPersistentStage = isTrackRoute && stageProps !== null;
+    const layoutActive = isTrackRoute && activeProps !== null;
+    // While the cover flies, the previous stage stays mounted but hidden and paused: tearing it
+    // down would destroy the GPU context, and drawing would steal frames from the animation.
+    const stageActive = isTrackRoute && flightPhase !== 'forward';
+    // The stage stays cached across /media/[id] -> /media, so returning never destroys WebGL
+    // synchronously. Pause it while hidden so it cannot keep drawing behind the cover.
+    const renderedStageProps = useMemo(
+        () => activeProps && !stageActive
+            ? {...activeProps, effectiveIsPlaying: false, pageHidden: true}
+            : activeProps,
+        [activeProps, stageActive],
+    );
+    // Pixi and three.js runtimes report their first frame through `useFirstFrameDrawn`. Every
+    // other mode paints straight from React, so the frame after its commit counts as ready.
+    useEffect(() => {
+        if (!stageActive || !activeProps) return undefined;
+        if (PIXI_HOSTED_MODES.has(activeProps.mode)) return undefined;
+        let second = 0;
+        const first = requestAnimationFrame(() => {
+            second = requestAnimationFrame(() => notifyStageReady());
+        });
+        return () => {
+            cancelAnimationFrame(first);
+            cancelAnimationFrame(second);
+        };
+    }, [activeProps, stageActive]);
 
     return (
         <VisualizerStageContext.Provider value={value}>
             <div
                 ref={fullscreenRef}
                 className={cn(
-                    showPersistentStage && 'relative min-h-screen w-full bg-[#05070d]',
-                    showPersistentStage && stageProps.chromeHidden && 'cursor-none',
+                    layoutActive && 'relative min-h-screen w-full bg-[#05070d]',
+                    layoutActive && activeProps?.chromeHidden && 'cursor-none',
                 )}
             >
-                {showPersistentStage && (
-                    <div className="fixed inset-0 z-0 overflow-hidden">
-                        <VisualizerStage {...stageProps} />
+                {renderedStageProps && (
+                    <div
+                        aria-hidden={!stageActive}
+                        className="fixed inset-0 z-0 overflow-hidden"
+                        style={!stageActive ? {visibility: 'hidden', pointerEvents: 'none'} : undefined}
+                    >
+                        <VisualizerStage {...renderedStageProps} />
                     </div>
                 )}
-                <div className={cn(showPersistentStage && 'relative z-10 pointer-events-none')}>
+                <div className={cn(layoutActive && 'relative z-10 pointer-events-none')}>
                     {children}
                 </div>
             </div>

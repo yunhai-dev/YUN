@@ -11,10 +11,11 @@ interface FoliaCadenzaProps {
     lines: Line[];
     theme: Theme;
     isPlaying?: boolean;
+    concealed?: boolean;
 }
 
 /** Hosts Folia's Cadenza: pretext-measured fragments mirrored into DOM + canvas layers. */
-export const FoliaCadenza = ({audioRef, lines, theme, isPlaying = true}: FoliaCadenzaProps) => {
+export const FoliaCadenza = ({audioRef, lines, theme, isPlaying = true, concealed = false}: FoliaCadenzaProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
     const [lineIndex, setLineIndex] = useState(0);
     const lineIndexRef = useRef(0);
@@ -44,6 +45,7 @@ export const FoliaCadenza = ({audioRef, lines, theme, isPlaying = true}: FoliaCa
             audioPower={audioPower}
             audioBands={audioBands}
             paused={!isPlaying}
+            concealed={concealed}
             cadenzaTuning={DEFAULT_CADENZA_TUNING}
         />
     );

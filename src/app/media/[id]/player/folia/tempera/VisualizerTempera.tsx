@@ -33,6 +33,8 @@ interface VisualizerTemperaProps {
     lyricsFontScale?: number;
     staticMode?: boolean;
     paused?: boolean;
+    /** The stage is covered and hidden: no frame may be drawn, not even a paused repaint. */
+    concealed?: boolean;
     seed?: string;
     coverColors?: string[];
     songTitle?: string;
@@ -51,6 +53,7 @@ const VisualizerTempera: React.FC<VisualizerTemperaProps> = (props) => {
         lyricsFontScale = 1,
         staticMode = false,
         paused = false,
+        concealed = false,
         seed = 'tempera',
         coverColors = [],
         songTitle,
@@ -190,9 +193,9 @@ const VisualizerTempera: React.FC<VisualizerTemperaProps> = (props) => {
 
     // A paused runtime does not tick; playback scrubs (and the seek bar) still need a frame.
     useEffect(() => {
-        if (!paused) return;
+        if (!paused || concealed) return undefined;
         return currentTime.on('change', () => runtimeRef.current?.renderOnce());
-    }, [currentTime, paused]);
+    }, [concealed, currentTime, paused]);
 
     const fontClassName = theme.fontStyle === 'mono'
         ? 'font-mono'

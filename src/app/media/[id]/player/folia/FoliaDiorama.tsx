@@ -23,6 +23,8 @@ interface FoliaDioramaProps {
     theme: Theme;
     seed: string;
     isPlaying?: boolean;
+    /** The stage is covered and hidden: no frame may be drawn, not even a paused repaint. */
+    concealed?: boolean;
     renderScale?: LyricRenderScale;
 }
 
@@ -35,12 +37,14 @@ const DioramaDemandInvalidator = ({
     seed,
     theme,
     isPlaying,
+    concealed,
 }: {
     currentTime: MotionValue<number>;
     globalIndex: number;
     seed: string;
     theme: Theme;
     isPlaying: boolean;
+    concealed: boolean;
 }) => {
     const invalidate = useThree(state => state.invalidate);
 
@@ -49,9 +53,9 @@ const DioramaDemandInvalidator = ({
     }, [globalIndex, invalidate, isPlaying, seed, theme]);
 
     useEffect(() => {
-        if (isPlaying) return undefined;
+        if (isPlaying || concealed) return undefined;
         return currentTime.on('change', () => invalidate());
-    }, [currentTime, invalidate, isPlaying]);
+    }, [concealed, currentTime, invalidate, isPlaying]);
 
     return null;
 };
@@ -66,6 +70,7 @@ export const FoliaDiorama = ({
     theme,
     seed,
     isPlaying = true,
+    concealed = false,
     renderScale = 1,
 }: FoliaDioramaProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
@@ -141,6 +146,7 @@ export const FoliaDiorama = ({
                     seed={seed}
                     theme={theme}
                     isPlaying={isPlaying}
+                    concealed={concealed}
                 />
                 <CameraRig
                     currentTime={currentTime}

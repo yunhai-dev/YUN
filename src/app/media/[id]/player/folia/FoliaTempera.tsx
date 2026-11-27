@@ -15,6 +15,8 @@ interface FoliaTemperaProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    /** The stage is covered and hidden: no frame may be drawn, not even a paused repaint. */
+    concealed?: boolean;
     renderScale?: LyricRenderScale;
 }
 
@@ -28,6 +30,7 @@ export const FoliaTempera = ({
     songTitle,
     songArtist,
     isPlaying,
+    concealed = false,
     renderScale = 1,
 }: FoliaTemperaProps) => {
     const {currentTime} = useAudioSignals(audioRef);
@@ -65,6 +68,7 @@ export const FoliaTempera = ({
             songTitle={songTitle}
             songArtist={songArtist}
             paused={!isPlaying}
+            concealed={concealed}
             temperaTuning={temperaTuning}
         />
     );

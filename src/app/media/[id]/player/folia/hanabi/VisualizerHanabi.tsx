@@ -35,6 +35,7 @@ interface VisualizerProps {
     lyricsFontScale?: number;
     staticMode?: boolean;
     paused?: boolean;
+    concealed?: boolean;
     seed?: string | number;
     songTitle?: string;
     songArtist?: string;
@@ -51,6 +52,7 @@ const VisualizerHanabi: React.FC<VisualizerProps> = (props) => {
         lyricsFontScale = 1,
         staticMode = false,
         paused = false,
+        concealed = false,
         seed = 'hanabi',
         songTitle,
         songArtist,
@@ -168,9 +170,10 @@ const VisualizerHanabi: React.FC<VisualizerProps> = (props) => {
     }, [paused, runtimeRef]);
 
     // 暂停时 ticker 停着，拖动进度要手动补一帧。
-    useEffect(() => currentTime.on('change', () => {
-        if (paused) runtimeRef.current?.renderOnce();
-    }), [currentTime, paused, runtimeRef]);
+    useEffect(() => {
+        if (!paused || concealed) return undefined;
+        return currentTime.on('change', () => runtimeRef.current?.renderOnce());
+    }, [concealed, currentTime, paused, runtimeRef]);
 
     const fallbackFontFamily = resolveThemeFontStack(theme);
     const fallbackFontWeight = resolveThemeFontWeight(theme, 700);

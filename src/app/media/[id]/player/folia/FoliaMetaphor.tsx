@@ -16,6 +16,7 @@ interface FoliaMetaphorProps {
     seed?: string;
     songTitle?: string;
     isPlaying: boolean;
+    concealed?: boolean;
     renderScale?: LyricRenderScale;
 }
 
@@ -33,6 +34,7 @@ export const FoliaMetaphor = ({
     seed,
     songTitle,
     isPlaying,
+    concealed = false,
     renderScale = 1,
 }: FoliaMetaphorProps) => {
     const hostRef = useRef<HTMLDivElement>(null);
@@ -116,9 +118,10 @@ export const FoliaMetaphor = ({
     }, [isPlaying, runtimeRef]);
 
     // A paused runtime stops its loop; a seek must still repaint the new moment.
-    useEffect(() => currentTime.on('change', () => {
-        if (!isPlaying) runtimeRef.current?.requestFrame();
-    }), [currentTime, isPlaying, runtimeRef]);
+    useEffect(() => {
+        if (isPlaying || concealed) return undefined;
+        return currentTime.on('change', () => runtimeRef.current?.requestFrame());
+    }, [concealed, currentTime, isPlaying, runtimeRef]);
 
     const fallbackText = lineIndex >= 0 && lineIndex < lines.length ? lines[lineIndex].fullText : '';
 

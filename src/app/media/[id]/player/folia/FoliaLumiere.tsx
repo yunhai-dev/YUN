@@ -14,6 +14,8 @@ interface FoliaLumiereProps {
     songTitle?: string;
     songArtist?: string;
     isPlaying: boolean;
+    /** The stage is covered and hidden: no frame may be drawn, not even a paused repaint. */
+    concealed?: boolean;
     renderScale?: LyricRenderScale;
 }
 
@@ -26,6 +28,7 @@ export const FoliaLumiere = ({
     songTitle,
     songArtist,
     isPlaying,
+    concealed = false,
     renderScale = 1,
 }: FoliaLumiereProps) => {
     const {currentTime, audioPower, audioBands} = useAudioSignals(audioRef);
@@ -64,6 +67,7 @@ export const FoliaLumiere = ({
             songTitle={songTitle}
             songArtist={songArtist}
             paused={!isPlaying}
+            concealed={concealed}
             lumiereTuning={lumiereTuning}
         />
     );
